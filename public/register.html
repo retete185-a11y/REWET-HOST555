@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>REWET HOST — Регистрация</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container">
+        <a href="/" class="logo">REWET HOST</a>
+    </div>
+</header>
+
+<main class="container" style="max-width: 500px; padding-top: 70px;">
+
+    <div class="card">
+
+        <h1 style="margin-bottom: 10px;">
+            Создание аккаунта
+        </h1>
+
+        <p class="text-muted" style="margin-bottom: 30px;">
+            Зарегистрируйся в REWET HOST
+        </p>
+
+        <form id="registerForm">
+
+            <label>Логин</label>
+
+            <input
+                class="input"
+                type="text"
+                id="username"
+                placeholder="Введите логин"
+                minlength="3"
+                maxlength="32"
+                required
+                style="margin: 8px 0 18px;"
+            >
+
+            <label>Email</label>
+
+            <input
+                class="input"
+                type="email"
+                id="email"
+                placeholder="Введите email"
+                required
+                style="margin: 8px 0 18px;"
+            >
+
+            <label>Пароль</label>
+
+            <input
+                class="input"
+                type="password"
+                id="password"
+                placeholder="Введите пароль"
+                minlength="6"
+                required
+                style="margin: 8px 0 18px;"
+            >
+
+            <label>Повторите пароль</label>
+
+            <input
+                class="input"
+                type="password"
+                id="password2"
+                placeholder="Повторите пароль"
+                minlength="6"
+                required
+                style="margin: 8px 0 25px;"
+            >
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+                style="width: 100%;"
+            >
+                Зарегистрироваться
+            </button>
+
+        </form>
+
+        <div
+            id="message"
+            style="margin-top: 20px; text-align: center;"
+        ></div>
+
+        <p
+            style="text-align: center; margin-top: 25px;"
+            class="text-muted"
+        >
+            Уже есть аккаунт?
+            <a href="/login.html" class="text-red">
+                Войти
+            </a>
+        </p>
+
+    </div>
+
+</main>
+
+<script src="/app.js"></script>
+
+<script>
+    const form = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const username =
+            document.getElementById("username").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const password2 =
+            document.getElementById("password2").value;
+
+        if (password !== password2) {
+            message.textContent = "Пароли не совпадают";
+            message.style.color = "#ff2020";
+            return;
+        }
+
+        message.textContent = "Регистрация...";
+        message.style.color = "#aaa";
+
+        try {
+            const result = await apiRequest(
+                "/auth/register",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password
+                    })
+                }
+            );
+
+            message.textContent =
+                "Аккаунт создан! Перенаправление...";
+
+            message.style.color = "#35d07f";
+
+            setTimeout(() => {
+                window.location.href = "/login.html";
+            }, 1000);
+
+        } catch (error) {
+
+            message.textContent = error.message;
+            message.style.color = "#ff2020";
+        }
+    });
+</script>
+
+</body>
+</html>
