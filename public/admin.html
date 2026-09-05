@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>REWET HOST — Админ-панель</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080b14;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        header {
+            min-height: 70px;
+            padding: 15px 25px;
+            background: #111827;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #6366f1;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 11px 16px;
+            background: #6366f1;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .logout {
+            background: #ef4444;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .stat-title {
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        th {
+            color: #a5b4fc;
+        }
+
+        td {
+            color: #d1d5db;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 6px;
+            background: #374151;
+        }
+
+        .admin {
+            color: #22c55e;
+        }
+
+        .user {
+            color: #9ca3af;
+        }
+
+        .message {
+            color: #f59e0b;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 15px;
+            }
+
+            main {
+                padding: 20px 12px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        REWET <span>HOST</span>
+    </div>
+
+    <div class="actions">
+        <button onclick="location.href='/dashboard'">
+            Панель
+        </button>
+
+        <button class="logout" onclick="logout()">
+            Выйти
+        </button>
+    </div>
+
+</header>
+
+<main>
+
+    <h1>
+        🛡️ Админ-панель
+    </h1>
+
+    <div id="message" class="message"></div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-title">
+                Пользователи
+            </div>
+
+            <div
+                id="usersCount"
+                class="stat-value"
+            >
+                0
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">
+                Серверы
+            </div>
+
+            <div
+                id="serversCount"
+                class="stat-value"
+            >
+                0
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">
+                Запущенные серверы
+            </div>
+
+            <div
+                id="activeServersCount"
+                class="stat-value"
+            >
+                0
+            </div>
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <h2>
+            👥 Пользователи
+        </h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя</th>
+                    <th>Email</th>
+                    <th>Баланс</th>
+                    <th>Права</th>
+                    <th>Регистрация</th>
+                </tr>
+            </thead>
+
+            <tbody id="usersTable">
+                <tr>
+                    <td colspan="6">
+                        Загрузка...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="section">
+
+        <h2>
+            🖥️ Все серверы
+        </h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Игра</th>
+                    <th>Владелец</th>
+                    <th>Статус</th>
+                    <th>Истекает</th>
+                </tr>
+            </thead>
+
+            <tbody id="serversTable">
+                <tr>
+                    <td colspan="6">
+                        Загрузка...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+<script>
+
+const token =
+    localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "/login";
+}
+
+// ============================
+// REQUEST
+// ============================
+
+async function api(url) {
+
+    const response = await fetch(
+        url,
+        {
+            headers: {
+                Authorization:
+                    "Bearer " + token
+            }
+        }
+    );
+
+    const data =
+        await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ||
+            "Ошибка запроса"
+        );
+    }
+
+    return data;
+}
+
+// ============================
+// PROFILE / ACCESS
+// ============================
+
+async function checkAdmin() {
+
+    try {
+
+        const data =
+            await api("/api/auth/me");
+
+        if (!data.user.is_admin) {
+
+            document.body.innerHTML = `
+                <div style="
+                    min-height:100vh;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    text-align:center;
+                    padding:20px;
+                ">
+                    <div>
+                        <h1>🚫 Доступ запрещён</h1>
+                        <p style="
+                            color:#9ca3af;
+                            margin:15px 0;
+                        ">
+                            У тебя нет прав администратора.
+                        </p>
+
+                        <button
+                            onclick="location.href='/dashboard'"
+                        >
+                            Вернуться в панель
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return false;
+        }
+
+        return true;
+
+    } catch (error) {
+
+        message.textContent =
+            error.message;
+
+        return false;
+    }
+}
+
+// ============================
+// STATS
+// ============================
+
+async function loadStats() {
+
+    const data =
+        await api("/api/admin/stats");
+
+    document.getElementById(
+        "usersCount"
+    ).textContent =
+        data.stats.users;
+
+    document.getElementById(
+        "serversCount"
+    ).textContent =
+        data.stats.servers;
+
+    document.getElementById(
+        "activeServersCount"
+    ).textContent =
+        data.stats.activeServers;
+}
+
+// ============================
+// USERS
+// ============================
+
+async function loadUsers() {
+
+    const data =
+        await api("/api/admin/users");
+
+    const table =
+        document.getElementById(
+            "usersTable"
+        );
+
+    if (
+        !data.users ||
+        data.users.length === 0
+    ) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    Пользователей нет
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML = "";
+
+    data.users.forEach(user => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${escapeHtml(user.id)}</td>
+
+            <td>
+                ${escapeHtml(user.username)}
+            </td>
+
+            <td>
+                ${escapeHtml(user.email)}
+            </td>
+
+            <td>
+                ${escapeHtml(user.balance)} ₽
+            </td>
+
+            <td>
+                ${
+                    user.is_admin
+                    ? '<span class="admin">ADMIN</span>'
+                    : '<span class="user">USER</span>'
+                }
+            </td>
+
+            <td>
+                ${formatDate(user.created_at)}
+            </td>
+        `;
+
+        table.appendChild(row);
+    });
+}
+
+// ============================
+// SERVERS
+// ============================
+
+async function loadServers() {
+
+    const data =
+        await api("/api/admin/servers");
+
+    const table =
+        document.getElementById(
+            "serversTable"
+        );
+
+    if (
+        !data.servers ||
+        data.servers.length === 0
+    ) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    Серверов нет
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML = "";
+
+    data.servers.forEach(server => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                ${escapeHtml(server.id)}
+            </td>
+
+            <td>
+                ${escapeHtml(server.name)}
+            </td>
+
+            <td>
+                ${escapeHtml(server.game)}
+            </td>
+
+            <td>
+                ${escapeHtml(server.owner || "—")}
+            </td>
+
+            <td>
+                <span class="status">
+                    ${escapeHtml(server.status)}
+                </span>
+            </td>
+
+            <td>
+                ${formatDate(server.expires_at)}
+            </td>
+        `;
+
+        table.appendChild(row);
+    });
+}
+
+// ============================
+// HELPERS
+// ============================
+
+function formatDate(date) {
+
+    if (!date) {
+        return "—";
+    }
+
+    return new Date(date)
+        .toLocaleString("ru-RU");
+}
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+// ============================
+// LOGOUT
+// ============================
+
+function logout() {
+
+    localStorage.removeItem("token");
+
+    window.location.href = "/login";
+}
+
+// ============================
+// START
+// ============================
+
+async function startAdmin() {
+
+    const allowed =
+        await checkAdmin();
+
+    if (!allowed) {
+        return;
+    }
+
+    try {
+
+        await Promise.all([
+            loadStats(),
+            loadUsers(),
+            loadServers()
+        ]);
+
+    } catch (error) {
+
+        document.getElementById(
+            "message"
+        ).textContent =
+            error.message;
+    }
+}
+
+startAdmin();
+
+</script>
+
+</body>
+</html>
