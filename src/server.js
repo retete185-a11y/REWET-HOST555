@@ -1,12 +1,14 @@
 const express = require("express");
 const path = require("path");
 
-const { testDatabase, query } = require("./db");
+const {
+    testDatabase
+} = require("./db");
 
 const {
-    register,
-    login,
-    authMiddleware
+    registerUser,
+    loginUser,
+    getUserById
 } = require("./auth");
 
 const {
@@ -17,255 +19,334 @@ const {
     useAccessKey
 } = require("./servers");
 
+const {
+    startServer,
+    stopServer,
+    restartServer
+} = require("./serverManager");
+
+const {
+    getAdminStats,
+    getAllUsers,
+    getAllServers
+} = require("./admin");
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(
+    path.join(__dirname, "../public")
+));
 
-// ==============================
-// HEALTH
-// ==============================
+/* =========================
+   AUTH MIDDLEWARE
+========================= */
 
-app.get("/api/health", async (req, res) => {
+async function authMiddleware(req, res, next) {
     try {
-        const database = await testDatabase();
+        const token =
+            req.headers.authorization?.replace(
+                "Bearer ",
+                ""
+            );
 
-        res.json({
-            status: "ok",
-            service: "REWET HOST",
-            version: "1.0.0",
-            database: database ? "connected" : "disconnected"
-        });
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Необходима авторизация"
+            });
+        }
+
+        const userId = Number(token);
+
+        if (
+            !Number.isInteger(userId) ||
+            userId <= 0
+        ) {
+            return res.status(401).json({
+                success: false,
+                message: "Недействительная авторизация"
+            });
+        }
+
+        const user =
+            await getUserById(userId);
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Пользователь не найден"
+            });
+        }
+
+        req.user = user;
+
+        next();
+
     } catch (error) {
-        console.error("Health error:", error);
-
-        res.status(500).json({
-            status: "error",
-            service: "REWET HOST",
-            database: "disconnected"
-        });
-    }
-});
-
-// ==============================
-// API INFO
-// ==============================
-
-app.get("/api", (req, res) => {
-    res.json({
-        name: "REWET HOST",
-        message: "Gaming Hosting API",
-        status: "online"
-    });
-});
-
-// ==============================
-// AUTH
-// ==============================
-
-// Регистрация
-app.post("/api/auth/register", async (req, res) => {
-    try {
-        const {
-            username,
-            email,
-            password
-        } = req.body;
-
-        const user = await register(
-            username,
-            email,
-            password
+        console.error(
+            "Auth error:",
+            error
         );
-
-        res.status(201).json({
-            success: true,
-            message: "Аккаунт успешно создан",
-            user
-        });
-    } catch (error) {
-        console.error("Register error:", error);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
-});
-
-// Авторизация
-app.post("/api/auth/login", async (req, res) => {
-    try {
-        const {
-            login: usernameOrEmail,
-            password
-        } = req.body;
-
-        const result = await login(
-            usernameOrEmail,
-            password
-        );
-
-        res.json({
-            success: true,
-            message: "Вход выполнен",
-            ...result
-        });
-    } catch (error) {
-        console.error("Login error:", error);
 
         res.status(401).json({
             success: false,
-            message: error.message
+            message: "Ошибка авторизации"
         });
     }
-});
+}
 
-// Профиль
+/* =========================
+   ADMIN MIDDLEWARE
+========================= */
+
+async function adminMiddleware(
+    req,
+    res,
+    next
+) {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Необходима авторизация"
+            });
+        }
+
+        if (!req.user.is_admin) {
+            return res.status(403).json({
+                success: false,
+                message: "Недостаточно прав"
+            });
+        }
+
+        next();
+
+    } catch (error) {
+        console.error(
+            "Admin error:",
+            error
+        );
+
+        res.status(403).json({
+            success: false,
+            message: "Доступ запрещён"
+        });
+    }
+}
+
+/* =========================
+   HEALTH
+========================= */
+
 app.get(
-    "/api/auth/me",
-    authMiddleware,
+    "/api/health",
+    async (req, res) => {
+        const database =
+            await testDatabase();
+
+        res.json({
+            success: true,
+            service: "REWET HOST",
+            database:
+                database
+                    ? "connected"
+                    : "disconnected",
+            time: new Date().toISOString()
+        });
+    }
+);
+
+/* =========================
+   AUTH
+========================= */
+
+app.post(
+    "/api/auth/register",
     async (req, res) => {
         try {
-            const result = await query(
-                `SELECT
-                    id,
+            const {
+                username,
+                email,
+                password
+            } = req.body;
+
+            const user =
+                await registerUser(
                     username,
                     email,
-                    balance,
-                    is_admin,
-                    created_at
-                 FROM users
-                 WHERE id = $1`,
-                [req.user.id]
-            );
-
-            if (result.rows.length === 0) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Пользователь не найден"
-                });
-            }
+                    password
+                );
 
             res.json({
                 success: true,
-                user: result.rows[0]
+                message:
+                    "Регистрация успешна",
+                user
             });
-        } catch (error) {
-            console.error("Profile error:", error);
 
-            res.status(500).json({
-                success: false,
-                message: "Ошибка базы данных"
-            });
-        }
-    }
-);
-
-// ==============================
-// SERVERS
-// ==============================
-
-// Все серверы пользователя
-app.get(
-    "/api/servers",
-    authMiddleware,
-    async (req, res) => {
-        try {
-            const servers = await getUserServers(
-                req.user.id
-            );
-
-            res.json({
-                success: true,
-                servers
-            });
-        } catch (error) {
-            console.error("Get servers error:", error);
-
-            res.status(500).json({
-                success: false,
-                message: error.message
-            });
-        }
-    }
-);
-
-// Создание сервера
-app.post(
-    "/api/servers",
-    authMiddleware,
-    async (req, res) => {
-        try {
-            const {
-                name,
-                game
-            } = req.body;
-
-            const server = await createServer(
-                req.user.id,
-                name,
-                game
-            );
-
-            res.status(201).json({
-                success: true,
-                message: "Сервер создан",
-                server
-            });
-        } catch (error) {
-            console.error("Create server error:", error);
-
-            res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
-    }
-);
-
-// ==============================
-// ACCESS KEY
-// ==============================
-
-// Использовать ключ
-app.post(
-    "/api/servers/access-key/use",
-    authMiddleware,
-    async (req, res) => {
-        try {
-            const {
-                key
-            } = req.body;
-
-            const result = await useAccessKey(
-                req.user.id,
-                key
-            );
-
-            res.json({
-                success: true,
-                message: "Сервер добавлен",
-                ...result
-            });
         } catch (error) {
             console.error(
-                "Use access key error:",
+                "Register error:",
                 error
             );
 
             res.status(400).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// Один сервер
+app.post(
+    "/api/auth/login",
+    async (req, res) => {
+        try {
+            const {
+                email,
+                password
+            } = req.body;
+
+            const user =
+                await loginUser(
+                    email,
+                    password
+                );
+
+            /*
+             * Пока используем ID
+             * пользователя как простой
+             * токен.
+             *
+             * Позже заменим на JWT.
+             */
+
+            res.json({
+                success: true,
+                message:
+                    "Авторизация успешна",
+                token:
+                    String(user.id),
+                user
+            });
+
+        } catch (error) {
+            console.error(
+                "Login error:",
+                error
+            );
+
+            res.status(401).json({
+                success: false,
+                message:
+                    error.message
+            });
+        }
+    }
+);
+
+app.get(
+    "/api/auth/me",
+    authMiddleware,
+    async (req, res) => {
+        res.json({
+            success: true,
+            user: req.user
+        });
+    }
+);
+
+/* =========================
+   SERVERS
+========================= */
+
+/*
+ * Получить мои серверы
+ */
+
+app.get(
+    "/api/servers",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const servers =
+                await getUserServers(
+                    req.user.id
+                );
+
+            res.json({
+                success: true,
+                servers
+            });
+
+        } catch (error) {
+            console.error(
+                "Get servers error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Не удалось получить серверы"
+            });
+        }
+    }
+);
+
+/*
+ * Создать сервер
+ */
+
+app.post(
+    "/api/servers",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const {
+                name,
+                game
+            } = req.body;
+
+            const server =
+                await createServer(
+                    req.user.id,
+                    name,
+                    game
+                );
+
+            res.json({
+                success: true,
+                message:
+                    "Сервер создан",
+                server
+            });
+
+        } catch (error) {
+            console.error(
+                "Create server error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message:
+                    error.message
+            });
+        }
+    }
+);
+
+/*
+ * Получить один сервер
+ */
+
 app.get(
     "/api/servers/:id",
     authMiddleware,
@@ -280,19 +361,22 @@ app.get(
             ) {
                 return res.status(400).json({
                     success: false,
-                    message: "Некорректный ID сервера"
+                    message:
+                        "Некорректный ID сервера"
                 });
             }
 
-            const server = await getServer(
-                req.user.id,
-                serverId
-            );
+            const server =
+                await getServer(
+                    req.user.id,
+                    serverId
+                );
 
             res.json({
                 success: true,
                 server
             });
+
         } catch (error) {
             console.error(
                 "Get server error:",
@@ -301,13 +385,21 @@ app.get(
 
             res.status(404).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// Создать ключ
+/* =========================
+   ACCESS KEYS
+========================= */
+
+/*
+ * Создать ключ доступа
+ */
+
 app.post(
     "/api/servers/:id/access-key",
     authMiddleware,
@@ -322,20 +414,24 @@ app.post(
             ) {
                 return res.status(400).json({
                     success: false,
-                    message: "Некорректный ID сервера"
+                    message:
+                        "Некорректный ID сервера"
                 });
             }
 
-            const key = await createAccessKey(
-                req.user.id,
-                serverId
-            );
+            const key =
+                await createAccessKey(
+                    req.user.id,
+                    serverId
+                );
 
             res.json({
                 success: true,
-                message: "Ключ доступа создан",
+                message:
+                    "Ключ создан",
                 key
             });
+
         } catch (error) {
             console.error(
                 "Create access key error:",
@@ -344,85 +440,229 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// ==============================
-// ADMIN
-// ==============================
+/*
+ * Использовать ключ
+ */
 
-async function adminMiddleware(
-    req,
-    res,
-    next
-) {
-    try {
-        const result = await query(
-            `SELECT is_admin
-             FROM users
-             WHERE id = $1`,
-            [req.user.id]
-        );
+app.post(
+    "/api/servers/access-key/use",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const {
+                key
+            } = req.body;
 
-        if (
-            result.rows.length === 0 ||
-            !result.rows[0].is_admin
-        ) {
-            return res.status(403).json({
+            const result =
+                await useAccessKey(
+                    req.user.id,
+                    key
+                );
+
+            res.json({
+                success: true,
+                message:
+                    "Сервер добавлен",
+                result
+            });
+
+        } catch (error) {
+            console.error(
+                "Use access key error:",
+                error
+            );
+
+            res.status(400).json({
                 success: false,
-                message: "Доступ запрещён"
+                message:
+                    error.message
             });
         }
-
-        next();
-    } catch (error) {
-        console.error(
-            "Admin middleware error:",
-            error
-        );
-
-        res.status(500).json({
-            success: false,
-            message: "Ошибка проверки прав"
-        });
     }
-}
+);
 
-// Статистика
+/* =========================
+   SERVER CONTROL
+========================= */
+
+/*
+ * START
+ */
+
+app.post(
+    "/api/servers/:id/start",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            const server =
+                await startServer(
+                    req.user.id,
+                    serverId
+                );
+
+            res.json({
+                success: true,
+                message:
+                    "Сервер запускается",
+                server
+            });
+
+        } catch (error) {
+            console.error(
+                "Start server error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message:
+                    error.message
+            });
+        }
+    }
+);
+
+/*
+ * STOP
+ */
+
+app.post(
+    "/api/servers/:id/stop",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            const server =
+                await stopServer(
+                    req.user.id,
+                    serverId
+                );
+
+            res.json({
+                success: true,
+                message:
+                    "Сервер останавливается",
+                server
+            });
+
+        } catch (error) {
+            console.error(
+                "Stop server error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message:
+                    error.message
+            });
+        }
+    }
+);
+
+/*
+ * RESTART
+ */
+
+app.post(
+    "/api/servers/:id/restart",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            const server =
+                await restartServer(
+                    req.user.id,
+                    serverId
+                );
+
+            res.json({
+                success: true,
+                message:
+                    "Сервер перезапускается",
+                server
+            });
+
+        } catch (error) {
+            console.error(
+                "Restart server error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message:
+                    error.message
+            });
+        }
+    }
+);
+
+/* =========================
+   ADMIN
+========================= */
+
 app.get(
     "/api/admin/stats",
     authMiddleware,
     adminMiddleware,
     async (req, res) => {
         try {
-            const users = await query(
-                `SELECT COUNT(*)::int AS count
-                 FROM users`
-            );
-
-            const servers = await query(
-                `SELECT COUNT(*)::int AS count
-                 FROM servers`
-            );
-
-            const activeServers = await query(
-                `SELECT COUNT(*)::int AS count
-                 FROM servers
-                 WHERE status = 'running'`
-            );
+            const stats =
+                await getAdminStats();
 
             res.json({
                 success: true,
-                stats: {
-                    users: users.rows[0].count,
-                    servers: servers.rows[0].count,
-                    activeServers:
-                        activeServers.rows[0].count
-                }
+                stats
             });
+
         } catch (error) {
             console.error(
                 "Admin stats error:",
@@ -431,35 +671,27 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// Пользователи
 app.get(
     "/api/admin/users",
     authMiddleware,
     adminMiddleware,
     async (req, res) => {
         try {
-            const result = await query(
-                `SELECT
-                    id,
-                    username,
-                    email,
-                    balance,
-                    is_admin,
-                    created_at
-                 FROM users
-                 ORDER BY id DESC`
-            );
+            const users =
+                await getAllUsers();
 
             res.json({
                 success: true,
-                users: result.rows
+                users
             });
+
         } catch (error) {
             console.error(
                 "Admin users error:",
@@ -468,38 +700,27 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// Все серверы
 app.get(
     "/api/admin/servers",
     authMiddleware,
     adminMiddleware,
     async (req, res) => {
         try {
-            const result = await query(
-                `SELECT
-                    s.id,
-                    s.name,
-                    s.game,
-                    s.status,
-                    s.expires_at,
-                    s.created_at,
-                    u.username AS owner
-                 FROM servers s
-                 LEFT JOIN users u
-                    ON u.id = s.owner_id
-                 ORDER BY s.id DESC`
-            );
+            const servers =
+                await getAllServers();
 
             res.json({
                 success: true,
-                servers: result.rows
+                servers
             });
+
         } catch (error) {
             console.error(
                 "Admin servers error:",
@@ -508,95 +729,138 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message: error.message
+                message:
+                    error.message
             });
         }
     }
 );
 
-// ==============================
-// PAGES
-// ==============================
+/* =========================
+   PAGES
+========================= */
 
-app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(
-            __dirname,
-            "../public/index.html"
-        )
-    );
-});
-
-app.get("/register", (req, res) => {
-    res.sendFile(
-        path.join(
-            __dirname,
-            "../public/register.html"
-        )
-    );
-});
-
-app.get("/login", (req, res) => {
-    res.sendFile(
-        path.join(
-            __dirname,
-            "../public/login.html"
-        )
-    );
-});
-
-app.get("/dashboard", (req, res) => {
-    res.sendFile(
-        path.join(
-            __dirname,
-            "../public/dashboard.html"
-        )
-    );
-});
-
-app.get("/admin", (req, res) => {
-    res.sendFile(
-        path.join(
-            __dirname,
-            "../public/admin.html"
-        )
-    );
-});
-
-// ==============================
-// 404
-// ==============================
-
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: "Страница или API маршрут не найден"
-    });
-});
-
-// ==============================
-// ERROR HANDLER
-// ==============================
-
-app.use((error, req, res, next) => {
-    console.error("Server error:", error);
-
-    if (res.headersSent) {
-        return next(error);
+app.get(
+    "/",
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../public/index.html"
+            )
+        );
     }
+);
 
-    res.status(500).json({
-        success: false,
-        message: "Внутренняя ошибка сервера"
-    });
-});
+app.get(
+    "/register",
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../public/register.html"
+            )
+        );
+    }
+);
 
-// ==============================
-// START
-// ==============================
+app.get(
+    "/login",
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../public/login.html"
+            )
+        );
+    }
+);
 
-app.listen(PORT, "0.0.0.0", () => {
+app.get(
+    "/dashboard",
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../public/dashboard.html"
+            )
+        );
+    }
+);
+
+app.get(
+    "/admin",
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                __dirname,
+                "../public/admin.html"
+            )
+        );
+    }
+);
+
+/* =========================
+   404
+========================= */
+
+app.use(
+    (req, res) => {
+        if (
+            req.originalUrl.startsWith("/api/")
+        ) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "API маршрут не найден"
+            });
+        }
+
+        res.status(404).send(
+            "REWET HOST — Страница не найдена"
+        );
+    }
+);
+
+/* =========================
+   ERROR HANDLER
+========================= */
+
+app.use(
+    (error, req, res, next) => {
+        console.error(
+            "Server error:",
+            error
+        );
+
+        res.status(500).json({
+            success: false,
+            message:
+                "Внутренняя ошибка сервера"
+        });
+    }
+);
+
+/* =========================
+   START
+========================= */
+
+async function start() {
     console.log(
-        `REWET HOST запущен на порту ${PORT}`
+        "Запуск REWET HOST..."
     );
-});
+
+    await testDatabase();
+
+    app.listen(
+        PORT,
+        "0.0.0.0",
+        () => {
+            console.log(
+                `REWET HOST запущен на порту ${PORT}`
+            );
+        }
+    );
+}
+
+start();
