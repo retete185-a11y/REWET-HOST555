@@ -39,8 +39,9 @@ app.get("/api/health", async (req, res) => {
             version: "1.0.0",
             database: database ? "connected" : "disconnected"
         });
-
     } catch (error) {
+        console.error("Health error:", error);
+
         res.status(500).json({
             status: "error",
             service: "REWET HOST",
@@ -85,8 +86,9 @@ app.post("/api/auth/register", async (req, res) => {
             message: "Аккаунт успешно создан",
             user
         });
-
     } catch (error) {
+        console.error("Register error:", error);
+
         res.status(400).json({
             success: false,
             message: error.message
@@ -112,8 +114,9 @@ app.post("/api/auth/login", async (req, res) => {
             message: "Вход выполнен",
             ...result
         });
-
     } catch (error) {
+        console.error("Login error:", error);
+
         res.status(401).json({
             success: false,
             message: error.message
@@ -122,92 +125,107 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // Профиль
-app.get("/api/auth/me", authMiddleware, async (req, res) => {
-    try {
-        const result = await query(
-            `SELECT
-                id,
-                username,
-                email,
-                balance,
-                is_admin,
-                created_at
-             FROM users
-             WHERE id = $1`,
-            [req.user.id]
-        );
+app.get(
+    "/api/auth/me",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const result = await query(
+                `SELECT
+                    id,
+                    username,
+                    email,
+                    balance,
+                    is_admin,
+                    created_at
+                 FROM users
+                 WHERE id = $1`,
+                [req.user.id]
+            );
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({
+            if (result.rows.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Пользователь не найден"
+                });
+            }
+
+            res.json({
+                success: true,
+                user: result.rows[0]
+            });
+        } catch (error) {
+            console.error("Profile error:", error);
+
+            res.status(500).json({
                 success: false,
-                message: "Пользователь не найден"
+                message: "Ошибка базы данных"
             });
         }
-
-        res.json({
-            success: true,
-            user: result.rows[0]
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Ошибка базы данных"
-        });
     }
-});
+);
 
 // ==============================
 // SERVERS
 // ==============================
 
 // Все серверы пользователя
-app.get("/api/servers", authMiddleware, async (req, res) => {
-    try {
-        const servers = await getUserServers(
-            req.user.id
-        );
+app.get(
+    "/api/servers",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const servers = await getUserServers(
+                req.user.id
+            );
 
-        res.json({
-            success: true,
-            servers
-        });
+            res.json({
+                success: true,
+                servers
+            });
+        } catch (error) {
+            console.error("Get servers error:", error);
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
     }
-});
+);
 
 // Создание сервера
-app.post("/api/servers", authMiddleware, async (req, res) => {
-    try {
-        const {
-            name,
-            game
-        } = req.body;
+app.post(
+    "/api/servers",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const {
+                name,
+                game
+            } = req.body;
 
-        const server = await createServer(
-            req.user.id,
-            name,
-            game
-        );
+            const server = await createServer(
+                req.user.id,
+                name,
+                game
+            );
 
-        res.status(201).json({
-            success: true,
-            message: "Сервер создан",
-            server
-        });
+            res.status(201).json({
+                success: true,
+                message: "Сервер создан",
+                server
+            });
+        } catch (error) {
+            console.error("Create server error:", error);
 
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
     }
-});
+);
 
 // ==============================
 // ACCESS KEY
@@ -219,7 +237,9 @@ app.post(
     authMiddleware,
     async (req, res) => {
         try {
-            const { key } = req.body;
+            const {
+                key
+            } = req.body;
 
             const result = await useAccessKey(
                 req.user.id,
@@ -231,8 +251,12 @@ app.post(
                 message: "Сервер добавлен",
                 ...result
             });
-
         } catch (error) {
+            console.error(
+                "Use access key error:",
+                error
+            );
+
             res.status(400).json({
                 success: false,
                 message: error.message
@@ -269,8 +293,12 @@ app.get(
                 success: true,
                 server
             });
-
         } catch (error) {
+            console.error(
+                "Get server error:",
+                error
+            );
+
             res.status(404).json({
                 success: false,
                 message: error.message
@@ -308,8 +336,12 @@ app.post(
                 message: "Ключ доступа создан",
                 key
             });
-
         } catch (error) {
+            console.error(
+                "Create access key error:",
+                error
+            );
+
             res.status(400).json({
                 success: false,
                 message: error.message
@@ -339,4 +371,232 @@ async function adminMiddleware(
             result.rows.length === 0 ||
             !result.rows[0].is_admin
         ) {
-           
+            return res.status(403).json({
+                success: false,
+                message: "Доступ запрещён"
+            });
+        }
+
+        next();
+    } catch (error) {
+        console.error(
+            "Admin middleware error:",
+            error
+        );
+
+        res.status(500).json({
+            success: false,
+            message: "Ошибка проверки прав"
+        });
+    }
+}
+
+// Статистика
+app.get(
+    "/api/admin/stats",
+    authMiddleware,
+    adminMiddleware,
+    async (req, res) => {
+        try {
+            const users = await query(
+                `SELECT COUNT(*)::int AS count
+                 FROM users`
+            );
+
+            const servers = await query(
+                `SELECT COUNT(*)::int AS count
+                 FROM servers`
+            );
+
+            const activeServers = await query(
+                `SELECT COUNT(*)::int AS count
+                 FROM servers
+                 WHERE status = 'running'`
+            );
+
+            res.json({
+                success: true,
+                stats: {
+                    users: users.rows[0].count,
+                    servers: servers.rows[0].count,
+                    activeServers:
+                        activeServers.rows[0].count
+                }
+            });
+        } catch (error) {
+            console.error(
+                "Admin stats error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+// Пользователи
+app.get(
+    "/api/admin/users",
+    authMiddleware,
+    adminMiddleware,
+    async (req, res) => {
+        try {
+            const result = await query(
+                `SELECT
+                    id,
+                    username,
+                    email,
+                    balance,
+                    is_admin,
+                    created_at
+                 FROM users
+                 ORDER BY id DESC`
+            );
+
+            res.json({
+                success: true,
+                users: result.rows
+            });
+        } catch (error) {
+            console.error(
+                "Admin users error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+// Все серверы
+app.get(
+    "/api/admin/servers",
+    authMiddleware,
+    adminMiddleware,
+    async (req, res) => {
+        try {
+            const result = await query(
+                `SELECT
+                    s.id,
+                    s.name,
+                    s.game,
+                    s.status,
+                    s.expires_at,
+                    s.created_at,
+                    u.username AS owner
+                 FROM servers s
+                 LEFT JOIN users u
+                    ON u.id = s.owner_id
+                 ORDER BY s.id DESC`
+            );
+
+            res.json({
+                success: true,
+                servers: result.rows
+            });
+        } catch (error) {
+            console.error(
+                "Admin servers error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+// ==============================
+// PAGES
+// ==============================
+
+app.get("/", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../public/index.html"
+        )
+    );
+});
+
+app.get("/register", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../public/register.html"
+        )
+    );
+});
+
+app.get("/login", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../public/login.html"
+        )
+    );
+});
+
+app.get("/dashboard", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../public/dashboard.html"
+        )
+    );
+});
+
+app.get("/admin", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "../public/admin.html"
+        )
+    );
+});
+
+// ==============================
+// 404
+// ==============================
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Страница или API маршрут не найден"
+    });
+});
+
+// ==============================
+// ERROR HANDLER
+// ==============================
+
+app.use((error, req, res, next) => {
+    console.error("Server error:", error);
+
+    if (res.headersSent) {
+        return next(error);
+    }
+
+    res.status(500).json({
+        success: false,
+        message: "Внутренняя ошибка сервера"
+    });
+});
+
+// ==============================
+// START
+// ==============================
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(
+        `REWET HOST запущен на порту ${PORT}`
+    );
+});
