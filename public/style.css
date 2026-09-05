@@ -1,0 +1,117 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #080808;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    height: 70px;
+    background: #0d0d0d;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    color: #ff2020;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.btn {
+    display: inline-block;
+    border: 0;
+    border-radius: 8px;
+    padding: 13px 22px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #ff2020;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #d91616;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #151515;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #202020;
+}
+
+.card {
+    background: #111;
+    border: 1px solid #242424;
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.input {
+    width: 100%;
+    background: #0b0b0b;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 13px;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #ff2020;
+}
+
+.text-muted {
+    color: #888;
+}
+
+.text-red {
+    color: #ff2020;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 94%;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
