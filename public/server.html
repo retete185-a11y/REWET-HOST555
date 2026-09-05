@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Управление сервером — REWET HOST</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:#0b0e13;
+    color:#f5f7fa;
+    font-family:Arial,sans-serif;
+    font-size:14px
+}
+
+.header{
+    height:60px;
+    background:#11151c;
+    border-bottom:1px solid #272d37;
+    display:flex;
+    align-items:center;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:10
+}
+
+.logo{
+    font-size:19px;
+    font-weight:800
+}
+
+.back{
+    margin-right:12px;
+    background:#1a1f28;
+    border:1px solid #303642;
+    color:#fff;
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer
+}
+
+.container{
+    max-width:1150px;
+    margin:auto;
+    padding:20px 15px 40px
+}
+
+.server-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:16px
+}
+
+.title{
+    font-size:23px;
+    font-weight:800
+}
+
+.id{
+    color:#7f8795;
+    margin-top:5px
+}
+
+.status{
+    padding:8px 12px;
+    border-radius:8px;
+    background:#12351f;
+    color:#6ee88d;
+    font-weight:700
+}
+
+.tabs{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    margin-bottom:15px
+}
+
+.tab{
+    white-space:nowrap;
+    background:#151a22;
+    border:1px solid #2b313c;
+    color:#bdc4cf;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer
+}
+
+.tab:hover,
+.tab.active{
+    background:#fff;
+    color:#080a0d;
+    border-color:#fff
+}
+
+.card{
+    background:#11151c;
+    border:1px solid #292f39;
+    border-radius:12px;
+    padding:17px;
+    margin-bottom:13px
+}
+
+.card-title{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:14px
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr)
+}
+
+.info{
+    padding:13px 5px;
+    border-bottom:1px solid #272d37
+}
+
+.label{
+    color:#737d8d;
+    font-size:12px;
+    margin-bottom:6px
+}
+
+.value{
+    font-weight:600;
+    word-break:break-word
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px
+}
+
+.stat{
+    background:#0c1016;
+    border:1px solid #292f39;
+    border-radius:10px;
+    padding:15px
+}
+
+.stat-label{
+    color:#747e8e;
+    font-size:12px
+}
+
+.stat-value{
+    font-size:22px;
+    font-weight:800;
+    margin-top:8px
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px
+}
+
+.btn{
+    padding:10px 14px;
+    border-radius:8px;
+    border:1px solid #303642;
+    background:#191e27;
+    color:#fff;
+    cursor:pointer
+}
+
+.btn:hover{
+    background:#252b35
+}
+
+.green{
+    background:#14331f;
+    color:#72e894;
+    border-color:#245a37
+}
+
+.red{
+    background:#34191c;
+    color:#ff9ba4;
+    border-color:#5b282e
+}
+
+.content{
+    display:none
+}
+
+.content.active{
+    display:block
+}
+
+textarea,
+input{
+    width:100%;
+    background:#0a0d12;
+    color:#fff;
+    border:1px solid #303642;
+    border-radius:8px;
+    padding:11px;
+    outline:none
+}
+
+textarea{
+    min-height:300px;
+    font-family:monospace;
+    resize:vertical
+}
+
+.console{
+    background:#05070a;
+    border:1px solid #292f39;
+    border-radius:10px;
+    min-height:350px;
+    padding:13px;
+    font-family:monospace;
+    white-space:pre-wrap;
+    overflow:auto
+}
+
+.console-line{
+    margin-bottom:4px
+}
+
+.console-input{
+    display:flex;
+    gap:8px;
+    margin-top:9px
+}
+
+.console-input input{
+    flex:1
+}
+
+.notice{
+    padding:20px;
+    text-align:center;
+    color:#7d8695
+}
+
+@media(max-width:700px){
+
+    .server-head{
+        flex-direction:column;
+        align-items:flex-start
+    }
+
+    .info-grid{
+        grid-template-columns:1fr
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr)
+    }
+}
+
+@media(max-width:430px){
+
+    .stats{
+        grid-template-columns:1fr
+    }
+
+    .title{
+        font-size:20px
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <button class="back" onclick="goBack()">
+        ←
+    </button>
+
+    <div class="logo">
+        REWET HOST
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="server-head">
+
+        <div>
+
+            <div class="title">
+                Управление сервером
+                <span id="serverTitleId">#—</span>
+            </div>
+
+            <div class="id" id="serverName">
+                Загрузка...
+            </div>
+
+        </div>
+
+        <div class="status" id="status">
+            Загрузка
+        </div>
+
+    </div>
+
+
+    <!-- ВКЛАДКИ -->
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            onclick="openTab('server',this)"
+        >
+            🖥 Сервер
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('ftp',this)"
+        >
+            📁 FTP
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('database',this)"
+        >
+            🗄 База Данных
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('config',this)"
+        >
+            ⚙ Конфиг
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('console',this)"
+        >
+            ⌨ Консоль
+        </button>
+
+    </div>
+
+
+    <!-- СЕРВЕР -->
+
+    <div
+        class="content active"
+        id="tab-server"
+    >
+
+        <div class="card">
+
+            <div class="card-title">
+                Управление сервером
+                <span id="serverIdTitle">
+                    #—
+                </span>
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info">
+
+                    <div class="label">
+                        Статус
+                    </div>
+
+                    <div
+                        class="value"
+                        id="infoStatus"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        ID сервера
+                    </div>
+
+                    <div
+                        class="value"
+                        id="infoId"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Тариф
+                    </div>
+
+                    <div class="value">
+                        GTA SAMP/CRMP - Lite
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Версия игры
+                    </div>
+
+                    <div class="value">
+                        SA:MP 0.3.7
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Локация
+                    </div>
+
+                    <div class="value">
+                        🇷🇺 [1] Russia / Moscow
+                        (AntiDDoS)
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Адрес
+                    </div>
+
+                    <div
+                        class="value"
+                        id="address"
+                    >
+                        Не назначен
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Слоты
+                    </div>
+
+                    <div class="value">
+                        50
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Дата окончания оплаты
+                    </div>
+
+                    <div class="value">
+                        05.12.2026
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Осталось
+                    </div>
+
+                    <div class="value">
+                        91 день
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Роль
+                    </div>
+
+                    <div
+                        class="value"
+                        id="role"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="actions"
+                style="margin-top:15px"
+            >
+
+                <button
+                    class="btn green"
+                    onclick="startServer()"
+                >
+                    ▶ Запустить
+                </button>
+
+                <button
+                    class="btn red"
+                    onclick="stopServer()"
+                >
+                    ⏹ Остановить
+                </button>
+
+                <button
+                    class="btn"
+                    onclick="restartServer()"
+                >
+                    🔄 Перезапустить
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- СТАТИСТИКА -->
+
+        <div class="card">
+
+            <div class="card-title">
+                Статистика нагрузки
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Online
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="online"
+                    >
+                        0/50
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        CPU
+                    </div>
+
+                    <div class="stat-value">
+                        1.6%
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        RAM
+                    </div>
+
+                    <div class="stat-value">
+                        0.1%
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        SSD
+                    </div>
+
+                    <div class="stat-value">
+                        101 MB
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="id"
+                style="margin-top:12px"
+            >
+                Данные обновляются каждые 5 минут
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FTP -->
+
+    <div
+        class="content"
+        id="tab-ftp"
+    >
+
+        <div class="card">
+
+            <div class="card-title">
+                📁 FTP / Файловый менеджер
+            </div>
+
+            <div class="notice">
+                Файловый менеджер REWET HOST
+                подключается к серверным файлам.
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="btn primary"
+                    onclick="openFiles()"
+                >
+                    Открыть файловый менеджер
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DATABASE -->
+
+    <div
+        class="content"
+        id="tab-database"
+    >
+
+        <div class="card">
+
+            <div class="card-title">
+                🗄 База данных
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info">
+
+                    <div class="label">
+                        Тип
+                    </div>
+
+                    <div class="value">
+                        PostgreSQL
+                    </div>
+
+                </div>
+
+                <div class="info">
+
+                    <div class="label">
+                        Статус
+                    </div>
+
+                    <div class="value">
+                        Готово к подключению
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="notice">
+                Управление игровыми базами
+                данных будет добавлено следующим этапом.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONFIG -->
+
+    <div
+        class="content"
+        id="tab-config"
+    >
+
+        <div class="card">
+
+            <div class="card-title">
+                ⚙ Конфигурация
+            </div>
+
+            <textarea
+                id="config"
+                placeholder="server.cfg"
+            >hostname REWET HOST
+maxplayers 50
+port 7777
+gamemode grandlarc
+language Russian</textarea>
+
+            <div
+                class="actions"
+                style="margin-top:10px"
+            >
+
+                <button
+                    class="btn primary"
+                    onclick="saveConfig()"
+                >
+                    💾 Сохранить конфиг
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONSOLE -->
+
+    <div
+        class="content"
+        id="tab-console"
+    >
+
+        <div class="card">
+
+            <div class="card-title">
+                ⌨ Консоль сервера
+            </div>
+
+            <div
+                class="console"
+                id="console"
+            >REWET HOST Console
+Ожидание подключения игрового сервера...</div>
+
+            <div class="console-input">
+
+                <input
+                    id="command"
+                    placeholder="Введите команду..."
+                    onkeydown="if(event.key==='Enter')sendCommand()"
+                >
+
+                <button
+                    class="btn primary"
+                    onclick="sendCommand()"
+                >
+                    Отправить
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const serverId =
+    Number(
+        params.get("id")
+    );
+
+let server=null;
+
+
+/* TOKEN */
+
+function getToken(){
+
+    return localStorage.getItem("rewet_token")
+        || localStorage.getItem("token")
+        || localStorage.getItem("auth_token")
+        || "";
+}
+
+
+/* API */
+
+async function api(
+    url,
+    options={}
+){
+
+    const headers={
+        ...(options.body!==undefined
+            ?{"Content-Type":"application/json"}
+            :{}),
+        Authorization:
+            "Bearer "+getToken()
+    };
+
+    const response =
+        await fetch(
+            url,
+            {
+                ...options,
+                headers
+            }
+        );
+
+    let data={};
+
+    try{
+        data=await response.json();
+    }catch{}
+
+    if(response.status===401){
+
+        localStorage.removeItem(
+            "rewet_token"
+        );
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        localStorage.removeItem(
+            "auth_token"
+        );
+
+        window.location.href="/login";
+
+        throw new Error(
+            "Авторизация закончилась"
+        );
+    }
+
+    if(
+        !response.ok ||
+        data.success===false
+    ){
+
+        throw new Error(
+            data.message ||
+            "Ошибка запроса"
+        );
+    }
+
+    return data;
+}
+
+
+/* LOAD SERVER */
+
+async function loadServer(){
+
+    if(
+        !Number.isInteger(serverId) ||
+        serverId<=0
+    ){
+
+        document.getElementById(
+            "serverName"
+        ).textContent=
+            "Некорректный ID сервера";
+
+        return;
+    }
+
+    try{
+
+        const data =
+            await api(
+                `/api/servers/${serverId}`
+            );
+
+        server=data.server;
+
+        renderServer();
+
+    }catch(error){
+
+        document.getElementById(
+            "serverName"
+        ).textContent=
+            error.message;
+    }
+}
+
+
+/* RENDER */
+
+function renderServer(){
+
+    if(!server)return;
+
+    const status =
+        server.status ||
+        "stopped";
+
+    const statusText =
+        status==="running"
+            ?"Включен"
+            :status==="starting"
+                ?"Запускается"
+                :status==="stopping"
+                    ?"Останавливается"
+                    :"Выключен";
+
+    document.getElementById(
+        "serverTitleId"
+    ).textContent=
+        "#"+server.id;
+
+    document.getElementById(
+        "serverIdTitle"
+    ).textContent=
+        "#"+server.id;
+
+    document.getElementById(
+        "serverName"
+    ).textContent=
+        server.name;
+
+    document.getElementById(
+        "status"
+    ).textContent=
+        statusText;
+
+    document.getElementById(
+        "infoStatus"
+    ).textContent=
+        statusText;
+
+    document.getElementById(
+        "infoId"
+    ).textContent=
+        "#"+server.id;
+
+    document.getElementById(
+        "role"
+    ).textContent=
+        server.role==="owner"
+            ?"Владелец"
+            :"Совладелец";
+
+    if(server.address){
+
+        document.getElementById(
+            "address"
+        ).textContent=
+            server.address;
+    }
+}
+
+
+/* CONTROL */
+
+async function startServer(){
+
+    try{
+
+        await api(
+            `/api/servers/${serverId}/start`,
+            {
+                method:"POST"
+            }
+        );
+
+        showMessage(
+            "Сервер запускается"
+        );
+
+        await loadServer();
+
+    }catch(error){
+
+        showMessage(
+            error.message
+        );
+    }
+}
+
+
+async function stopServer(){
+
+    try{
+
+        await api(
+            `/api/servers/${serverId}/stop`,
+            {
+                method:"POST"
+            }
+        );
+
+        showMessage(
+            "Сервер останавливается"
+        );
+
+        await loadServer();
+
+    }catch(error){
+
+        showMessage(
+            error.message
+        );
+    }
+}
+
+
+async function restartServer(){
+
+    try{
+
+        await api(
+            `/api/servers/${serverId}/restart`,
+            {
+                method:"POST"
+            }
+        );
+
+        showMessage(
+            "Сервер перезапускается"
+        );
+
+        await loadServer();
+
+    }catch(error){
+
+        showMessage(
+            error.message
+        );
+    }
+}
+
+
+/* TABS */
+
+function openTab(
+    name,
+    button
+){
+
+    document
+        .querySelectorAll(".content")
+        .forEach(
+            x=>x.classList.remove("active")
+        );
+
+    document
+        .getElementById(
+            "tab-"+name
+        )
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(
+            x=>x.classList.remove("active")
+        );
+
+    button.classList.add("active");
+}
+
+
+/* FILES */
+
+function openFiles(){
+
+    window.location.href=
+        `/dashboard?server=${serverId}`;
+}
+
+
+/* CONFIG */
+
+function saveConfig(){
+
+    showMessage(
+        "Сохранение конфига будет подключено к файловому менеджеру"
+    );
+}
+
+
+/* CONSOLE */
+
+function sendCommand(){
+
+    const input=
+        document.getElementById(
+            "command"
+        );
+
+    const consoleBox=
+        document.getElementById(
+            "console"
+        );
+
+    const command=
+        input.value.trim();
+
+    if(!command)return;
+
+    consoleBox.textContent +=
+        `\n> ${command}\n`;
+
+    input.value="";
+
+    consoleBox.scrollTop=
+        consoleBox.scrollHeight;
+}
+
+
+/* BACK */
+
+function goBack(){
+
+    window.location.href=
+        "/dashboard";
+}
+
+
+/* MESSAGE */
+
+function showMessage(
+    message
+){
+
+    alert(message);
+}
+
+
+/* START */
+
+loadServer();
+
+</script>
+
+</body>
+              </html>
