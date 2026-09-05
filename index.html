@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REWET HOST</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0f19;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 70px;
+            background: #111827;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #6366f1;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        nav a:hover {
+            background: #1f2937;
+        }
+
+        .hero {
+            max-width: 1100px;
+            margin: auto;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #6366f1;
+        }
+
+        .hero p {
+            color: #9ca3af;
+            font-size: 20px;
+            max-width: 650px;
+            margin: 0 auto 35px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            background: #6366f1;
+            font-weight: bold;
+        }
+
+        .button.secondary {
+            background: #1f2937;
+        }
+
+        .features {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 50px 20px 30px;
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 70px 20px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            header {
+                padding: 0 15px;
+            }
+
+            nav a {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        REWET <span>HOST</span>
+    </div>
+
+    <nav>
+        <a href="./public/login.html">Войти</a>
+        <a href="./public/register.html">Регистрация</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>
+        REWET <span>HOST</span>
+    </h1>
+
+    <p>
+        Игровой хостинг нового поколения.
+        Управляй своими серверами быстро,
+        удобно и без лишних сложностей.
+    </p>
+
+    <div class="buttons">
+        <a class="button" href="./public/register.html">
+            Создать аккаунт
+        </a>
+
+        <a class="button secondary" href="./public/login.html">
+            Войти
+        </a>
+    </div>
+</section>
+
+<section class="features">
+
+    <div class="card">
+        <h3>🎮 Игровые серверы</h3>
+        <p>
+            Создавай и управляй игровыми серверами
+            из одной панели.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>👥 Совладельцы</h3>
+        <p>
+            Выдавай ключ доступа друзьям
+            и управляйте сервером вместе.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>⏱ 20 дней теста</h3>
+        <p>
+            Каждый новый сервер получает
+            тестовый период на 20 дней.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>🛡 Админ-панель</h3>
+        <p>
+            Управление пользователями,
+            серверами и статистикой.
+        </p>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 REWET HOST
+</footer>
+
+</body>
+</html>
