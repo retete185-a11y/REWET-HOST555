@@ -6,143 +6,243 @@
 
     <title>REWET HOST — Регистрация</title>
 
-    <link rel="stylesheet" href="/style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0f19;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 420px;
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 18px;
+            padding: 30px;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #6366f1;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: #0b0f19;
+            border: 1px solid #374151;
+            border-radius: 9px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .message {
+            min-height: 22px;
+            margin-top: 15px;
+            text-align: center;
+            color: #f59e0b;
+        }
+
+        .login {
+            text-align: center;
+            margin-top: 20px;
+            color: #9ca3af;
+        }
+
+        .login a {
+            color: #818cf8;
+            text-decoration: none;
+        }
+
+        .rules {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="header">
-    <div class="container">
-        <a href="/" class="logo">REWET HOST</a>
+<div class="box">
+
+    <div class="logo">
+        REWET <span>HOST</span>
     </div>
-</header>
 
-<main class="container" style="max-width: 500px; padding-top: 70px;">
+    <div class="subtitle">
+        Создание аккаунта
+    </div>
 
-    <div class="card">
+    <form id="registerForm">
 
-        <h1 style="margin-bottom: 10px;">
-            Создание аккаунта
-        </h1>
-
-        <p class="text-muted" style="margin-bottom: 30px;">
-            Зарегистрируйся в REWET HOST
-        </p>
-
-        <form id="registerForm">
-
-            <label>Логин</label>
-
-            <input
-                class="input"
-                type="text"
-                id="username"
-                placeholder="Введите логин"
-                minlength="3"
-                maxlength="32"
-                required
-                style="margin: 8px 0 18px;"
-            >
-
-            <label>Email</label>
-
-            <input
-                class="input"
-                type="email"
-                id="email"
-                placeholder="Введите email"
-                required
-                style="margin: 8px 0 18px;"
-            >
-
-            <label>Пароль</label>
-
-            <input
-                class="input"
-                type="password"
-                id="password"
-                placeholder="Введите пароль"
-                minlength="6"
-                required
-                style="margin: 8px 0 18px;"
-            >
-
-            <label>Повторите пароль</label>
-
-            <input
-                class="input"
-                type="password"
-                id="password2"
-                placeholder="Повторите пароль"
-                minlength="6"
-                required
-                style="margin: 8px 0 25px;"
-            >
-
-            <button
-                class="btn btn-primary"
-                type="submit"
-                style="width: 100%;"
-            >
-                Зарегистрироваться
-            </button>
-
-        </form>
-
-        <div
-            id="message"
-            style="margin-top: 20px; text-align: center;"
-        ></div>
-
-        <p
-            style="text-align: center; margin-top: 25px;"
-            class="text-muted"
+        <input
+            id="username"
+            type="text"
+            placeholder="Имя пользователя"
+            autocomplete="username"
+            minlength="3"
+            maxlength="32"
+            required
         >
-            Уже есть аккаунт?
-            <a href="/login.html" class="text-red">
-                Войти
-            </a>
-        </p>
 
+        <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            autocomplete="email"
+            required
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Пароль"
+            autocomplete="new-password"
+            minlength="6"
+            required
+        >
+
+        <input
+            id="password2"
+            type="password"
+            placeholder="Повторите пароль"
+            autocomplete="new-password"
+            minlength="6"
+            required
+        >
+
+        <div class="rules">
+            Пароль должен содержать минимум 6 символов.
+        </div>
+
+        <button type="submit">
+            Зарегистрироваться
+        </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="login">
+        Уже есть аккаунт?
+        <a href="/login">Войти</a>
     </div>
 
-</main>
-
-<script src="/app.js"></script>
+</div>
 
 <script>
-    const form = document.getElementById("registerForm");
-    const message = document.getElementById("message");
 
-    form.addEventListener("submit", async (event) => {
+const form =
+    document.getElementById("registerForm");
+
+const message =
+    document.getElementById("message");
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
         event.preventDefault();
 
         const username =
-            document.getElementById("username").value.trim();
+            document
+                .getElementById("username")
+                .value
+                .trim();
 
         const email =
-            document.getElementById("email").value.trim();
+            document
+                .getElementById("email")
+                .value
+                .trim();
 
         const password =
-            document.getElementById("password").value;
+            document
+                .getElementById("password")
+                .value;
 
         const password2 =
-            document.getElementById("password2").value;
+            document
+                .getElementById("password2")
+                .value;
 
         if (password !== password2) {
-            message.textContent = "Пароли не совпадают";
-            message.style.color = "#ff2020";
+
+            message.textContent =
+                "Пароли не совпадают.";
+
             return;
         }
 
-        message.textContent = "Регистрация...";
-        message.style.color = "#aaa";
+        if (password.length < 6) {
+
+            message.textContent =
+                "Пароль должен содержать минимум 6 символов.";
+
+            return;
+        }
+
+        message.textContent =
+            "Создание аккаунта...";
 
         try {
-            const result = await apiRequest(
-                "/auth/register",
+
+            const response = await fetch(
+                "/api/auth/register",
                 {
                     method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
                     body: JSON.stringify({
                         username,
                         email,
@@ -151,21 +251,33 @@
                 }
             );
 
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Ошибка регистрации"
+                );
+            }
+
             message.textContent =
                 "Аккаунт создан! Перенаправление...";
 
-            message.style.color = "#35d07f";
-
             setTimeout(() => {
-                window.location.href = "/login.html";
-            }, 1000);
+                window.location.href = "/login";
+            }, 800);
 
         } catch (error) {
 
-            message.textContent = error.message;
-            message.style.color = "#ff2020";
+            message.textContent =
+                error.message;
+
         }
-    });
+    }
+);
+
 </script>
 
 </body>
