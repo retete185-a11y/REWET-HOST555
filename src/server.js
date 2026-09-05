@@ -25,7 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "../public")));
 
-// Проверка сервера
+// ==============================
+// HEALTH
+// ==============================
+
 app.get("/api/health", async (req, res) => {
     try {
         const database = await testDatabase();
@@ -36,6 +39,7 @@ app.get("/api/health", async (req, res) => {
             version: "1.0.0",
             database: database ? "connected" : "disconnected"
         });
+
     } catch (error) {
         res.status(500).json({
             status: "error",
@@ -45,7 +49,10 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
-// Информация об API
+// ==============================
+// API INFO
+// ==============================
+
 app.get("/api", (req, res) => {
     res.json({
         name: "REWET HOST",
@@ -61,7 +68,11 @@ app.get("/api", (req, res) => {
 // Регистрация
 app.post("/api/auth/register", async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const {
+            username,
+            email,
+            password
+        } = req.body;
 
         const user = await register(
             username,
@@ -110,7 +121,7 @@ app.post("/api/auth/login", async (req, res) => {
     }
 });
 
-// Получение своего профиля
+// Профиль
 app.get("/api/auth/me", authMiddleware, async (req, res) => {
     try {
         const result = await query(
@@ -150,7 +161,7 @@ app.get("/api/auth/me", authMiddleware, async (req, res) => {
 // SERVERS
 // ==============================
 
-// Получение серверов пользователя
+// Все серверы пользователя
 app.get("/api/servers", authMiddleware, async (req, res) => {
     try {
         const servers = await getUserServers(
@@ -202,8 +213,7 @@ app.post("/api/servers", authMiddleware, async (req, res) => {
 // ACCESS KEY
 // ==============================
 
-// Использование ключа доступа
-// Этот маршрут должен быть выше /api/servers/:id
+// Использовать ключ
 app.post(
     "/api/servers/access-key/use",
     authMiddleware,
@@ -231,15 +241,14 @@ app.post(
     }
 );
 
-// Получение одного сервера
+// Один сервер
 app.get(
     "/api/servers/:id",
     authMiddleware,
     async (req, res) => {
         try {
-            const serverId = Number(
-                req.params.id
-            );
+            const serverId =
+                Number(req.params.id);
 
             if (
                 !Number.isInteger(serverId) ||
@@ -270,15 +279,14 @@ app.get(
     }
 );
 
-// Создание ключа доступа
+// Создать ключ
 app.post(
     "/api/servers/:id/access-key",
     authMiddleware,
     async (req, res) => {
         try {
-            const serverId = Number(
-                req.params.id
-            );
+            const serverId =
+                Number(req.params.id);
 
             if (
                 !Number.isInteger(serverId) ||
@@ -286,4 +294,49 @@ app.post(
             ) {
                 return res.status(400).json({
                     success: false,
-                    message: "Некорректный ID
+                    message: "Некорректный ID сервера"
+                });
+            }
+
+            const key = await createAccessKey(
+                req.user.id,
+                serverId
+            );
+
+            res.json({
+                success: true,
+                message: "Ключ доступа создан",
+                key
+            });
+
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+// ==============================
+// ADMIN
+// ==============================
+
+async function adminMiddleware(
+    req,
+    res,
+    next
+) {
+    try {
+        const result = await query(
+            `SELECT is_admin
+             FROM users
+             WHERE id = $1`,
+            [req.user.id]
+        );
+
+        if (
+            result.rows.length === 0 ||
+            !result.rows[0].is_admin
+        ) {
+           
