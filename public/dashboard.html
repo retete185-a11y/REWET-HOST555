@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REWET HOST — Панель</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 70px;
+            padding: 0 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0d0d0d;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo {
+            color: #ff2020;
+            font-size: 23px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .logout {
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            color: #fff;
+        }
+
+        main {
+            width: 88%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #242424;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .red {
+            color: #ff2020;
+        }
+
+        .servers {
+            margin-top: 25px;
+        }
+
+        .server {
+            background: #111;
+            border: 1px solid #242424;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status {
+            color: #35d07f;
+        }
+
+        .button {
+            background: #ff2020;
+            color:
