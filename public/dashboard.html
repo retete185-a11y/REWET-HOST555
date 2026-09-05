@@ -1,500 +1,439 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REWET HOST — Панель</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #0b0d12;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 58px;
-            background: #11141b;
-            border-bottom: 1px solid #252a35;
-            display: flex;
-            align-items: center;
-            padding: 0 14px;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: .5px;
-        }
-
-        .menu-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #303642;
-            background: #171b23;
-            color: white;
-            border-radius: 9px;
-            margin-right: 12px;
-            font-size: 20px;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 58px;
-            left: 0;
-            bottom: 0;
-            width: 245px;
-            background: #10131a;
-            border-right: 1px solid #252a35;
-            padding: 14px;
-            transform: translateX(-100%);
-            transition: .2s;
-            z-index: 999;
-            overflow-y: auto;
-        }
-
-        .sidebar.open {
-            transform: translateX(0);
-        }
-
-        .side-title {
-            color: #777f90;
-            font-size: 11px;
-            margin: 10px 8px;
-            text-transform: uppercase;
-        }
-
-        .nav-btn {
-            width: 100%;
-            text-align: left;
-            background: transparent;
-            border: 0;
-            color: #c7ccd6;
-            padding: 11px;
-            border-radius: 8px;
-            margin-bottom: 4px;
-        }
-
-        .nav-btn:hover,
-        .nav-btn.active {
-            background: #1b202a;
-            color: #fff;
-        }
-
-        .main {
-            padding: 78px 15px 30px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        h1 {
-            font-size: 23px;
-            margin: 0 0 7px;
-        }
-
-        h2 {
-            font-size: 17px;
-            margin: 0 0 14px;
-        }
-
-        .subtitle {
-            color: #858d9d;
-            margin-bottom: 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px;
-        }
-
-        .card {
-            background: #11151d;
-            border: 1px solid #252b36;
-            border-radius: 12px;
-            padding: 15px;
-        }
-
-        .stat {
-            font-size: 25px;
-            font-weight: 800;
-            margin-top: 8px;
-        }
-
-        .muted {
-            color: #818999;
-        }
-
-        .server-card {
-            background: #11151d;
-            border: 1px solid #292f3b;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-
-        .server-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .server-name {
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .server-game {
-            color: #858d9d;
-            margin-top: 4px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 5px 8px;
-            border-radius: 7px;
-            background: #252a34;
-            font-size: 11px;
-        }
-
-        .status.running {
-            background: #12351f;
-            color: #6ee88d;
-        }
-
-        .status.starting,
-        .status.stopping {
-            background: #332c12;
-            color: #e7c96b;
-        }
-
-        .server-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 14px;
-        }
-
-        .btn {
-            border: 1px solid #303744;
-            background: #191e27;
-            color: white;
-            padding: 9px 12px;
-            border-radius: 8px;
-        }
-
-        .btn:hover {
-            background: #232934;
-        }
-
-        .btn.primary {
-            background: #fff;
-            color: #090b0f;
-            border-color: #fff;
-        }
-
-        .btn.danger {
-            background: #32181b;
-            border-color: #5b272d;
-            color: #ff9da5;
-        }
-
-        .btn.success {
-            background: #14321f;
-            border-color: #245c37;
-            color: #79e89a;
-        }
-
-        .form {
-            max-width: 520px;
-        }
-
-        label {
-            display: block;
-            color: #aab1be;
-            margin-bottom: 6px;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            background: #0c0f14;
-            color: white;
-            border: 1px solid #303642;
-            border-radius: 8px;
-            padding: 11px;
-            outline: none;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #657083;
-        }
-
-        .field {
-            margin-bottom: 13px;
-        }
-
-        textarea {
-            min-height: 300px;
-            resize: vertical;
-            font-family: monospace;
-            line-height: 1.5;
-        }
-
-        .file-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-bottom: 12px;
-        }
-
-        .path-bar {
-            background: #11151d;
-            border: 1px solid #292f3b;
-            padding: 10px 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            color: #aab1be;
-            word-break: break-all;
-        }
-
-        .file-list {
-            background: #11151d;
-            border: 1px solid #292f3b;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .file-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 12px;
-            border-bottom: 1px solid #242a34;
-        }
-
-        .file-row:last-child {
-            border-bottom: 0;
-        }
-
-        .file-name {
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .file-name.clickable {
-            cursor: pointer;
-        }
-
-        .file-name.clickable:hover {
-            text-decoration: underline;
-        }
-
-        .file-size {
-            color: #727b8b;
-            font-size: 12px;
-        }
-
-        .console {
-            background: #05070a;
-            border: 1px solid #292f3b;
-            border-radius: 10px;
-            min-height: 350px;
-            padding: 12px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            overflow: auto;
-            color: #d6dae2;
-        }
-
-        .console-input {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .console-input input {
-            flex: 1;
-        }
-
-        .profile-row {
-            padding: 11px 0;
-            border-bottom: 1px solid #252a35;
-        }
-
-        .profile-row:last-child {
-            border-bottom: 0;
-        }
-
-        .key-box {
-            display: flex;
-            gap: 7px;
-        }
-
-        .key-box input {
-            flex: 1;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 30px;
-            color: #727b8b;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            inset: 58px 0 0 0;
-            background: rgba(0,0,0,.5);
-            z-index: 998;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        .toast {
-            position: fixed;
-            right: 15px;
-            bottom: 15px;
-            background: #171c25;
-            border: 1px solid #303744;
-            border-radius: 9px;
-            padding: 11px 14px;
-            display: none;
-            z-index: 2000;
-            max-width: 330px;
-        }
-
-        .toast.show {
-            display: block;
-        }
-
-        .editor {
-            margin-top: 14px;
-            display: none;
-        }
-
-        .editor.show {
-            display: block;
-        }
-
-        @media (min-width: 900px) {
-            .main {
-                padding-left: 30px;
-                padding-right: 30px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .server-head {
-                flex-direction: column;
-            }
-
-            .server-actions .btn {
-                flex: 1;
-            }
-
-            .console-input {
-                flex-direction: column;
-            }
-
-            .key-box {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>REWET HOST</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#0b0d12;
+    color:#fff;
+    font-family:Arial,sans-serif;
+    font-size:14px
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:58px;
+    background:#11141b;
+    border-bottom:1px solid #252a35;
+    display:flex;
+    align-items:center;
+    padding:0 14px;
+    z-index:1000
+}
+
+.menu{
+    width:40px;
+    height:40px;
+    border:1px solid #303642;
+    background:#181c24;
+    color:#fff;
+    border-radius:9px;
+    font-size:20px;
+    margin-right:12px
+}
+
+.logo{
+    font-size:18px;
+    font-weight:800
+}
+
+.sidebar{
+    position:fixed;
+    top:58px;
+    left:0;
+    bottom:0;
+    width:245px;
+    background:#10131a;
+    border-right:1px solid #252a35;
+    padding:14px;
+    transform:translateX(-100%);
+    transition:.2s;
+    z-index:999;
+    overflow:auto
+}
+
+.sidebar.open{transform:translateX(0)}
+
+.side-title{
+    color:#727b8b;
+    font-size:11px;
+    text-transform:uppercase;
+    margin:10px 8px
+}
+
+.nav{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:#c7ccd6;
+    padding:11px;
+    text-align:left;
+    border-radius:8px;
+    margin-bottom:3px
+}
+
+.nav:hover,.nav.active{
+    background:#1c212b;
+    color:#fff
+}
+
+.overlay{
+    display:none;
+    position:fixed;
+    inset:58px 0 0;
+    background:rgba(0,0,0,.55);
+    z-index:998
+}
+
+.overlay.show{display:block}
+
+.main{
+    max-width:1200px;
+    margin:auto;
+    padding:78px 15px 40px
+}
+
+.page{display:none}
+.page.active{display:block}
+
+h1{
+    margin:0 0 6px;
+    font-size:23px
+}
+
+.subtitle{
+    color:#7e8797;
+    margin-bottom:18px
+}
+
+.card{
+    background:#11151d;
+    border:1px solid #292f3b;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:12px
+}
+
+.server-title{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:center
+}
+
+.server-name{
+    font-size:20px;
+    font-weight:800
+}
+
+.server-id{
+    color:#777f90;
+    margin-top:4px
+}
+
+.status{
+    padding:7px 10px;
+    border-radius:8px;
+    background:#14331f;
+    color:#6ee88d;
+    white-space:nowrap
+}
+
+.tabs{
+    display:flex;
+    gap:7px;
+    overflow-x:auto;
+    margin:14px 0
+}
+
+.tab{
+    background:#151922;
+    color:#b9c0cc;
+    border:1px solid #2a303b;
+    padding:10px 14px;
+    border-radius:8px;
+    white-space:nowrap
+}
+
+.tab.active,.tab:hover{
+    background:#fff;
+    color:#090b0f;
+    border-color:#fff
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:0
+}
+
+.info{
+    padding:13px 4px;
+    border-bottom:1px solid #252a34
+}
+
+.info-label{
+    color:#777f90;
+    font-size:12px;
+    margin-bottom:5px
+}
+
+.info-value{
+    font-weight:600;
+    word-break:break-word
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:15px
+}
+
+.btn{
+    border:1px solid #303744;
+    background:#191e27;
+    color:#fff;
+    padding:10px 13px;
+    border-radius:8px
+}
+
+.btn:hover{background:#242a34}
+
+.btn.primary{
+    background:#fff;
+    color:#090b0f;
+    border-color:#fff
+}
+
+.btn.green{
+    background:#14321f;
+    color:#79e89a;
+    border-color:#245c37
+}
+
+.btn.red{
+    background:#32181b;
+    color:#ff9da5;
+    border-color:#5b272d
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px
+}
+
+.stat{
+    background:#0d1016;
+    border:1px solid #272d38;
+    border-radius:10px;
+    padding:15px
+}
+
+.stat-name{
+    color:#7b8494;
+    font-size:12px
+}
+
+.stat-value{
+    font-size:21px;
+    font-weight:800;
+    margin-top:7px
+}
+
+.server-list{
+    display:grid;
+    gap:10px
+}
+
+.server-card{
+    background:#11151d;
+    border:1px solid #292f3b;
+    border-radius:11px;
+    padding:14px
+}
+
+.server-card-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px
+}
+
+.server-card-name{
+    font-size:17px;
+    font-weight:700
+}
+
+.muted{color:#7e8797}
+
+.form{
+    max-width:550px
+}
+
+.field{margin-bottom:13px}
+
+label{
+    display:block;
+    color:#aab1be;
+    margin-bottom:6px
+}
+
+input,select,textarea{
+    width:100%;
+    background:#0c0f14;
+    color:#fff;
+    border:1px solid #303642;
+    border-radius:8px;
+    padding:11px;
+    outline:0
+}
+
+textarea{
+    min-height:320px;
+    resize:vertical;
+    font-family:monospace
+}
+
+.path{
+    background:#0c0f14;
+    border:1px solid #292f3b;
+    border-radius:8px;
+    padding:10px;
+    margin-bottom:10px;
+    color:#9ca4b2;
+    word-break:break-all
+}
+
+.files{
+    border:1px solid #292f3b;
+    border-radius:10px;
+    overflow:hidden
+}
+
+.file{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:11px;
+    border-bottom:1px solid #242a34
+}
+
+.file:last-child{border-bottom:0}
+
+.console{
+    background:#05070a;
+    border:1px solid #292f3b;
+    border-radius:10px;
+    min-height:350px;
+    padding:13px;
+    font-family:monospace;
+    white-space:pre-wrap;
+    overflow:auto
+}
+
+.console-input{
+    display:flex;
+    gap:8px;
+    margin-top:9px
+}
+
+.console-input input{flex:1}
+
+.empty{
+    text-align:center;
+    color:#747d8d;
+    padding:30px
+}
+
+.toast{
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    background:#171c25;
+    border:1px solid #303744;
+    border-radius:9px;
+    padding:12px 15px;
+    display:none;
+    z-index:2000
+}
+
+.toast.show{display:block}
+
+@media(max-width:650px){
+    .info-grid{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    .server-title{align-items:flex-start;flex-direction:column}
+    .console-input{flex-direction:column}
+}
+</style>
 </head>
 
 <body>
 
 <header class="header">
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <button class="menu" onclick="toggleMenu()">☰</button>
     <div class="logo">REWET HOST</div>
 </header>
 
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <aside class="sidebar" id="sidebar">
 
-    <div class="side-title">Панель</div>
+    <div class="side-title">Главное</div>
 
-    <button class="nav-btn active" onclick="showPage('home', this)">
+    <button class="nav active" onclick="page('home',this)">
         🏠 Главная
     </button>
 
-    <button class="nav-btn" onclick="showPage('servers', this)">
-        🖥 Мои серверы
+    <button class="nav" onclick="page('servers',this)">
+        🖥️ Мои серверы
     </button>
 
-    <button class="nav-btn" onclick="showPage('create', this)">
+    <button class="nav" onclick="page('create',this)">
         ➕ Создать сервер
     </button>
 
-    <button class="nav-btn" onclick="showPage('files', this)">
+    <div class="side-title">Управление</div>
+
+    <button class="nav" onclick="page('files',this)">
         📁 Файловый менеджер
     </button>
 
-    <button class="nav-btn" onclick="showPage('console', this)">
-        💻 Консоль
+    <button class="nav" onclick="page('console',this)">
+        ⌨️ Консоль
     </button>
 
-    <button class="nav-btn" onclick="showPage('websites', this)">
+    <button class="nav" onclick="page('websites',this)">
         🌐 Веб-сайты
     </button>
 
     <div class="side-title">Аккаунт</div>
 
-    <button class="nav-btn" onclick="showPage('profile', this)">
+    <button class="nav" onclick="page('profile',this)">
         👤 Профиль
     </button>
 
-    <button class="nav-btn" onclick="showPage('owners', this)">
+    <button class="nav" onclick="page('owners',this)">
         👥 Совладельцы
     </button>
 
-    <button class="nav-btn" onclick="showPage('balance', this)">
+    <button class="nav" onclick="page('balance',this)">
         💰 Баланс
     </button>
 
-    <button class="nav-btn" onclick="logout()">
+    <button class="nav" onclick="logout()">
         🚪 Выйти
     </button>
 
@@ -502,399 +441,543 @@
 
 <main class="main">
 
-    <!-- HOME -->
-    <section class="page active" id="page-home">
+<!-- ГЛАВНАЯ -->
 
-        <h1>Добро пожаловать в REWET HOST</h1>
-        <div class="subtitle">
-            Управляй игровыми серверами из одной панели.
-        </div>
+<section class="page active" id="page-home">
 
-        <div class="grid">
+    <h1>REWET HOST</h1>
 
-            <div class="card">
-                <div class="muted">Мои серверы</div>
-                <div class="stat" id="homeServerCount">0</div>
-            </div>
+    <div class="subtitle">
+        Панель управления игровыми серверами
+    </div>
 
-            <div class="card">
-                <div class="muted">Баланс</div>
-                <div class="stat" id="homeBalance">0</div>
-            </div>
+    <div class="card">
 
-            <div class="card">
-                <div class="muted">Статус системы</div>
-                <div class="stat" style="font-size:17px">
-                    Онлайн
+        <div class="server-title">
+
+            <div>
+                <div class="server-name" id="homeServerName">
+                    Сервер не выбран
+                </div>
+
+                <div class="server-id" id="homeServerId">
+                    Выберите сервер
                 </div>
             </div>
 
-        </div>
-
-        <div class="card" style="margin-top:12px">
-            <h2>Быстрые действия</h2>
-
-            <div class="server-actions">
-                <button class="btn primary" onclick="goToCreate()">
-                    Создать сервер
-                </button>
-
-                <button class="btn" onclick="showPageByName('servers')">
-                    Мои серверы
-                </button>
-
-                <button class="btn" onclick="showPageByName('owners')">
-                    Добавить совладельца
-                </button>
-            </div>
-        </div>
-
-    </section>
-
-
-    <!-- SERVERS -->
-    <section class="page" id="page-servers">
-
-        <h1>Мои серверы</h1>
-        <div class="subtitle">
-            Ваши серверы и серверы, к которым вы получили доступ.
-        </div>
-
-        <div id="serversList">
-            <div class="empty">Загрузка...</div>
-        </div>
-
-    </section>
-
-
-    <!-- CREATE -->
-    <section class="page" id="page-create">
-
-        <h1>Создать сервер</h1>
-        <div class="subtitle">
-            Создайте новый игровой сервер.
-        </div>
-
-        <div class="card form">
-
-            <div class="field">
-                <label>Название сервера</label>
-                <input
-                    id="createName"
-                    placeholder="Например: REWET RP"
-                    maxlength="64"
-                >
+            <div class="status" id="homeStatus">
+                —
             </div>
 
-            <div class="field">
-                <label>Игра</label>
-                <select id="createGame">
-                    <option value="SA-MP">SA-MP</option>
-                    <option value="Minecraft">Minecraft</option>
-                    <option value="FiveM">FiveM</option>
-                    <option value="CRMP">CRMP</option>
-                    <option value="Другой">Другая игра</option>
-                </select>
-            </div>
+        </div>
 
-            <button class="btn primary" onclick="createNewServer()">
-                Создать сервер
+        <div class="tabs">
+
+            <button class="tab active" onclick="serverTab('server')">
+                🖥 Сервер
+            </button>
+
+            <button class="tab" onclick="serverTab('ftp')">
+                📁 FTP
+            </button>
+
+            <button class="tab" onclick="serverTab('database')">
+                🗄 База Данных
+            </button>
+
+            <button class="tab" onclick="serverTab('config')">
+                ⚙ Конфиг
+            </button>
+
+            <button class="tab" onclick="serverTab('console')">
+                ⌨ Консоль
             </button>
 
         </div>
 
-    </section>
+        <div id="serverTabContent">
 
+            <div class="info-grid">
 
-    <!-- FILE MANAGER -->
-    <section class="page" id="page-files">
-
-        <h1>Файловый менеджер</h1>
-
-        <div class="subtitle">
-            Управление файлами вашего сервера.
-        </div>
-
-        <div class="card">
-
-            <div class="field">
-                <label>Сервер</label>
-
-                <select id="fileServerSelect" onchange="changeFileServer()">
-                    <option value="">Выберите сервер</option>
-                </select>
-            </div>
-
-            <div id="fileManagerArea" style="display:none">
-
-                <div class="path-bar">
-                    Путь: <span id="currentPath">/</span>
+                <div class="info">
+                    <div class="info-label">ID сервера</div>
+                    <div class="info-value" id="infoId">—</div>
                 </div>
 
-                <div class="file-toolbar">
-
-                    <button class="btn" onclick="goUpFolder()">
-                        ⬆ Назад
-                    </button>
-
-                    <button class="btn" onclick="refreshFiles()">
-                        🔄 Обновить
-                    </button>
-
-                    <button class="btn" onclick="newFolder()">
-                        📁 Новая папка
-                    </button>
-
-                    <button class="btn" onclick="newFile()">
-                        📄 Новый файл
-                    </button>
-
-                </div>
-
-                <div class="file-list" id="fileList">
-                    <div class="empty">Загрузка...</div>
-                </div>
-
-                <div class="editor" id="fileEditor">
-
-                    <div class="path-bar">
-                        Редактирование:
-                        <span id="editingFileName"></span>
+                <div class="info">
+                    <div class="info-label">Тариф</div>
+                    <div class="info-value">
+                        GTA SAMP/CRMP - Lite
                     </div>
+                </div>
 
-                    <textarea id="fileContent"></textarea>
-
-                    <div class="server-actions">
-
-                        <button class="btn primary" onclick="saveCurrentFile()">
-                            💾 Сохранить
-                        </button>
-
-                        <button class="btn" onclick="closeEditor()">
-                            Закрыть
-                        </button>
-
+                <div class="info">
+                    <div class="info-label">Версия игры</div>
+                    <div class="info-value">
+                        SA:MP 0.3.7
                     </div>
+                </div>
 
+                <div class="info">
+                    <div class="info-label">Локация</div>
+                    <div class="info-value">
+                        🇷🇺 [1] Russia / Moscow (AntiDDoS)
+                    </div>
+                </div>
+
+                <div class="info">
+                    <div class="info-label">Адрес</div>
+                    <div class="info-value" id="infoAddress">
+                        —
+                    </div>
+                </div>
+
+                <div class="info">
+                    <div class="info-label">Слоты</div>
+                    <div class="info-value">
+                        50
+                    </div>
+                </div>
+
+                <div class="info">
+                    <div class="info-label">Дата окончания оплаты</div>
+                    <div class="info-value">
+                        05.12.2026
+                    </div>
+                </div>
+
+                <div class="info">
+                    <div class="info-label">Роль</div>
+                    <div class="info-value" id="infoRole">
+                        —
+                    </div>
                 </div>
 
             </div>
 
-        </div>
+            <div class="actions">
 
-    </section>
+                <button class="btn green" onclick="startCurrentServer()">
+                    ▶ Запустить
+                </button>
 
+                <button class="btn red" onclick="stopCurrentServer()">
+                    ⏹ Остановить
+                </button>
 
-    <!-- CONSOLE -->
-    <section class="page" id="page-console">
-
-        <h1>Консоль</h1>
-
-        <div class="subtitle">
-            Консоль выбранного игрового сервера.
-        </div>
-
-        <div class="card">
-
-            <div class="field">
-                <label>Сервер</label>
-
-                <select id="consoleServerSelect">
-                    <option value="">Выберите сервер</option>
-                </select>
-            </div>
-
-            <div class="console" id="consoleOutput">
-REWET HOST Console
-Ожидание подключения сервера...
-            </div>
-
-            <div class="console-input">
-
-                <input
-                    id="consoleCommand"
-                    placeholder="Введите команду..."
-                    onkeydown="if(event.key==='Enter') sendConsoleCommand()"
-                >
-
-                <button class="btn primary" onclick="sendConsoleCommand()">
-                    Отправить
+                <button class="btn" onclick="restartCurrentServer()">
+                    🔄 Перезапустить
                 </button>
 
             </div>
 
         </div>
 
-    </section>
+    </div>
 
+    <div class="card">
 
-    <!-- WEBSITES -->
-    <section class="page" id="page-websites">
+        <h2 style="margin-top:0">
+            Статистика нагрузки
+        </h2>
 
-        <h1>Веб-сайты</h1>
+        <div class="stats">
 
-        <div class="subtitle">
-            Управление сайтами REWET HOST.
-        </div>
-
-        <div class="card">
-            <div class="empty">
-                Система веб-сайтов будет подключена следующим этапом.
-            </div>
-        </div>
-
-    </section>
-
-
-    <!-- PROFILE -->
-    <section class="page" id="page-profile">
-
-        <h1>Профиль</h1>
-
-        <div class="subtitle">
-            Информация вашего аккаунта.
-        </div>
-
-        <div class="card">
-
-            <div class="profile-row">
-                <div class="muted">ID</div>
-                <div id="profileId">—</div>
-            </div>
-
-            <div class="profile-row">
-                <div class="muted">Логин</div>
-                <div id="profileUsername">—</div>
-            </div>
-
-            <div class="profile-row">
-                <div class="muted">Email</div>
-                <div id="profileEmail">—</div>
-            </div>
-
-            <div class="profile-row">
-                <div class="muted">Баланс</div>
-                <div id="profileBalance">0</div>
-            </div>
-
-            <div class="profile-row">
-                <div class="muted">Дата регистрации</div>
-                <div id="profileCreated">—</div>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- OWNERS -->
-    <section class="page" id="page-owners">
-
-        <h1>Совладельцы</h1>
-
-        <div class="subtitle">
-            Владелец сервера может создать ключ и передать его другому пользователю.
-        </div>
-
-        <div class="grid">
-
-            <div class="card">
-
-                <h2>Создать ключ</h2>
-
-                <div class="field">
-                    <label>Сервер</label>
-
-                    <select id="ownerServerSelect">
-                        <option value="">Выберите сервер</option>
-                    </select>
+            <div class="stat">
+                <div class="stat-name">Online</div>
+                <div class="stat-value" id="online">
+                    0/50
                 </div>
-
-                <button class="btn primary" onclick="generateAccessKey()">
-                    Создать ключ
-                </button>
-
-                <div
-                    id="generatedKey"
-                    style="margin-top:12px;display:none"
-                >
-
-                    <label>Ключ доступа</label>
-
-                    <div class="key-box">
-
-                        <input
-                            id="generatedKeyInput"
-                            readonly
-                        >
-
-                        <button
-                            class="btn"
-                            onclick="copyGeneratedKey()"
-                        >
-                            Копировать
-                        </button>
-
-                    </div>
-
-                </div>
-
             </div>
 
-
-            <div class="card">
-
-                <h2>Добавить сервер</h2>
-
-                <div class="field">
-                    <label>Ключ доступа</label>
-
-                    <input
-                        id="accessKeyInput"
-                        placeholder="Вставьте ключ"
-                    >
+            <div class="stat">
+                <div class="stat-name">CPU</div>
+                <div class="stat-value">
+                    1.6%
                 </div>
+            </div>
 
-                <button class="btn primary" onclick="useAccessKey()">
-                    Добавить сервер
-                </button>
-
+            <div class="stat">
+                <div class="stat-name">RAM</div>
+                <div class="stat-value">
+                    0.1%
+                </div>
             </div>
 
         </div>
 
-    </section>
+        <div class="stats" style="margin-top:10px">
 
+            <div class="stat">
+                <div class="stat-name">SSD</div>
+                <div class="stat-value">
+                    101 MB
+                </div>
+            </div>
 
-    <!-- BALANCE -->
-    <section class="page" id="page-balance">
+            <div class="stat">
+                <div class="stat-name">Обновление</div>
+                <div class="stat-value" style="font-size:15px">
+                    Каждые 5 минут
+                </div>
+            </div>
 
-        <h1>Баланс</h1>
+            <div class="stat">
+                <div class="stat-name">Игроков</div>
+                <div class="stat-value">
+                    0
+                </div>
+            </div>
 
-        <div class="subtitle">
-            Ваш баланс REWET HOST.
         </div>
 
-        <div class="card">
+    </div>
 
-            <div class="muted">Текущий баланс</div>
+</section>
 
-            <div
-                class="stat"
-                id="balanceValue"
+
+<!-- МОИ СЕРВЕРЫ -->
+
+<section class="page" id="page-servers">
+
+    <h1>Мои серверы</h1>
+
+    <div class="subtitle">
+        Управление вашими игровыми серверами
+    </div>
+
+    <div id="serversList">
+        <div class="empty">
+            Загрузка...
+        </div>
+    </div>
+
+</section>
+
+
+<!-- СОЗДАТЬ -->
+
+<section class="page" id="page-create">
+
+    <h1>Создать сервер</h1>
+
+    <div class="subtitle">
+        Создайте новый игровой сервер REWET HOST
+    </div>
+
+    <div class="card form">
+
+        <div class="field">
+            <label>Название сервера</label>
+            <input
+                id="createName"
+                placeholder="Например: TEST SVOYAK"
+                maxlength="64"
             >
-                0
+        </div>
+
+        <div class="field">
+            <label>Игра</label>
+
+            <select id="createGame">
+                <option value="SA-MP">
+                    SA:MP
+                </option>
+
+                <option value="CRMP">
+                    CRMP
+                </option>
+
+                <option value="Minecraft">
+                    Minecraft
+                </option>
+
+                <option value="FiveM">
+                    FiveM
+                </option>
+            </select>
+        </div>
+
+        <button class="btn primary" onclick="createServer()">
+            Создать сервер
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ФАЙЛЫ -->
+
+<section class="page" id="page-files">
+
+    <h1>FTP / Файлы</h1>
+
+    <div class="subtitle">
+        Управление файлами игрового сервера
+    </div>
+
+    <div class="card">
+
+        <div class="field">
+            <label>Сервер</label>
+
+            <select id="fileServer" onchange="selectFileServer()">
+                <option value="">
+                    Выберите сервер
+                </option>
+            </select>
+        </div>
+
+        <div id="filesArea" style="display:none">
+
+            <div class="path">
+                Путь: /
+                <span id="filePath"></span>
             </div>
 
-            <div class="server-actions">
-                <button class="btn primary" onclick="showToast('Пополнение баланса будет подключено позже')">
-                    Пополнить
+            <div class="actions">
+
+                <button class="btn" onclick="fileUp()">
+                    ⬆ Назад
                 </button>
+
+                <button class="btn" onclick="loadFiles()">
+                    🔄 Обновить
+                </button>
+
+                <button class="btn" onclick="makeFolder()">
+                    📁 Папка
+                </button>
+
+                <button class="btn" onclick="makeFile()">
+                    📄 Файл
+                </button>
+
+            </div>
+
+            <div class="files" id="fileList" style="margin-top:10px">
+                <div class="empty">
+                    Загрузка...
+                </div>
+            </div>
+
+            <div id="editor" style="display:none;margin-top:12px">
+
+                <div class="path">
+                    Файл:
+                    <span id="editName"></span>
+                </div>
+
+                <textarea id="editContent"></textarea>
+
+                <div class="actions">
+
+                    <button class="btn primary" onclick="saveFile()">
+                        💾 Сохранить
+                    </button>
+
+                    <button class="btn" onclick="closeEditor()">
+                        Закрыть
+                    </button>
+
+                </div>
+
             </div>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
+
+
+<!-- КОНСОЛЬ -->
+
+<section class="page" id="page-console">
+
+    <h1>Консоль</h1>
+
+    <div class="subtitle">
+        Управление игровым сервером через консоль
+    </div>
+
+    <div class="card">
+
+        <div class="field">
+
+            <label>Сервер</label>
+
+            <select id="consoleServer">
+                <option value="">
+                    Выберите сервер
+                </option>
+            </select>
+
+        </div>
+
+        <div class="console" id="consoleOutput">
+REWET HOST Console
+Ожидание подключения игрового сервера...
+        </div>
+
+        <div class="console-input">
+
+            <input
+                id="consoleInput"
+                placeholder="Введите команду..."
+                onkeydown="if(event.key==='Enter')sendCommand()"
+            >
+
+            <button class="btn primary" onclick="sendCommand()">
+                Отправить
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FTP -->
+
+<section class="page" id="page-websites">
+
+    <h1>Веб-сайты</h1>
+
+    <div class="card">
+        <div class="empty">
+            Управление веб-сайтами будет подключено следующим этапом.
+        </div>
+    </div>
+
+</section>
+
+
+<!-- ПРОФИЛЬ -->
+
+<section class="page" id="page-profile">
+
+    <h1>Профиль</h1>
+
+    <div class="card">
+
+        <div class="info">
+            <div class="info-label">ID</div>
+            <div class="info-value" id="profileId">—</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Логин</div>
+            <div class="info-value" id="profileUsername">—</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Email</div>
+            <div class="info-value" id="profileEmail">—</div>
+        </div>
+
+        <div class="info">
+            <div class="info-label">Баланс</div>
+            <div class="info-value" id="profileBalance">0 ₽</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- СОВЛАДЕЛЬЦЫ -->
+
+<section class="page" id="page-owners">
+
+    <h1>Совладельцы</h1>
+
+    <div class="subtitle">
+        Передайте другому пользователю доступ к серверу
+    </div>
+
+    <div class="card form">
+
+        <div class="field">
+
+            <label>Сервер</label>
+
+            <select id="ownerServer">
+                <option value="">
+                    Выберите сервер
+                </option>
+            </select>
+
+        </div>
+
+        <button class="btn primary" onclick="generateKey()">
+            Создать ключ доступа
+        </button>
+
+        <div id="keyResult" style="display:none;margin-top:12px">
+
+            <label>Ключ доступа</label>
+
+            <input id="keyInput" readonly>
+
+        </div>
+
+    </div>
+
+    <div class="card form">
+
+        <h2>Добавить сервер по ключу</h2>
+
+        <input
+            id="useKey"
+            placeholder="Введите ключ доступа"
+        >
+
+        <button
+            class="btn primary"
+            style="margin-top:10px"
+            onclick="useKey()"
+        >
+            Добавить
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- БАЛАНС -->
+
+<section class="page" id="page-balance">
+
+    <h1>Баланс</h1>
+
+    <div class="card">
+
+        <div class="muted">
+            Текущий баланс
+        </div>
+
+        <div
+            id="balance"
+            style="font-size:28px;font-weight:800;margin-top:8px"
+        >
+            0 ₽
+        </div>
+
+        <div class="actions">
+
+            <button class="btn primary" onclick="toast('Пополнение будет подключено следующим этапом')">
+                Пополнить баланс
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
 
 </main>
 
@@ -902,1401 +985,1016 @@ REWET HOST Console
 
 
 <script>
-    let servers = [];
-    let currentFileServer = null;
-    let currentPath = "";
-    let editingFilePath = null;
+
+let servers=[];
+let currentServer=null;
+let currentFileServer=null;
+let currentPath="";
+let editingFile=null;
 
 
-    /* =========================
-       AUTH
-    ========================= */
+/* AUTH */
 
-    function getToken() {
-        return (
-            localStorage.getItem("rewet_token") ||
-            localStorage.getItem("token") ||
-            localStorage.getItem("auth_token") ||
-            ""
+function token(){
+    return localStorage.getItem("rewet_token")
+        || localStorage.getItem("token")
+        || localStorage.getItem("auth_token")
+        || "";
+}
+
+if(!token()){
+    window.location.href="/login";
+}
+
+
+/* API */
+
+async function api(url,options={}){
+
+    const headers={
+        ...(options.body!==undefined
+            ? {"Content-Type":"application/json"}
+            : {}),
+        Authorization:"Bearer "+token()
+    };
+
+    const response=await fetch(url,{
+        ...options,
+        headers
+    });
+
+    let data={};
+
+    try{
+        data=await response.json();
+    }catch{}
+
+    if(response.status===401){
+        localStorage.removeItem("rewet_token");
+        localStorage.removeItem("token");
+        localStorage.removeItem("auth_token");
+        window.location.href="/login";
+        throw new Error("Авторизация закончилась");
+    }
+
+    if(!response.ok || data.success===false){
+        throw new Error(
+            data.message || "Ошибка запроса"
         );
     }
 
-    function authHeaders(json = false) {
-        const headers = {};
+    return data;
+}
 
-        const token = getToken();
 
-        if (token) {
-            headers.Authorization = "Bearer " + token;
+/* MENU */
+
+function toggleMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+    document
+        .getElementById("overlay")
+        .classList.toggle("show");
+}
+
+function closeMenu(){
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    document
+        .getElementById("overlay")
+        .classList.remove("show");
+}
+
+
+/* PAGE */
+
+function page(name,btn){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(x=>x.classList.remove("active"));
+
+    document
+        .getElementById("page-"+name)
+        .classList.add("active");
+
+    document
+        .querySelectorAll(".nav")
+        .forEach(x=>x.classList.remove("active"));
+
+    if(btn)btn.classList.add("active");
+
+    closeMenu();
+
+    if(name==="servers")loadServers();
+    if(name==="profile")loadProfile();
+    if(name==="owners")fillSelects();
+    if(name==="files")fillSelects();
+    if(name==="console")fillSelects();
+}
+
+
+/* SERVERS */
+
+async function loadServers(){
+
+    try{
+
+        const data=await api("/api/servers");
+
+        servers=data.servers || [];
+
+        renderServers();
+        fillSelects();
+
+        if(servers.length){
+
+            if(
+                !currentServer ||
+                !servers.some(
+                    s=>s.id===currentServer.id
+                )
+            ){
+                currentServer=servers[0];
+            }
+
+            renderCurrentServer();
         }
 
-        if (json) {
-            headers["Content-Type"] = "application/json";
-        }
+    }catch(e){
 
-        return headers;
+        document.getElementById("serversList").innerHTML=
+            `<div class="empty">${esc(e.message)}</div>`;
+    }
+}
+
+
+function renderServers(){
+
+    const box=
+        document.getElementById("serversList");
+
+    if(!servers.length){
+
+        box.innerHTML=`
+            <div class="empty">
+                У вас пока нет серверов.<br><br>
+                <button class="btn primary"
+                    onclick="page('create')">
+                    Создать сервер
+                </button>
+            </div>
+        `;
+
+        return;
     }
 
-    function checkAuth() {
-        if (!getToken()) {
-            window.location.href = "/login";
-            return false;
-        }
+    box.innerHTML=servers.map(s=>{
 
-        return true;
+        const status=s.status||"stopped";
+
+        const text=
+            status==="running"
+                ?"Включен"
+                :status==="starting"
+                    ?"Запускается"
+                    :status==="stopping"
+                        ?"Останавливается"
+                        :"Выключен";
+
+        return`
+
+        <div class="server-card">
+
+            <div class="server-card-head">
+
+                <div>
+
+                    <div class="server-card-name">
+                        ${esc(s.name)}
+                    </div>
+
+                    <div class="muted">
+                        ${esc(s.game)}
+                        · #${s.id}
+                    </div>
+
+                </div>
+
+                <div class="status">
+                    ${text}
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="btn primary"
+                    onclick="selectServer(${s.id})">
+                    Управление
+                </button>
+
+                <button
+                    class="btn"
+                    onclick="openFiles(${s.id})">
+                    📁 FTP
+                </button>
+
+                <button
+                    class="btn"
+                    onclick="openConsole(${s.id})">
+                    ⌨ Консоль
+                </button>
+
+            </div>
+
+        </div>
+        `;
+
+    }).join("");
+}
+
+
+function selectServer(id){
+
+    currentServer=
+        servers.find(s=>s.id===id);
+
+    renderCurrentServer();
+
+    page("home");
+}
+
+
+function renderCurrentServer(){
+
+    if(!currentServer)return;
+
+    const s=currentServer;
+
+    document.getElementById("homeServerName")
+        .textContent=s.name;
+
+    document.getElementById("homeServerId")
+        .textContent="#"+s.id;
+
+    document.getElementById("homeStatus")
+        .textContent=
+            s.status==="running"
+                ?"Включен"
+                :s.status==="starting"
+                    ?"Запускается"
+                    :s.status==="stopping"
+                        ?"Останавливается"
+                        :"Выключен";
+
+    document.getElementById("infoId")
+        .textContent="#"+s.id;
+
+    document.getElementById("infoAddress")
+        .textContent=
+            s.address ||
+            "Будет назначен после запуска";
+
+    document.getElementById("infoRole")
+        .textContent=
+            s.role==="owner"
+                ?"Владелец"
+                :"Совладелец";
+}
+
+
+/* SERVER CONTROL */
+
+async function startCurrentServer(){
+
+    if(!currentServer){
+        toast("Сначала выберите сервер");
+        return;
     }
 
+    try{
 
-    /* =========================
-       API
-    ========================= */
+        await api(
+            `/api/servers/${currentServer.id}/start`,
+            {method:"POST"}
+        );
 
-    async function api(url, options = {}) {
+        toast("Сервер запускается");
 
-        const response = await fetch(
-            url,
+        await loadServers();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function stopCurrentServer(){
+
+    if(!currentServer)return;
+
+    try{
+
+        await api(
+            `/api/servers/${currentServer.id}/stop`,
+            {method:"POST"}
+        );
+
+        toast("Сервер останавливается");
+
+        await loadServers();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function restartCurrentServer(){
+
+    if(!currentServer)return;
+
+    try{
+
+        await api(
+            `/api/servers/${currentServer.id}/restart`,
+            {method:"POST"}
+        );
+
+        toast("Сервер перезапускается");
+
+        await loadServers();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+/* CREATE */
+
+async function createServer(){
+
+    const name=
+        document.getElementById("createName")
+        .value.trim();
+
+    const game=
+        document.getElementById("createGame")
+        .value;
+
+    if(!name){
+        toast("Введите название сервера");
+        return;
+    }
+
+    try{
+
+        await api(
+            "/api/servers",
             {
-                ...options,
-                headers: {
-                    ...authHeaders(
-                        options.body !== undefined
-                    ),
-                    ...(options.headers || {})
-                }
+                method:"POST",
+                body:JSON.stringify({
+                    name,
+                    game
+                })
             }
         );
 
-        let data;
+        document.getElementById("createName")
+            .value="";
 
-        try {
-            data = await response.json();
-        } catch {
-            data = {
-                success: false,
-                message: "Некорректный ответ сервера"
-            };
-        }
+        toast("Сервер создан");
 
-        if (
-            response.status === 401
-        ) {
-            localStorage.removeItem("rewet_token");
-            localStorage.removeItem("token");
-            localStorage.removeItem("auth_token");
+        await loadServers();
 
-            window.location.href = "/login";
+        page("servers");
 
-            throw new Error(
-                "Сессия закончилась"
-            );
-        }
-
-        if (!response.ok || data.success === false) {
-            throw new Error(
-                data.message ||
-                "Ошибка запроса"
-            );
-        }
-
-        return data;
+    }catch(e){
+        toast(e.message);
     }
+}
 
 
-    /* =========================
-       SIDEBAR
-    ========================= */
+/* SELECTS */
 
-    function toggleSidebar() {
+function fillSelects(){
 
-        const sidebar =
-            document.getElementById("sidebar");
+    const ids=[
+        "fileServer",
+        "consoleServer",
+        "ownerServer"
+    ];
 
-        const overlay =
-            document.getElementById("overlay");
+    ids.forEach(id=>{
 
-        sidebar.classList.toggle("open");
-        overlay.classList.toggle(
-            "show",
-            sidebar.classList.contains("open")
+        const el=document.getElementById(id);
+
+        if(!el)return;
+
+        const old=el.value;
+
+        el.innerHTML=
+            `<option value="">
+                Выберите сервер
+            </option>`+
+            servers.map(s=>
+                `<option value="${s.id}">
+                    ${esc(s.name)} (#${s.id})
+                </option>`
+            ).join("");
+
+        if(
+            servers.some(
+                s=>String(s.id)===old
+            )
+        ){
+            el.value=old;
+        }
+
+    });
+}
+
+
+/* FILES */
+
+function openFiles(id){
+
+    page("files");
+
+    setTimeout(()=>{
+
+        document.getElementById("fileServer")
+            .value=id;
+
+        selectFileServer();
+
+    },50);
+}
+
+
+function selectFileServer(){
+
+    const id=
+        Number(
+            document.getElementById("fileServer").value
         );
+
+    if(!id){
+
+        currentFileServer=null;
+
+        document.getElementById("filesArea")
+            .style.display="none";
+
+        return;
     }
 
-    function closeSidebar() {
+    currentFileServer=id;
+    currentPath="";
 
-        document
-            .getElementById("sidebar")
-            .classList.remove("open");
+    document.getElementById("filesArea")
+        .style.display="block";
 
-        document
-            .getElementById("overlay")
-            .classList.remove("show");
-    }
+    loadFiles();
+}
 
 
-    /* =========================
-       PAGES
-    ========================= */
+async function loadFiles(){
 
-    function showPage(name, button) {
+    if(!currentFileServer)return;
 
-        document
-            .querySelectorAll(".page")
-            .forEach(page => {
-                page.classList.remove("active");
-            });
+    document.getElementById("filePath")
+        .textContent=
+            currentPath
+                ?currentPath
+                :"";
 
-        const page =
-            document.getElementById(
-                "page-" + name
-            );
+    try{
 
-        if (page) {
-            page.classList.add("active");
+        const data=await api(
+            `/api/servers/${currentFileServer}/files?path=${encodeURIComponent(currentPath)}`
+        );
+
+        const files=data.files||[];
+
+        const list=
+            document.getElementById("fileList");
+
+        if(!files.length){
+
+            list.innerHTML=
+                `<div class="empty">
+                    Папка пустая
+                </div>`;
+
+            return;
         }
 
-        document
-            .querySelectorAll(".nav-btn")
-            .forEach(btn => {
-                btn.classList.remove("active");
-            });
+        list.innerHTML=files.map(f=>`
 
-        if (button) {
-            button.classList.add("active");
-        }
+            <div class="file">
 
-        closeSidebar();
+                <div
+                    style="flex:1;min-width:0;cursor:pointer"
+                    onclick="${
+                        f.type==="directory"
+                            ?`openFolder('${attr(f.path)}')`
+                            :`openFile('${attr(f.path)}')`
+                    }"
+                >
 
-        if (name === "servers") {
-            loadServers();
-        }
+                    ${
+                        f.type==="directory"
+                            ?"📁"
+                            :"📄"
+                    }
 
-        if (name === "profile") {
-            loadProfile();
-        }
+                    ${esc(f.name)}
 
-        if (name === "owners") {
-            fillServerSelects();
-        }
+                </div>
 
-        if (name === "files") {
-            fillServerSelects();
+                <div class="actions" style="margin:0">
 
-            if (servers.length === 0) {
-                loadServers();
-            }
-        }
-
-        if (name === "console") {
-            fillServerSelects();
-        }
-    }
-
-    function showPageByName(name) {
-
-        const button =
-            [...document.querySelectorAll(".nav-btn")]
-                .find(
-                    btn =>
-                        btn.getAttribute("onclick") &&
-                        btn.getAttribute("onclick").includes(
-                            "showPage('" + name + "'"
-                        )
-                );
-
-        showPage(name, button);
-    }
-
-    function goToCreate() {
-        showPageByName("create");
-    }
-
-
-    /* =========================
-       TOAST
-    ========================= */
-
-    let toastTimer;
-
-    function showToast(message) {
-
-        const toast =
-            document.getElementById("toast");
-
-        toast.textContent = message;
-        toast.classList.add("show");
-
-        clearTimeout(toastTimer);
-
-        toastTimer =
-            setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3000);
-    }
-
-
-    /* =========================
-       LOAD SERVERS
-    ========================= */
-
-    async function loadServers() {
-
-        const list =
-            document.getElementById("serversList");
-
-        list.innerHTML =
-            '<div class="empty">Загрузка...</div>';
-
-        try {
-
-            const data =
-                await api("/api/servers");
-
-            servers =
-                Array.isArray(data.servers)
-                    ? data.servers
-                    : [];
-
-            renderServers();
-            fillServerSelects();
-
-            document
-                .getElementById("homeServerCount")
-                .textContent =
-                    servers.length;
-
-        } catch (error) {
-
-            list.innerHTML =
-                `<div class="empty">${escapeHtml(error.message)}</div>`;
-        }
-    }
-
-
-    function renderServers() {
-
-        const list =
-            document.getElementById("serversList");
-
-        if (servers.length === 0) {
-
-            list.innerHTML = `
-                <div class="empty">
-                    У вас пока нет серверов.<br><br>
-                    <button class="btn primary" onclick="goToCreate()">
-                        Создать первый сервер
+                    <button
+                        class="btn"
+                        onclick="renameItem('${attr(f.path)}')">
+                        ✏
                     </button>
+
+                    <button
+                        class="btn red"
+                        onclick="deleteItem('${attr(f.path)}')">
+                        🗑
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+    }catch(e){
+
+        document.getElementById("fileList").innerHTML=
+            `<div class="empty">${esc(e.message)}</div>`;
+    }
+}
+
+
+function openFolder(path){
+
+    currentPath=path;
+    loadFiles();
+}
+
+
+function fileUp(){
+
+    if(!currentPath)return;
+
+    const parts=
+        currentPath.split("/").filter(Boolean);
+
+    parts.pop();
+
+    currentPath=parts.join("/");
+
+    loadFiles();
+}
+
+
+async function openFile(path){
+
+    try{
+
+        const data=await api(
+            `/api/servers/${currentFileServer}/file?path=${encodeURIComponent(path)}`
+        );
+
+        editingFile=path;
+
+        document.getElementById("editName")
+            .textContent=path;
+
+        document.getElementById("editContent")
+            .value=data.content||"";
+
+        document.getElementById("editor")
+            .style.display="block";
+
+        document.getElementById("editor")
+            .scrollIntoView({
+                behavior:"smooth"
+            });
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function saveFile(){
+
+    if(!editingFile)return;
+
+    try{
+
+        await api(
+            `/api/servers/${currentFileServer}/file`,
+            {
+                method:"POST",
+                body:JSON.stringify({
+                    path:editingFile,
+                    content:
+                        document.getElementById("editContent").value
+                })
+            }
+        );
+
+        toast("Файл сохранён");
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+function closeEditor(){
+
+    editingFile=null;
+
+    document.getElementById("editor")
+        .style.display="none";
+}
+
+
+async function makeFolder(){
+
+    const name=prompt("Название папки:");
+
+    if(!name)return;
+
+    const path=
+        currentPath
+            ?currentPath+"/"+name
+            :name;
+
+    try{
+
+        await api(
+            `/api/servers/${currentFileServer}/files/mkdir`,
+            {
+                method:"POST",
+                body:JSON.stringify({path})
+            }
+        );
+
+        toast("Папка создана");
+
+        loadFiles();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function makeFile(){
+
+    const name=prompt("Название файла:");
+
+    if(!name)return;
+
+    const path=
+        currentPath
+            ?currentPath+"/"+name
+            :name;
+
+    try{
+
+        await api(
+            `/api/servers/${currentFileServer}/files/touch`,
+            {
+                method:"POST",
+                body:JSON.stringify({path})
+            }
+        );
+
+        toast("Файл создан");
+
+        loadFiles();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function deleteItem(path){
+
+    if(!confirm("Удалить файл или папку?"))return;
+
+    try{
+
+        await api(
+            `/api/servers/${currentFileServer}/file`,
+            {
+                method:"DELETE",
+                body:JSON.stringify({path})
+            }
+        );
+
+        toast("Удалено");
+
+        loadFiles();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function renameItem(oldPath){
+
+    const parts=oldPath.split("/");
+    const oldName=parts.pop();
+
+    const newName=
+        prompt("Новое имя:",oldName);
+
+    if(!newName)return;
+
+    try{
+
+        await api(
+            `/api/servers/${currentFileServer}/files/rename`,
+            {
+                method:"POST",
+                body:JSON.stringify({
+                    oldPath,
+                    newName
+                })
+            }
+        );
+
+        toast("Переименовано");
+
+        loadFiles();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+/* CONSOLE */
+
+function openConsole(id){
+
+    page("console");
+
+    setTimeout(()=>{
+
+        document.getElementById("consoleServer")
+            .value=id;
+
+        document.getElementById("consoleOutput")
+            .textContent=
+`REWET HOST Console
+Сервер #${id}
+Ожидание подключения daemon...`;
+
+    },50);
+}
+
+
+function sendCommand(){
+
+    const input=
+        document.getElementById("consoleInput");
+
+    const output=
+        document.getElementById("consoleOutput");
+
+    const command=input.value.trim();
+
+    if(!command)return;
+
+    output.textContent+=
+        `\n> ${command}\n`;
+
+    input.value="";
+
+    output.scrollTop=
+        output.scrollHeight;
+}
+
+
+/* OWNERS */
+
+async function generateKey(){
+
+    const id=
+        Number(
+            document.getElementById("ownerServer").value
+        );
+
+    if(!id){
+        toast("Выберите сервер");
+        return;
+    }
+
+    try{
+
+        const data=await api(
+            `/api/servers/${id}/access-key`,
+            {method:"POST"}
+        );
+
+        document.getElementById("keyResult")
+            .style.display="block";
+
+        document.getElementById("keyInput")
+            .value=data.key;
+
+        toast("Ключ создан");
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+async function useKey(){
+
+    const key=
+        document.getElementById("useKey")
+        .value.trim();
+
+    if(!key){
+        toast("Введите ключ");
+        return;
+    }
+
+    try{
+
+        await api(
+            "/api/servers/access-key/use",
+            {
+                method:"POST",
+                body:JSON.stringify({key})
+            }
+        );
+
+        document.getElementById("useKey")
+            .value="";
+
+        toast("Сервер добавлен");
+
+        loadServers();
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+/* PROFILE */
+
+async function loadProfile(){
+
+    try{
+
+        const data=
+            await api("/api/auth/me");
+
+        const u=data.user||{};
+
+        document.getElementById("profileId")
+            .textContent=u.id||"—";
+
+        document.getElementById("profileUsername")
+            .textContent=u.username||"—";
+
+        document.getElementById("profileEmail")
+            .textContent=u.email||"—";
+
+        document.getElementById("profileBalance")
+            .textContent=(u.balance||0)+" ₽";
+
+        document.getElementById("balance")
+            .textContent=(u.balance||0)+" ₽";
+
+    }catch(e){
+        toast(e.message);
+    }
+}
+
+
+/* TABS */
+
+function serverTab(name){
+
+    if(name==="ftp"){
+        page("files");
+        return;
+    }
+
+    if(name==="console"){
+        page("console");
+        return;
+    }
+
+    if(name==="database"){
+
+        document.getElementById("serverTabContent")
+            .innerHTML=`
+                <div class="empty">
+                    🗄 База данных<br><br>
+                    Управление базами данных будет подключено следующим этапом.
                 </div>
             `;
 
-            return;
-        }
-
-        list.innerHTML =
-            servers.map(server => {
-
-                const status =
-                    server.status || "stopped";
-
-                const statusText =
-                    status === "running"
-                        ? "Запущен"
-                        : status === "starting"
-                            ? "Запускается"
-                            : status === "stopping"
-                                ? "Останавливается"
-                                : "Остановлен";
-
-                const role =
-                    server.role === "owner"
-                        ? "Владелец"
-                        : "Совладелец";
-
-                return `
-                    <div class="server-card">
-
-                        <div class="server-head">
-
-                            <div>
-                                <div class="server-name">
-                                    ${escapeHtml(server.name)}
-                                </div>
-
-                                <div class="server-game">
-                                    ${escapeHtml(server.game)}
-                                    · ${role}
-                                </div>
-                            </div>
-
-                            <div class="status ${escapeHtml(status)}">
-                                ${statusText}
-                            </div>
-
-                        </div>
-
-                        <div class="server-actions">
-
-                            ${
-                                status === "running" ||
-                                status === "starting"
-                                    ? `
-                                        <button
-                                            class="btn danger"
-                                            onclick="stopServer(${server.id})"
-                                        >
-                                            ⏹ Остановить
-                                        </button>
-                                    `
-                                    : `
-                                        <button
-                                            class="btn success"
-                                            onclick="startServer(${server.id})"
-                                        >
-                                            ▶ Запустить
-                                        </button>
-                                    `
-                            }
-
-                            <button
-                                class="btn"
-                                onclick="restartServer(${server.id})"
-                            >
-                                🔄 Перезапуск
-                            </button>
-
-                            <button
-                                class="btn"
-                                onclick="openFilesForServer(${server.id})"
-                            >
-                                📁 Файлы
-                            </button>
-
-                            <button
-                                class="btn"
-                                onclick="openConsoleForServer(${server.id})"
-                            >
-                                💻 Консоль
-                            </button>
-
-                            ${
-                                server.role === "owner"
-                                    ? `
-                                        <button
-                                            class="btn"
-                                            onclick="openOwnerForServer(${server.id})"
-                                        >
-                                            👥 Ключ
-                                        </button>
-                                    `
-                                    : ""
-                            }
-
-                        </div>
-
-                    </div>
-                `;
-
-            }).join("");
+        return;
     }
 
+    if(name==="config"){
 
-    /* =========================
-       CREATE SERVER
-    ========================= */
+        document.getElementById("serverTabContent")
+            .innerHTML=`
+                <div class="empty">
+                    ⚙ Конфигурация<br><br>
+                    Настройки игрового сервера будут подключены следующим этапом.
+                </div>
+            `;
 
-    async function createNewServer() {
-
-        const name =
-            document
-                .getElementById("createName")
-                .value
-                .trim();
-
-        const game =
-            document
-                .getElementById("createGame")
-                .value;
-
-        if (!name) {
-            showToast("Введите название сервера");
-            return;
-        }
-
-        try {
-
-            await api(
-                "/api/servers",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        name,
-                        game
-                    })
-                }
-            );
-
-            document
-                .getElementById("createName")
-                .value = "";
-
-            showToast("Сервер создан");
-
-            await loadServers();
-
-            showPageByName("servers");
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
+        return;
     }
 
+    renderCurrentServer();
+}
 
-    /* =========================
-       SERVER CONTROL
-    ========================= */
 
-    async function startServer(id) {
+/* HELPERS */
 
-        try {
+function toast(text){
 
-            await api(
-                `/api/servers/${id}/start`,
-                {
-                    method: "POST"
-                }
-            );
+    const el=
+        document.getElementById("toast");
 
-            showToast("Сервер запускается");
+    el.textContent=text;
+    el.classList.add("show");
 
-            await loadServers();
+    clearTimeout(window.toastTimer);
 
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function stopServer(id) {
-
-        try {
-
-            await api(
-                `/api/servers/${id}/stop`,
-                {
-                    method: "POST"
-                }
-            );
-
-            showToast("Сервер останавливается");
-
-            await loadServers();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function restartServer(id) {
-
-        try {
-
-            await api(
-                `/api/servers/${id}/restart`,
-                {
-                    method: "POST"
-                }
-            );
-
-            showToast("Сервер перезапускается");
-
-            await loadServers();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    /* =========================
-       SERVER SELECTS
-    ========================= */
-
-    function fillServerSelects() {
-
-        const selects = [
-            "fileServerSelect",
-            "consoleServerSelect",
-            "ownerServerSelect"
-        ];
-
-        selects.forEach(id => {
-
-            const select =
-                document.getElementById(id);
-
-            if (!select) {
-                return;
-            }
-
-            const current =
-                select.value;
-
-            select.innerHTML =
-                '<option value="">Выберите сервер</option>' +
-                servers.map(server => `
-                    <option value="${server.id}">
-                        ${escapeHtml(server.name)} (${escapeHtml(server.game)})
-                    </option>
-                `).join("");
-
-            if (
-                servers.some(
-                    server =>
-                        String(server.id) === String(current)
-                )
-            ) {
-                select.value = current;
-            }
-        });
-    }
-
-
-    /* =========================
-       FILE MANAGER
-    ========================= */
-
-    function changeFileServer() {
-
-        const value =
-            document
-                .getElementById("fileServerSelect")
-                .value;
-
-        if (!value) {
-
-            currentFileServer = null;
-
-            document
-                .getElementById("fileManagerArea")
-                .style.display = "none";
-
-            return;
-        }
-
-        currentFileServer =
-            Number(value);
-
-        currentPath = "";
-
-        document
-            .getElementById("fileManagerArea")
-            .style.display = "block";
-
-        closeEditor();
-
-        refreshFiles();
-    }
-
-
-    async function refreshFiles() {
-
-        if (!currentFileServer) {
-            return;
-        }
-
-        const list =
-            document.getElementById("fileList");
-
-        list.innerHTML =
-            '<div class="empty">Загрузка...</div>';
-
-        document
-            .getElementById("currentPath")
-            .textContent =
-                currentPath
-                    ? "/" + currentPath
-                    : "/";
-
-        try {
-
-            const url =
-                `/api/servers/${currentFileServer}/files?path=${encodeURIComponent(currentPath)}`;
-
-            const data =
-                await api(url);
-
-            renderFiles(data.files || []);
-
-        } catch (error) {
-
-            list.innerHTML =
-                `<div class="empty">${escapeHtml(error.message)}</div>`;
-        }
-    }
-
-
-    function renderFiles(files) {
-
-        const list =
-            document.getElementById("fileList");
-
-        if (!files.length) {
-
-            list.innerHTML =
-                '<div class="empty">Папка пустая</div>';
-
-            return;
-        }
-
-        list.innerHTML =
-            files.map(file => {
-
-                const fullPath =
-                    file.path;
-
-                const icon =
-                    file.type === "directory"
-                        ? "📁"
-                        : "📄";
-
-                return `
-                    <div class="file-row">
-
-                        <div
-                            class="file-name ${file.type === "directory" ? "clickable" : ""}"
-                            ${
-                                file.type === "directory"
-                                    ? `onclick="openFolder('${escapeAttr(fullPath)}')"`
-                                    : `onclick="openFile('${escapeAttr(fullPath)}')"`
-                            }
-                        >
-                            ${icon} ${escapeHtml(file.name)}
-                        </div>
-
-                        <div style="display:flex;align-items:center;gap:8px">
-
-                            ${
-                                file.type === "file"
-                                    ? `
-                                        <span class="file-size">
-                                            ${formatBytes(file.size)}
-                                        </span>
-                                    `
-                                    : ""
-                            }
-
-                            <button
-                                class="btn"
-                                onclick="event.stopPropagation();renameItem('${escapeAttr(fullPath)}')"
-                            >
-                                ✏
-                            </button>
-
-                            <button
-                                class="btn danger"
-                                onclick="event.stopPropagation();deleteItem('${escapeAttr(fullPath)}')"
-                            >
-                                🗑
-                            </button>
-
-                        </div>
-
-                    </div>
-                `;
-
-            }).join("");
-    }
-
-
-    function openFolder(folderPath) {
-
-        currentPath =
-            folderPath;
-
-        closeEditor();
-
-        refreshFiles();
-    }
-
-
-    function goUpFolder() {
-
-        if (!currentPath) {
-            return;
-        }
-
-        const parts =
-            currentPath
-                .split("/")
-                .filter(Boolean);
-
-        parts.pop();
-
-        currentPath =
-            parts.join("/");
-
-        refreshFiles();
-    }
-
-
-    async function openFile(filePath) {
-
-        if (!currentFileServer) {
-            return;
-        }
-
-        try {
-
-            const data =
-                await api(
-                    `/api/servers/${currentFileServer}/file?path=${encodeURIComponent(filePath)}`
-                );
-
-            editingFilePath =
-                filePath;
-
-            document
-                .getElementById("fileContent")
-                .value =
-                    data.content || "";
-
-            document
-                .getElementById("editingFileName")
-                .textContent =
-                    filePath;
-
-            document
-                .getElementById("fileEditor")
-                .classList.add("show");
-
-            document
-                .getElementById("fileEditor")
-                .scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function saveCurrentFile() {
-
-        if (
-            !currentFileServer ||
-            !editingFilePath
-        ) {
-            return;
-        }
-
-        const content =
-            document
-                .getElementById("fileContent")
-                .value;
-
-        try {
-
-            await api(
-                `/api/servers/${currentFileServer}/file`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        path: editingFilePath,
-                        content
-                    })
-                }
-            );
-
-            showToast("Файл сохранён");
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    function closeEditor() {
-
-        editingFilePath = null;
-
-        document
-            .getElementById("fileEditor")
-            .classList.remove("show");
-    }
-
-
-    async function newFolder() {
-
-        if (!currentFileServer) {
-            showToast("Выберите сервер");
-            return;
-        }
-
-        const name =
-            prompt("Название папки:");
-
-        if (!name) {
-            return;
-        }
-
-        const newPath =
-            currentPath
-                ? `${currentPath}/${name}`
-                : name;
-
-        try {
-
-            await api(
-                `/api/servers/${currentFileServer}/files/mkdir`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        path: newPath
-                    })
-                }
-            );
-
-            showToast("Папка создана");
-
-            refreshFiles();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function newFile() {
-
-        if (!currentFileServer) {
-            showToast("Выберите сервер");
-            return;
-        }
-
-        const name =
-            prompt("Название файла:");
-
-        if (!name) {
-            return;
-        }
-
-        const newPath =
-            currentPath
-                ? `${currentPath}/${name}`
-                : name;
-
-        try {
-
-            await api(
-                `/api/servers/${currentFileServer}/files/touch`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        path: newPath
-                    })
-                }
-            );
-
-            showToast("Файл создан");
-
-            refreshFiles();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function deleteItem(filePath) {
-
-        if (!currentFileServer) {
-            return;
-        }
-
-        if (
-            !confirm(
-                "Удалить этот файл или папку?"
-            )
-        ) {
-            return;
-        }
-
-        try {
-
-            await api(
-                `/api/servers/${currentFileServer}/file`,
-                {
-                    method: "DELETE",
-                    body: JSON.stringify({
-                        path: filePath
-                    })
-                }
-            );
-
-            if (
-                editingFilePath === filePath
-            ) {
-                closeEditor();
-            }
-
-            showToast("Удалено");
-
-            refreshFiles();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function renameItem(oldPath) {
-
-        if (!currentFileServer) {
-            return;
-        }
-
-        const parts =
-            oldPath
-                .split("/");
-
-        const oldName =
-            parts.pop();
-
-        const newName =
-            prompt(
-                "Новое имя:",
-                oldName
-            );
-
-        if (
-            !newName ||
-            newName === oldName
-        ) {
-            return;
-        }
-
-        try {
-
-            await api(
-                `/api/servers/${currentFileServer}/files/rename`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        oldPath,
-                        newName
-                    })
-                }
-            );
-
-            showToast("Переименовано");
-
-            refreshFiles();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    function openFilesForServer(id) {
-
-        showPageByName("files");
-
-        setTimeout(() => {
-
-            const select =
-                document.getElementById(
-                    "fileServerSelect"
-                );
-
-            select.value = String(id);
-
-            changeFileServer();
-
-        }, 50);
-    }
-
-
-    /* =========================
-       CONSOLE
-    ========================= */
-
-    function openConsoleForServer(id) {
-
-        showPageByName("console");
-
-        setTimeout(() => {
-
-            const select =
-                document.getElementById(
-                    "consoleServerSelect"
-                );
-
-            select.value =
-                String(id);
-
-            document
-                .getElementById("consoleOutput")
-                .textContent =
-`REWET HOST Console
-Сервер ID: ${id}
-
-Подключение к реальной игровой консоли будет выполнено через серверный daemon.`;
-
-        }, 50);
-    }
-
-
-    function sendConsoleCommand() {
-
-        const input =
-            document.getElementById(
-                "consoleCommand"
-            );
-
-        const output =
-            document.getElementById(
-                "consoleOutput"
-            );
-
-        const command =
-            input.value.trim();
-
-        if (!command) {
-            return;
-        }
-
-        output.textContent +=
-            `\n> ${command}\n`;
-
-        input.value = "";
-
-        output.scrollTop =
-            output.scrollHeight;
-    }
-
-
-    /* =========================
-       OWNERS / ACCESS KEYS
-    ========================= */
-
-    function openOwnerForServer(id) {
-
-        showPageByName("owners");
-
-        setTimeout(() => {
-
-            const select =
-                document.getElementById(
-                    "ownerServerSelect"
-                );
-
-            select.value =
-                String(id);
-
-        }, 50);
-    }
-
-
-    async function generateAccessKey() {
-
-        const serverId =
-            Number(
-                document
-                    .getElementById(
-                        "ownerServerSelect"
-                    )
-                    .value
-            );
-
-        if (!serverId) {
-            showToast("Выберите сервер");
-            return;
-        }
-
-        try {
-
-            const data =
-                await api(
-                    `/api/servers/${serverId}/access-key`,
-                    {
-                        method: "POST"
-                    }
-                );
-
-            document
-                .getElementById(
-                    "generatedKey"
-                )
-                .style.display = "block";
-
-            document
-                .getElementById(
-                    "generatedKeyInput"
-                )
-                .value =
-                    data.key;
-
-            showToast("Ключ создан");
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    async function useAccessKey() {
-
-        const input =
-            document
-                .getElementById(
-                    "accessKeyInput"
-                );
-
-        const key =
-            input.value.trim();
-
-        if (!key) {
-            showToast("Введите ключ");
-            return;
-        }
-
-        try {
-
-            await api(
-                "/api/servers/access-key/use",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        key
-                    })
-                }
-            );
-
-            input.value = "";
-
-            showToast(
-                "Сервер добавлен"
-            );
-
-            await loadServers();
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    function copyGeneratedKey() {
-
-        const input =
-            document.getElementById(
-                "generatedKeyInput"
-            );
-
-        if (!input.value) {
-            return;
-        }
-
-        navigator.clipboard
-            .writeText(input.value)
-            .then(() => {
-                showToast("Ключ скопирован");
-            })
-            .catch(() => {
-
-                input.select();
-
-                document.execCommand(
-                    "copy"
-                );
-
-                showToast("Ключ скопирован");
-            });
-    }
-
-
-    /* =========================
-       PROFILE
-    ========================= */
-
-    async function loadProfile() {
-
-        try {
-
-            const data =
-                await api(
-                    "/api/auth/me"
-                );
-
-            const user =
-                data.user || {};
-
-            document
-                .getElementById("profileId")
-                .textContent =
-                    user.id ?? "—";
-
-            document
-                .getElementById("profileUsername")
-                .textContent =
-                    user.username ?? "—";
-
-            document
-                .getElementById("profileEmail")
-                .textContent =
-                    user.email ?? "—";
-
-            document
-                .getElementById("profileBalance")
-                .textContent =
-                    user.balance ?? 0;
-
-            document
-                .getElementById("profileCreated")
-                .textContent =
-                    user.created_at
-                        ? new Date(
-                            user.created_at
-                        ).toLocaleString("ru-RU")
-                        : "—";
-
-            document
-                .getElementById("homeBalance")
-                .textContent =
-                    user.balance ?? 0;
-
-            document
-                .getElementById("balanceValue")
-                .textContent =
-                    user.balance ?? 0;
-
-        } catch (error) {
-
-            showToast(error.message);
-        }
-    }
-
-
-    /* =========================
-       LOGOUT
-    ========================= */
-
-    function logout() {
-
-        localStorage.removeItem(
-            "rewet_token"
+    window.toastTimer=
+        setTimeout(
+            ()=>el.classList.remove("show"),
+            3000
         );
-
-        localStorage.removeItem(
-            "token"
-        );
-
-        localStorage.removeItem(
-            "auth_token"
-        );
-
-        window.location.href =
-            "/login";
-    }
+}
 
 
-    /* =========================
-       HELPERS
-    ========================= */
+function esc(v){
 
-    function escapeHtml(value) {
-
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
+    return String(v??"")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
 
 
-    function escapeAttr(value) {
-        return String(value ?? "")
-            .replace(/\\/g, "\\\\")
-            .replace(/'/g, "\\'");
-    }
+function attr(v){
+
+    return String(v??"")
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'");
+}
 
 
-    function formatBytes(bytes) {
+/* START */
 
-        if (!bytes) {
-            return "0 Б";
-        }
+async function init(){
 
-        const units = [
-            "Б",
-            "КБ",
-            "МБ",
-            "ГБ"
-        ];
+    await loadServers();
+    await loadProfile();
 
-        let size =
-            Number(bytes);
+}
 
-        let index = 0;
-
-        while (
-            size >= 1024 &&
-            index < units.length - 1
-        ) {
-            size /= 1024;
-            index++;
-        }
-
-        return (
-            size < 10 && index > 0
-                ? size.toFixed(1)
-                : Math.round(size)
-        ) + " " + units[index];
-    }
-
-
-    /* =========================
-       START
-    ========================= */
-
-    async function init() {
-
-        if (!checkAuth()) {
-            return;
-        }
-
-        try {
-
-            await Promise.all([
-                loadServers(),
-                loadProfile()
-            ]);
-
-        } catch (error) {
-
-            console.error(error);
-        }
-    }
-
-    init();
+init();
 
 </script>
 
 </body>
-    </html>
+        </html>
