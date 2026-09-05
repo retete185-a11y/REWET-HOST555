@@ -1,103 +1,127 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 
 <title>REWET HOST</title>
 
 <style>
-
 *{
     box-sizing:border-box;
 }
 
-body{
+html,body{
     margin:0;
-    background:#090c11;
-    color:#fff;
-    font-family:Arial,sans-serif;
+    padding:0;
+    min-height:100%;
 }
 
-.header{
-    height:60px;
-    background:#11151c;
-    border-bottom:1px solid #292f39;
+body{
+    background:#080b10;
+    color:#f4f6f8;
+    font-family:Inter,Arial,sans-serif;
+    font-size:13px;
+}
 
+/* HEADER */
+
+.header{
+    height:54px;
+    background:#0d1117;
+    border-bottom:1px solid #202631;
     display:flex;
     align-items:center;
     justify-content:space-between;
-
-    padding:0 18px;
-
+    padding:0 16px;
     position:sticky;
     top:0;
-    z-index:20;
+    z-index:100;
 }
 
 .logo{
-    font-size:20px;
+    font-size:17px;
     font-weight:800;
+    letter-spacing:.2px;
+}
+
+.logo span{
+    color:#8d96a3;
+    font-weight:500;
 }
 
 .balance{
-    color:#b8c0cc;
+    background:#151a22;
+    border:1px solid #262d38;
+    border-radius:7px;
+    padding:6px 10px;
+    color:#c9d0da;
 }
+
+/* LAYOUT */
 
 .layout{
     display:flex;
-    min-height:calc(100vh - 60px);
+    min-height:calc(100vh - 54px);
 }
 
+/* SIDEBAR */
+
 .sidebar{
-    width:235px;
-    background:#0e1218;
-    border-right:1px solid #292f39;
-    padding:15px;
+    width:210px;
+    flex-shrink:0;
+    background:#0b0f14;
+    border-right:1px solid #202631;
+    padding:12px 9px;
 }
 
 .section-title{
-    color:#687283;
-    font-size:11px;
+    color:#606a78;
+    font-size:10px;
     text-transform:uppercase;
-    margin:17px 10px 7px;
+    font-weight:700;
+    letter-spacing:.7px;
+    padding:12px 9px 6px;
 }
 
 .menu{
     display:flex;
     flex-direction:column;
-    gap:4px;
+    gap:2px;
 }
 
 .menu button{
     width:100%;
     border:0;
     background:transparent;
-    color:#aeb6c3;
+    color:#9ba5b3;
     text-align:left;
-    padding:11px;
-    border-radius:8px;
+    padding:9px 10px;
+    border-radius:7px;
     cursor:pointer;
-    font-size:14px;
+    font-size:13px;
+    transition:.15s;
 }
 
-.menu button:hover,
+.menu button:hover{
+    background:#151a21;
+    color:#fff;
+}
+
 .menu button.active{
     background:#1a2029;
     color:#fff;
 }
 
+/* MAIN */
+
 .main{
-    flex:1;
-    padding:20px;
-    max-width:1200px;
+    width:100%;
+    max-width:1150px;
+    padding:18px;
 }
+
+/* PAGE */
 
 .page{
     display:none;
@@ -107,210 +131,396 @@ body{
     display:block;
 }
 
-h1{
-    margin:0 0 6px;
-    font-size:25px;
-}
-
-.subtitle{
-    color:#727c8c;
-    margin-bottom:20px;
-}
-
-.card{
-    background:#11151c;
-    border:1px solid #292f39;
-    border-radius:12px;
-    padding:17px;
-    margin-bottom:13px;
-}
-
-.card-title{
-    font-size:17px;
-    font-weight:700;
+.page-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
     margin-bottom:14px;
 }
 
+h1{
+    margin:0;
+    font-size:21px;
+    font-weight:750;
+}
+
+.subtitle{
+    color:#697382;
+    margin-top:4px;
+    font-size:12px;
+}
+
+/* CARD */
+
+.card{
+    background:#0e131a;
+    border:1px solid #222934;
+    border-radius:9px;
+    padding:13px;
+    margin-bottom:10px;
+}
+
+.card-title{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+/* SERVERS */
+
 .server-list{
     display:grid;
-    gap:10px;
+    gap:7px;
 }
 
 .server{
-    background:#0c1016;
-    border:1px solid #292f39;
-    border-radius:10px;
-    padding:15px;
+    background:#0a0e13;
+    border:1px solid #222934;
+    border-radius:8px;
+    padding:11px;
 
     display:flex;
     align-items:center;
     justify-content:space-between;
 
-    gap:15px;
+    gap:12px;
+}
+
+.server-info{
+    min-width:0;
 }
 
 .server-name{
+    font-size:14px;
     font-weight:700;
-    font-size:16px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .server-game{
-    color:#737e8e;
-    margin-top:5px;
+    color:#687382;
+    margin-top:3px;
+    font-size:11px;
 }
 
 .server-status{
-    color:#67e58a;
-    font-size:12px;
-    margin-top:7px;
+    margin-top:5px;
+    font-size:11px;
 }
+
+.status-running{
+    color:#61dc87;
+}
+
+.status-stopped{
+    color:#778190;
+}
+
+.status-starting{
+    color:#e8c866;
+}
+
+.status-stopping{
+    color:#e88b66;
+}
+
+/* BUTTONS */
 
 .buttons{
     display:flex;
-    gap:7px;
+    gap:5px;
     flex-wrap:wrap;
 }
 
 .btn{
-    border:1px solid #303642;
-    background:#191e27;
+    border:1px solid #29313d;
+    background:#151a22;
     color:#fff;
-
-    padding:10px 13px;
-
-    border-radius:8px;
-
+    padding:7px 10px;
+    border-radius:6px;
     cursor:pointer;
+    font-size:11px;
+    white-space:nowrap;
 }
 
 .btn:hover{
-    background:#252b35;
+    background:#202630;
 }
 
 .primary{
-    background:#fff;
-    color:#080a0d;
-    border-color:#fff;
+    background:#f2f4f7;
+    color:#090b0f;
+    border-color:#f2f4f7;
+}
+
+.primary:hover{
+    background:#dfe3e8;
 }
 
 .danger{
-    background:#35191d;
-    color:#ff9da5;
+    background:#32171b;
+    border-color:#552127;
+    color:#ff9ba5;
 }
 
-input,
-select{
-    width:100%;
-
-    background:#090c11;
-    color:#fff;
-
-    border:1px solid #303642;
-
-    border-radius:8px;
-
-    padding:11px;
-
-    margin-bottom:10px;
-
-    outline:none;
-}
-
-.profile-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
+/* STATS */
 
 .stat-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:10px;
+    gap:7px;
 }
 
 .stat{
-    background:#0c1016;
-    border:1px solid #292f39;
-    border-radius:10px;
-    padding:15px;
+    background:#0a0e13;
+    border:1px solid #222934;
+    border-radius:8px;
+    padding:11px;
 }
 
 .stat-label{
-    color:#747e8e;
-    font-size:12px;
+    color:#687382;
+    font-size:10px;
 }
 
 .stat-value{
-    font-size:23px;
+    font-size:19px;
     font-weight:800;
-    margin-top:7px;
+    margin-top:4px;
 }
+
+/* FORMS */
+
+input,
+select{
+    width:100%;
+    background:#090d12;
+    color:#fff;
+    border:1px solid #29313d;
+    border-radius:6px;
+    padding:9px 10px;
+    margin-bottom:8px;
+    outline:none;
+    font-size:12px;
+}
+
+input:focus,
+select:focus{
+    border-color:#596473;
+}
+
+/* PROFILE */
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+}
+
+.profile-item{
+    background:#0a0e13;
+    border:1px solid #222934;
+    border-radius:8px;
+    padding:10px;
+}
+
+.profile-label{
+    color:#687382;
+    font-size:10px;
+    margin-bottom:4px;
+}
+
+.profile-value{
+    font-size:12px;
+    font-weight:600;
+}
+
+/* EMPTY */
 
 .empty{
-    color:#737e8e;
+    color:#687382;
     text-align:center;
-    padding:30px 10px;
+    padding:22px 10px;
 }
+
+/* KEY */
 
 .key{
-    background:#090c11;
-    border:1px dashed #39414e;
-    padding:12px;
-    border-radius:8px;
+    background:#090d12;
+    border:1px dashed #394352;
+    padding:10px;
+    border-radius:7px;
     font-family:monospace;
     word-break:break-all;
-    margin-top:10px;
+    margin-top:8px;
 }
 
-@media(max-width:750px){
+/* MOBILE */
 
-    .sidebar{
-        width:65px;
-        padding:8px;
+.mobile-nav{
+    display:none;
+}
+
+@media(max-width:700px){
+
+    body{
+        padding-bottom:58px;
     }
 
-    .section-title{
+    .header{
+        height:50px;
+        padding:0 11px;
+    }
+
+    .logo{
+        font-size:15px;
+    }
+
+    .balance{
+        font-size:11px;
+        padding:5px 8px;
+    }
+
+    .layout{
+        display:block;
+        min-height:auto;
+    }
+
+    .sidebar{
         display:none;
     }
 
-    .menu button{
-        font-size:0;
-        text-align:center;
-        padding:13px 5px;
+    .main{
+        padding:12px 10px;
+        max-width:none;
     }
 
-    .menu button::first-letter{
-        font-size:20px;
+    h1{
+        font-size:19px;
     }
+
+    .subtitle{
+        font-size:11px;
+    }
+
+    .card{
+        padding:10px;
+        border-radius:8px;
+        margin-bottom:8px;
+    }
+
+    .card-title{
+        font-size:13px;
+        margin-bottom:8px;
+    }
+
+    .server{
+        padding:9px;
+        gap:8px;
+    }
+
+    .server-name{
+        font-size:13px;
+    }
+
+    .server-game{
+        font-size:10px;
+    }
+
+    .btn{
+        padding:7px 9px;
+        font-size:10px;
+    }
+
+    .stat-grid{
+        grid-template-columns:repeat(3,1fr);
+        gap:5px;
+    }
+
+    .stat{
+        padding:9px 7px;
+    }
+
+    .stat-value{
+        font-size:16px;
+    }
+
+    .stat-label{
+        font-size:9px;
+    }
+
+    .profile-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    /* BOTTOM NAV */
+
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        height:55px;
+        background:#0c1016;
+        border-top:1px solid #242b35;
+        z-index:200;
+        padding:5px;
+        gap:3px;
+    }
+
+    .mobile-nav button{
+        flex:1;
+        border:0;
+        background:transparent;
+        color:#737d8b;
+        border-radius:7px;
+        font-size:9px;
+        cursor:pointer;
+    }
+
+    .mobile-nav button span{
+        display:block;
+        font-size:17px;
+        margin-bottom:2px;
+    }
+
+    .mobile-nav button.active{
+        background:#181e27;
+        color:#fff;
+    }
+}
+
+@media(max-width:380px){
 
     .main{
-        padding:12px;
+        padding:10px 7px;
     }
 
     .server{
         flex-direction:column;
-        align-items:flex-start;
+        align-items:stretch;
     }
 
-    .profile-grid,
-    .stat-grid{
-        grid-template-columns:1fr;
+    .server .buttons{
+        width:100%;
     }
 
+    .server .btn{
+        width:100%;
+    }
 }
-
 </style>
-
 </head>
 
-
 <body>
-
 
 <header class="header">
 
     <div class="logo">
-        REWET HOST
+        REWET <span>HOST</span>
     </div>
 
     <div class="balance">
@@ -319,558 +529,524 @@ select{
 
 </header>
 
-
 <div class="layout">
-
 
 <aside class="sidebar">
 
+    <div class="section-title">Главное</div>
 
-<div class="section-title">
-    Главное
-</div>
+    <div class="menu">
 
-<div class="menu">
+        <button class="active"
+            onclick="openPage('home',this)">
+            🏠 Главная
+        </button>
 
-<button
-    class="active"
-    onclick="openPage('home',this)"
->
-🏠 Главная
-</button>
+        <button
+            onclick="openPage('servers',this)">
+            🖥️ Мои серверы
+        </button>
 
-<button
-    onclick="openPage('servers',this)"
->
-🖥️ Мои серверы
-</button>
+        <button
+            onclick="openPage('create',this)">
+            ➕ Создать сервер
+        </button>
 
-<button
-    onclick="openPage('create',this)"
->
-➕ Создать сервер
-</button>
+    </div>
 
-</div>
+    <div class="section-title">Управление</div>
 
+    <div class="menu">
 
-<div class="section-title">
-    Управление
-</div>
+        <button
+            onclick="openPage('files',this)">
+            📁 Файлы
+        </button>
 
-<div class="menu">
+        <button
+            onclick="openPage('console',this)">
+            ⌨️ Консоль
+        </button>
 
-<button
-    onclick="openPage('files',this)"
->
-📁 Файловый менеджер
-</button>
+        <button
+            onclick="openPage('websites',this)">
+            🌐 Веб-сайты
+        </button>
 
-<button
-    onclick="openPage('console',this)"
->
-⌨️ Консоль
-</button>
+    </div>
 
-<button
-    onclick="openPage('websites',this)"
->
-🌐 Веб-сайты
-</button>
+    <div class="section-title">Аккаунт</div>
 
-</div>
+    <div class="menu">
 
+        <button
+            onclick="openPage('profile',this)">
+            👤 Профиль
+        </button>
 
-<div class="section-title">
-    Аккаунт
-</div>
+        <button
+            onclick="openPage('owners',this)">
+            👥 Совладельцы
+        </button>
 
-<div class="menu">
+        <button
+            onclick="openPage('balancePage',this)">
+            💰 Баланс
+        </button>
 
-<button
-    onclick="openPage('profile',this)"
->
-👤 Профиль
-</button>
+        <button onclick="logout()">
+            🚪 Выйти
+        </button>
 
-<button
-    onclick="openPage('owners',this)"
->
-👥 Совладельцы
-</button>
-
-<button
-    onclick="openPage('balancePage',this)"
->
-💰 Баланс
-</button>
-
-<button
-    onclick="logout()"
->
-🚪 Выйти
-</button>
-
-</div>
+    </div>
 
 </aside>
 
-
 <main class="main">
-
 
 <!-- HOME -->
 
-<section
-    id="page-home"
-    class="page active"
->
+<section id="page-home" class="page active">
 
-<h1>
-    Главная
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Главная</h1>
+            <div class="subtitle">
+                Панель управления REWET HOST
+            </div>
+        </div>
 
-<div class="subtitle">
-    Добро пожаловать в REWET HOST
-</div>
+        <button
+            class="btn primary"
+            onclick="openPageByName('create')">
+            + Сервер
+        </button>
+    </div>
 
+    <div class="card">
 
-<div class="card">
+        <div class="card-title">
+            Мои серверы
+        </div>
 
-<div class="card-title">
-    Ваши серверы
-</div>
+        <div id="homeServers"
+             class="server-list">
+            Загрузка...
+        </div>
 
-<div
-    id="homeServers"
-    class="server-list"
->
-    Загрузка...
-</div>
+    </div>
 
-</div>
+    <div class="card">
 
+        <div class="card-title">
+            Обзор
+        </div>
 
-<div class="card">
+        <div class="stat-grid">
 
-<div class="card-title">
-    Статистика
-</div>
+            <div class="stat">
+                <div class="stat-label">
+                    Серверов
+                </div>
 
-<div class="stat-grid">
+                <div class="stat-value"
+                     id="serverCount">
+                    0
+                </div>
+            </div>
 
-<div class="stat">
+            <div class="stat">
+                <div class="stat-label">
+                    Баланс
+                </div>
 
-<div class="stat-label">
-    Серверов
-</div>
+                <div class="stat-value"
+                     id="balanceStat">
+                    0 ₽
+                </div>
+            </div>
 
-<div
-    class="stat-value"
-    id="serverCount"
->
-    0
-</div>
+            <div class="stat">
+                <div class="stat-label">
+                    Доступность
+                </div>
 
-</div>
+                <div class="stat-value">
+                    24/7
+                </div>
+            </div>
 
+        </div>
 
-<div class="stat">
-
-<div class="stat-label">
-    Баланс
-</div>
-
-<div
-    class="stat-value"
-    id="balanceStat"
->
-    0 ₽
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="stat-label">
-    Доступ
-</div>
-
-<div class="stat-value">
-    24/7
-</div>
-
-</div>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- SERVERS -->
 
-<section
-    id="page-servers"
-    class="page"
->
+<section id="page-servers" class="page">
 
-<h1>
-    Мои серверы
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Мои серверы</h1>
 
-<div class="subtitle">
-    Управление игровыми серверами
-</div>
+            <div class="subtitle">
+                Управление серверами
+            </div>
+        </div>
 
+        <button
+            class="btn primary"
+            onclick="openPageByName('create')">
+            + Создать
+        </button>
+    </div>
 
-<div class="card">
-
-<div class="buttons">
-
-<button
-    class="btn primary"
-    onclick="openPageByName('create')"
->
-➕ Создать сервер
-</button>
-
-</div>
-
-</div>
-
-
-<div
-    id="servers"
-    class="server-list"
->
-    Загрузка...
-</div>
+    <div id="servers"
+         class="server-list">
+        Загрузка...
+    </div>
 
 </section>
 
 
 <!-- CREATE -->
 
-<section
-    id="page-create"
-    class="page"
->
+<section id="page-create" class="page">
 
-<h1>
-    Создать сервер
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Создать сервер</h1>
 
-<div class="subtitle">
-    Создание нового игрового сервера
-</div>
+            <div class="subtitle">
+                Новый игровой сервер
+            </div>
+        </div>
+    </div>
 
+    <div class="card">
 
-<div class="card">
+        <div class="card-title">
+            Основные настройки
+        </div>
 
-<div class="card-title">
-    Основные настройки
-</div>
+        <input
+            id="serverNameInput"
+            placeholder="Название сервера"
+            maxlength="64"
+        >
 
-<input
-    id="serverNameInput"
-    placeholder="Название сервера"
->
+        <select id="gameInput">
 
-<select id="gameInput">
+            <option value="SA:MP">
+                SA:MP
+            </option>
 
-<option value="SA:MP">
-    SA:MP
-</option>
+            <option value="CRMP">
+                CRMP
+            </option>
 
-<option value="CRMP">
-    CRMP
-</option>
+            <option value="Minecraft">
+                Minecraft
+            </option>
 
-<option value="Minecraft">
-    Minecraft
-</option>
+        </select>
 
-</select>
+        <button
+            class="btn primary"
+            onclick="createServerRequest()">
+            Создать сервер
+        </button>
 
-
-<button
-    class="btn primary"
-    onclick="createServerRequest()"
->
-Создать сервер
-</button>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- FILES -->
 
-<section
-    id="page-files"
-    class="page"
->
+<section id="page-files" class="page">
 
-<h1>
-    Файловый менеджер
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Файлы</h1>
 
-<div class="subtitle">
-    Выберите сервер для работы с файлами
-</div>
+            <div class="subtitle">
+                Выберите сервер
+            </div>
+        </div>
+    </div>
 
+    <div class="card">
 
-<div class="card">
+        <div id="fileServers"
+             class="server-list">
+            Загрузка...
+        </div>
 
-<div
-    id="fileServers"
-    class="server-list"
->
-    Загрузка...
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- CONSOLE -->
 
-<section
-    id="page-console"
-    class="page"
->
+<section id="page-console" class="page">
 
-<h1>
-    Консоль
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Консоль</h1>
 
-<div class="subtitle">
-    Управление сервером через консоль
-</div>
+            <div class="subtitle">
+                Управление игровым сервером
+            </div>
+        </div>
+    </div>
 
+    <div class="card">
 
-<div class="card">
+        <div class="empty">
+            Откройте сервер и перейдите
+            во вкладку «Консоль».
+        </div>
 
-<div class="empty">
-    Откройте страницу управления сервером,
-    чтобы использовать консоль.
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- WEBSITES -->
 
-<section
-    id="page-websites"
-    class="page"
->
+<section id="page-websites" class="page">
 
-<h1>
-    Веб-сайты
-</h1>
+    <div class="page-head">
+        <div>
+            <h1>Веб-сайты</h1>
 
-<div class="card">
+            <div class="subtitle">
+                Управление сайтами
+            </div>
+        </div>
+    </div>
 
-<div class="empty">
-    Раздел веб-сайтов будет добавлен
-    следующим этапом.
-</div>
+    <div class="card">
 
-</div>
+        <div class="empty">
+            Раздел находится в разработке.
+        </div>
+
+    </div>
 
 </section>
 
 
 <!-- PROFILE -->
 
-<section
-    id="page-profile"
-    class="page"
->
+<section id="page-profile" class="page">
 
-<h1>
-    Профиль
-</h1>
+    <div class="page-head">
 
-<div class="subtitle">
-    Данные аккаунта
-</div>
+        <div>
+            <h1>Профиль</h1>
 
+            <div class="subtitle">
+                Информация аккаунта
+            </div>
+        </div>
 
-<div class="card">
+    </div>
 
-<div class="profile-grid">
+    <div class="card">
 
-<div>
+        <div class="profile-grid">
 
-<div class="section-title">
-    Логин
-</div>
+            <div class="profile-item">
 
-<div id="profileUsername">
-    —
-</div>
+                <div class="profile-label">
+                    Логин
+                </div>
 
-</div>
+                <div class="profile-value"
+                     id="profileUsername">
+                    —
+                </div>
 
+            </div>
 
-<div>
+            <div class="profile-item">
 
-<div class="section-title">
-    Email
-</div>
+                <div class="profile-label">
+                    Email
+                </div>
 
-<div id="profileEmail">
-    —
-</div>
+                <div class="profile-value"
+                     id="profileEmail">
+                    —
+                </div>
 
-</div>
+            </div>
 
+            <div class="profile-item">
 
-<div>
+                <div class="profile-label">
+                    ID пользователя
+                </div>
 
-<div class="section-title">
-    ID пользователя
-</div>
+                <div class="profile-value"
+                     id="profileId">
+                    —
+                </div>
 
-<div id="profileId">
-    —
-</div>
+            </div>
 
-</div>
+            <div class="profile-item">
 
+                <div class="profile-label">
+                    Баланс
+                </div>
 
-<div>
+                <div class="profile-value"
+                     id="profileBalance">
+                    0 ₽
+                </div>
 
-<div class="section-title">
-    Баланс
-</div>
+            </div>
 
-<div id="profileBalance">
-    0 ₽
-</div>
+        </div>
 
-</div>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- OWNERS -->
 
-<section
-    id="page-owners"
-    class="page"
->
+<section id="page-owners" class="page">
 
-<h1>
-    Совладельцы
-</h1>
+    <div class="page-head">
 
-<div class="subtitle">
-    Передавайте доступ к своим серверам
-</div>
+        <div>
+            <h1>Совладельцы</h1>
 
+            <div class="subtitle">
+                Передача доступа к серверу
+            </div>
+        </div>
 
-<div class="card">
+    </div>
 
-<div class="card-title">
-    Ключ доступа
-</div>
+    <div class="card">
 
-<p style="color:#7b8594">
-    Выберите сервер, чтобы создать ключ.
-</p>
+        <div class="card-title">
+            Создать ключ
+        </div>
 
-<div
-    id="ownerServers"
-    class="server-list"
->
-    Загрузка...
-</div>
+        <div id="ownerServers"
+             class="server-list">
+            Загрузка...
+        </div>
 
-</div>
+    </div>
 
+    <div class="card">
 
-<div class="card">
+        <div class="card-title">
+            Ввести ключ
+        </div>
 
-<div class="card-title">
-    Ввести ключ
-</div>
+        <input
+            id="accessKey"
+            placeholder="Ключ доступа"
+        >
 
-<input
-    id="accessKey"
-    placeholder="Введите ключ доступа"
->
+        <button
+            class="btn primary"
+            onclick="useAccessKey()">
+            Получить доступ
+        </button>
 
-<button
-    class="btn primary"
-    onclick="useAccessKey()"
->
-Получить доступ
-</button>
-
-</div>
+    </div>
 
 </section>
 
 
 <!-- BALANCE -->
 
-<section
-    id="page-balancePage"
-    class="page"
->
+<section id="page-balancePage" class="page">
 
-<h1>
-    Баланс
-</h1>
+    <div class="page-head">
 
-<div class="subtitle">
-    Ваш баланс REWET HOST
-</div>
+        <div>
+            <h1>Баланс</h1>
 
+            <div class="subtitle">
+                REWET HOST
+            </div>
+        </div>
 
-<div class="card">
+    </div>
 
-<div
-    class="stat-value"
-    id="bigBalance"
->
-    0 ₽
-</div>
+    <div class="card">
 
-<p style="color:#737e8e">
-    Пополнение баланса будет подключено
-    следующим этапом.
-</p>
+        <div class="stat-label">
+            Текущий баланс
+        </div>
 
-</div>
+        <div class="stat-value"
+             id="bigBalance">
+            0 ₽
+        </div>
+
+        <p style="color:#687382;font-size:11px">
+            Пополнение баланса будет подключено
+            следующим этапом.
+        </p>
+
+    </div>
 
 </section>
-
 
 </main>
 
 </div>
 
 
+<!-- MOBILE NAV -->
+
+<nav class="mobile-nav">
+
+    <button
+        class="active"
+        onclick="mobilePage('home',this)">
+        <span>⌂</span>
+        Главная
+    </button>
+
+    <button
+        onclick="mobilePage('servers',this)">
+        <span>▣</span>
+        Серверы
+    </button>
+
+    <button
+        onclick="mobilePage('files',this)">
+        <span>▤</span>
+        Файлы
+    </button>
+
+    <button
+        onclick="mobilePage('profile',this)">
+        <span>●</span>
+        Профиль
+    </button>
+
+</nav>
+
+
 <script>
 
-/* =========================
-   TOKEN
-========================= */
+/* TOKEN */
 
 function getToken(){
 
@@ -880,23 +1056,19 @@ function getToken(){
         localStorage.getItem("auth_token") ||
         ""
     );
+
 }
 
 
-/* =========================
-   API
-========================= */
+/* API */
 
-async function api(
-    url,
-    options={}
-){
+async function api(url,options={}){
 
-    const headers={
+    const headers = {
         ...(options.body !== undefined
             ? {
                 "Content-Type":
-                    "application/json"
+                "application/json"
             }
             : {}
         ),
@@ -906,19 +1078,15 @@ async function api(
     };
 
     const response =
-        await fetch(
-            url,
-            {
-                ...options,
-                headers
-            }
-        );
+        await fetch(url,{
+            ...options,
+            headers
+        });
 
     let data={};
 
     try{
-        data =
-            await response.json();
+        data=await response.json();
     }catch{}
 
     if(response.status===401){
@@ -928,6 +1096,7 @@ async function api(
         throw new Error(
             "Необходима авторизация"
         );
+
     }
 
     if(!response.ok){
@@ -936,27 +1105,23 @@ async function api(
             data.message ||
             "Ошибка запроса"
         );
+
     }
 
     return data;
+
 }
 
 
-/* =========================
-   PAGES
-========================= */
+/* PAGE */
 
-function openPage(
-    name,
-    button
-){
+function openPage(name,button){
 
     document
         .querySelectorAll(".page")
-        .forEach(
-            page =>
-                page.classList.remove("active")
-        );
+        .forEach(page=>{
+            page.classList.remove("active");
+        });
 
     const page =
         document.getElementById(
@@ -968,17 +1133,19 @@ function openPage(
     }
 
     document
-        .querySelectorAll(".menu button")
-        .forEach(
-            item =>
-                item.classList.remove("active")
-        );
+        .querySelectorAll(
+            ".menu button,.mobile-nav button"
+        )
+        .forEach(item=>{
+            item.classList.remove("active");
+        });
 
     if(button){
         button.classList.add("active");
     }
 
-    if(name==="servers"){
+    if(name==="home" ||
+       name==="servers"){
         loadServers();
     }
 
@@ -989,39 +1156,40 @@ function openPage(
     if(name==="owners"){
         loadOwnerServers();
     }
+
+}
+
+
+function mobilePage(name,button){
+
+    openPage(name,button);
+
 }
 
 
 function openPageByName(name){
 
-    const buttons =
-        document.querySelectorAll(
-            ".menu button"
-        );
-
     let found=null;
 
-    buttons.forEach(button => {
+    document
+        .querySelectorAll(".menu button")
+        .forEach(button=>{
 
-        if(
-            button.textContent
-                .includes("Создать сервер")
-        ){
-            found=button;
-        }
+            if(
+                button.textContent
+                    .includes("Создать сервер")
+            ){
+                found=button;
+            }
 
-    });
+        });
 
-    openPage(
-        name,
-        found
-    );
+    openPage(name,found);
+
 }
 
 
-/* =========================
-   USER
-========================= */
+/* USER */
 
 async function loadUser(){
 
@@ -1032,54 +1200,53 @@ async function loadUser(){
                 "/api/auth/me"
             );
 
-        const user =
-            data.user;
+        const user=data.user;
 
-        document.getElementById(
-            "balance"
-        ).textContent =
+        const balance =
             user.balance || 0;
 
         document.getElementById(
+            "balance"
+        ).textContent=balance;
+
+        document.getElementById(
             "balanceStat"
-        ).textContent =
-            (user.balance || 0)+" ₽";
+        ).textContent=balance+" ₽";
 
         document.getElementById(
             "bigBalance"
-        ).textContent =
-            (user.balance || 0)+" ₽";
+        ).textContent=balance+" ₽";
 
         document.getElementById(
             "profileUsername"
-        ).textContent =
+        ).textContent=
             user.username || "—";
 
         document.getElementById(
             "profileEmail"
-        ).textContent =
+        ).textContent=
             user.email || "—";
 
         document.getElementById(
             "profileId"
-        ).textContent =
+        ).textContent=
             "#"+user.id;
 
         document.getElementById(
             "profileBalance"
-        ).textContent =
-            (user.balance || 0)+" ₽";
+        ).textContent=
+            balance+" ₽";
 
     }catch(error){
 
         console.error(error);
+
     }
+
 }
 
 
-/* =========================
-   SERVERS
-========================= */
+/* SERVERS */
 
 async function loadServers(){
 
@@ -1105,34 +1272,28 @@ async function loadServers(){
 
         document.getElementById(
             "serverCount"
-        ).textContent =
+        ).textContent=
             servers.length;
 
-        if(servers.length===0){
+        if(!servers.length){
 
-            container.innerHTML =
-                `<div class="card">
-                    <div class="empty">
-                        У вас пока нет серверов
-                    </div>
-                </div>`;
-
-            home.innerHTML =
+            const empty=
                 `<div class="empty">
                     Серверов пока нет
                 </div>`;
 
+            container.innerHTML=empty;
+            home.innerHTML=empty;
+
             return;
         }
 
-
-        container.innerHTML =
+        container.innerHTML=
             servers
                 .map(serverHTML)
                 .join("");
 
-
-        home.innerHTML =
+        home.innerHTML=
             servers
                 .slice(0,3)
                 .map(serverHTML)
@@ -1140,94 +1301,120 @@ async function loadServers(){
 
     }catch(error){
 
-        container.innerHTML =
+        const message=
+            escapeHtml(
+                error.message
+            );
+
+        container.innerHTML=
             `<div class="card">
                 <div class="empty">
-                    ${escapeHtml(error.message)}
+                    ${message}
                 </div>
             </div>`;
 
-        home.innerHTML =
+        home.innerHTML=
             `<div class="empty">
-                ${escapeHtml(error.message)}
+                ${message}
             </div>`;
+
     }
+
 }
 
+
+/* SERVER CARD */
 
 function serverHTML(server){
 
     const status =
         server.status || "stopped";
 
-    const statusText =
-        status==="running"
-            ? "Включен"
-            : status==="starting"
-                ? "Запускается"
-                : status==="stopping"
-                    ? "Останавливается"
-                    : "Выключен";
+    let statusText="Выключен";
+    let statusClass=
+        "status-stopped";
+
+    if(status==="running"){
+
+        statusText="Включен";
+        statusClass=
+            "status-running";
+
+    }
+
+    if(status==="starting"){
+
+        statusText="Запускается";
+        statusClass=
+            "status-starting";
+
+    }
+
+    if(status==="stopping"){
+
+        statusText="Останавливается";
+        statusClass=
+            "status-stopping";
+
+    }
 
     return `
-    <div class="server">
+        <div class="server">
 
-        <div>
+            <div class="server-info">
 
-            <div class="server-name">
-                ${escapeHtml(server.name)}
+                <div class="server-name">
+                    ${escapeHtml(server.name)}
+                </div>
+
+                <div class="server-game">
+                    ${escapeHtml(server.game)}
+                    · #${server.id}
+                </div>
+
+                <div class="server-status ${statusClass}">
+                    ● ${statusText}
+                </div>
+
             </div>
 
-            <div class="server-game">
-                ${escapeHtml(server.game)}
-                · ID #${server.id}
-            </div>
+            <div class="buttons">
 
-            <div class="server-status">
-                ● ${statusText}
+                <button
+                    class="btn primary"
+                    onclick="manageServer(${server.id})">
+                    Управление
+                </button>
+
             </div>
 
         </div>
+    `;
 
-        <div class="buttons">
-
-            <button
-                class="btn primary"
-                onclick="manageServer(${server.id})"
-            >
-                Управление
-            </button>
-
-        </div>
-
-    </div>`;
 }
 
 
-/* =========================
-   OPEN SERVER
-========================= */
+/* SERVER */
 
 function manageServer(id){
 
-    window.location.href =
+    window.location.href=
         "/server?id="+
         encodeURIComponent(id);
+
 }
 
 
-/* =========================
-   CREATE SERVER
-========================= */
+/* CREATE */
 
 async function createServerRequest(){
 
-    const name =
+    const name=
         document.getElementById(
             "serverNameInput"
         ).value.trim();
 
-    const game =
+    const game=
         document.getElementById(
             "gameInput"
         ).value;
@@ -1243,7 +1430,7 @@ async function createServerRequest(){
 
     try{
 
-        const data =
+        const data=
             await api(
                 "/api/servers",
                 {
@@ -1258,7 +1445,7 @@ async function createServerRequest(){
             );
 
         alert(
-            "Сервер создан!"
+            "Сервер успешно создан!"
         );
 
         document.getElementById(
@@ -1278,6 +1465,7 @@ async function createServerRequest(){
             );
 
             loadServers();
+
         }
 
     }catch(error){
@@ -1285,34 +1473,34 @@ async function createServerRequest(){
         alert(
             error.message
         );
+
     }
+
 }
 
 
-/* =========================
-   FILE SERVERS
-========================= */
+/* FILES */
 
 async function loadFileServers(){
 
-    const container =
+    const container=
         document.getElementById(
             "fileServers"
         );
 
     try{
 
-        const data =
+        const data=
             await api(
                 "/api/servers"
             );
 
-        const servers =
+        const servers=
             data.servers || [];
 
         if(!servers.length){
 
-            container.innerHTML =
+            container.innerHTML=
                 `<div class="empty">
                     Серверов нет
                 </div>`;
@@ -1320,63 +1508,65 @@ async function loadFileServers(){
             return;
         }
 
-        container.innerHTML =
+        container.innerHTML=
             servers
-                .map(server => `
+                .map(server=>`
+
                     <div class="server">
 
-                        <div>
+                        <div class="server-info">
 
                             <div class="server-name">
                                 ${escapeHtml(server.name)}
                             </div>
 
                             <div class="server-game">
-                                #${server.id}
+                                ${escapeHtml(server.game)}
+                                · #${server.id}
                             </div>
 
                         </div>
 
                         <button
                             class="btn primary"
-                            onclick="manageServer(${server.id})"
-                        >
+                            onclick="manageServer(${server.id})">
                             Открыть
                         </button>
 
                     </div>
+
                 `)
                 .join("");
 
     }catch(error){
 
-        container.innerHTML =
+        container.innerHTML=
             `<div class="empty">
                 ${escapeHtml(error.message)}
             </div>`;
+
     }
+
 }
 
 
-/* =========================
-   OWNER SERVERS
-========================= */
+/* OWNERS */
 
 async function loadOwnerServers(){
 
-    const container =
+    const container=
         document.getElementById(
             "ownerServers"
         );
 
     try{
 
-        const data =
+        const data=
             await api(
                 "/api/servers"
             );
 
-        const servers =
+        const servers=
             (data.servers || [])
                 .filter(
                     server =>
@@ -1385,20 +1575,21 @@ async function loadOwnerServers(){
 
         if(!servers.length){
 
-            container.innerHTML =
+            container.innerHTML=
                 `<div class="empty">
-                    У вас нет собственных серверов
+                    Нет собственных серверов
                 </div>`;
 
             return;
         }
 
-        container.innerHTML =
+        container.innerHTML=
             servers
-                .map(server => `
+                .map(server=>`
+
                     <div class="server">
 
-                        <div>
+                        <div class="server-info">
 
                             <div class="server-name">
                                 ${escapeHtml(server.name)}
@@ -1412,36 +1603,34 @@ async function loadOwnerServers(){
 
                         <button
                             class="btn primary"
-                            onclick="generateKey(${server.id})"
-                        >
+                            onclick="generateKey(${server.id})">
                             Создать ключ
                         </button>
 
                     </div>
+
                 `)
                 .join("");
 
     }catch(error){
 
-        container.innerHTML =
+        container.innerHTML=
             `<div class="empty">
                 ${escapeHtml(error.message)}
             </div>`;
+
     }
+
 }
 
 
-/* =========================
-   ACCESS KEY
-========================= */
+/* ACCESS KEY */
 
-async function generateKey(
-    serverId
-){
+async function generateKey(serverId){
 
     try{
 
-        const data =
+        const data=
             await api(
                 `/api/servers/${serverId}/access-key`,
                 {
@@ -1460,18 +1649,20 @@ async function generateKey(
         alert(
             error.message
         );
+
     }
+
 }
 
 
 async function useAccessKey(){
 
-    const input =
+    const input=
         document.getElementById(
             "accessKey"
         );
 
-    const key =
+    const key=
         input.value.trim();
 
     if(!key){
@@ -1510,13 +1701,13 @@ async function useAccessKey(){
         alert(
             error.message
         );
+
     }
+
 }
 
 
-/* =========================
-   LOGOUT
-========================= */
+/* LOGOUT */
 
 function logout(){
 
@@ -1532,14 +1723,13 @@ function logout(){
         "auth_token"
     );
 
-    window.location.href =
+    window.location.href=
         "/login";
+
 }
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
+/* ESCAPE */
 
 function escapeHtml(value){
 
@@ -1551,25 +1741,25 @@ function escapeHtml(value){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+
 }
 
 
-/* =========================
-   START
-========================= */
+/* START */
 
 if(!getToken()){
 
-    window.location.href =
+    window.location.href=
         "/login";
 
 }else{
 
     loadUser();
     loadServers();
+
 }
 
 </script>
 
 </body>
-</html>
+    </html>
