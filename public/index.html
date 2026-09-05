@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>REWET HOST</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #222;
+            background: #0d0d0d;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #ff2020;
+            letter-spacing: 2px;
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .hero {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(45px, 8vw, 90px);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #ff2020;
+        }
+
+        .hero p {
+            color: #aaa;
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #ff2020;
+            color: white;
+        }
+
+        .secondary {
+            border: 1px solid #444;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #d91616;
+        }
+
+        .secondary:hover {
+            background: #171717;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 0 20px;
+            }
+
+            nav a {
+                margin-left: 10px;
+                font-size: 14px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">REWET HOST</div>
+
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/login">Войти</a>
+        <a href="/register">Регистрация</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+
+        <h1>REWET <span>HOST</span></h1>
+
+        <p>
+            Игровой хостинг нового поколения.
+            Создавай серверы, управляй ими и играй без ограничений.
+        </p>
+
+        <div class="buttons">
+            <a class="btn primary" href="/register">
+                Создать аккаунт
+            </a>
+
+            <a class="btn secondary" href="/login">
+                Войти
+            </a>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>
