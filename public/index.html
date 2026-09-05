@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>REWET HOST — Игровой хостинг</title>
+    <title>REWET HOST — Игровой и веб-хостинг</title>
+
+    <meta
+        name="description"
+        content="REWET HOST — игровой хостинг и веб-хостинг. Создавайте игровые серверы и сайты в одной панели."
+    >
 
     <style>
         * {
@@ -13,188 +18,510 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #080b14;
-            color: white;
+            font-family: Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(92, 60, 255, .18), transparent 30%),
+                radial-gradient(circle at 80% 20%, rgba(0, 180, 255, .10), transparent 30%),
+                #070910;
+            color: #fff;
             min-height: 100vh;
         }
 
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 32px));
+            margin: auto;
+        }
+
+        /* HEADER */
+
         header {
-            height: 75px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7, 9, 16, .78);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .nav {
+            height: 72px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 7%;
-            background: rgba(8, 11, 20, .95);
-            border-bottom: 1px solid #1f2937;
+            gap: 20px;
         }
 
         .logo {
-            font-size: 25px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: -.5px;
         }
 
-        .logo span {
-            color: #6366f1;
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7057ff, #3c8cff);
+            box-shadow: 0 8px 30px rgba(82, 91, 255, .35);
         }
 
-        nav {
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            color: #aeb4c7;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-buttons {
             display: flex;
             gap: 10px;
         }
 
-        nav a {
-            text-decoration: none;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
+        .btn {
+            border: 0;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 11px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: .2s;
         }
 
-        nav a:hover {
-            background: #1f2937;
+        .btn:hover {
+            transform: translateY(-2px);
         }
 
-        .login {
-            background: #1f2937;
+        .btn-outline {
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.1);
+            color: #fff;
         }
 
-        .register {
-            background: #6366f1;
+        .btn-primary {
+            background: linear-gradient(135deg, #7358ff, #3f8cff);
+            color: #fff;
+            box-shadow: 0 10px 35px rgba(83, 87, 255, .25);
         }
+
+        /* HERO */
 
         .hero {
-            max-width: 1100px;
-            margin: auto;
-            min-height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 105px 0 80px;
             text-align: center;
-            padding: 50px 20px;
-        }
-
-        .hero-content {
-            max-width: 800px;
         }
 
         .badge {
-            display: inline-block;
-            padding: 8px 14px;
-            border: 1px solid #374151;
-            border-radius: 30px;
-            color: #a5b4fc;
-            margin-bottom: 20px;
-            background: #111827;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 13px;
+            border-radius: 999px;
+            background: rgba(108, 83, 255, .11);
+            border: 1px solid rgba(108, 83, 255, .25);
+            color: #b8adff;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #62e6a4;
+            box-shadow: 0 0 12px #62e6a4;
         }
 
         h1 {
-            font-size: clamp(42px, 8vw, 76px);
-            line-height: 1;
-            margin-bottom: 25px;
+            max-width: 850px;
+            margin: auto;
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: .98;
+            letter-spacing: -4px;
         }
 
-        h1 span {
-            color: #6366f1;
+        .gradient-text {
+            background: linear-gradient(90deg, #8c76ff, #50a5ff);
+            -webkit-background-clip: text;
+            color: transparent;
         }
 
-        .description {
-            color: #9ca3af;
-            font-size: 19px;
-            line-height: 1.6;
-            margin-bottom: 35px;
+        .hero-text {
+            max-width: 680px;
+            margin: 28px auto 0;
+            color: #9ba2b7;
+            font-size: 18px;
+            line-height: 1.7;
         }
 
-        .buttons {
+        .hero-buttons {
             display: flex;
             justify-content: center;
-            gap: 12px;
             flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 34px;
         }
 
-        .button {
-            display: inline-block;
-            text-decoration: none;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: bold;
+        .hero-buttons .btn {
+            padding: 15px 24px;
         }
 
-        .primary {
-            background: #6366f1;
-            color: white;
-        }
+        /* STATS */
 
-        .secondary {
-            background: #111827;
-            color: white;
-            border: 1px solid #374151;
-        }
-
-        .features {
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px 20px 70px;
-        }
-
-        .features h2 {
-            text-align: center;
-            font-size: 34px;
-            margin-bottom: 35px;
-        }
-
-        .grid {
+        .stats {
             display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(220px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 90px;
         }
 
-        .card {
-            background: #111827;
-            border: 1px solid #1f2937;
+        .stat {
+            padding: 24px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.07);
+            background: rgba(255,255,255,.025);
+            border-radius: 18px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 27px;
+            margin-bottom: 6px;
+        }
+
+        .stat span {
+            color: #81899f;
+            font-size: 13px;
+        }
+
+        /* SECTION */
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -2px;
+        }
+
+        .section-title p {
+            margin-top: 12px;
+            color: #858ca0;
+        }
+
+        /* SERVICES */
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .service {
+            position: relative;
+            overflow: hidden;
+            padding: 34px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,.08);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+        }
+
+        .service::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -80px;
+            top: -80px;
+            border-radius: 50%;
+            background: rgba(101, 83, 255, .15);
+            filter: blur(35px);
+        }
+
+        .service-icon {
+            width: 54px;
+            height: 54px;
+            display: grid;
+            place-items: center;
             border-radius: 15px;
-            padding: 25px;
+            background: rgba(110, 89, 255, .14);
+            border: 1px solid rgba(110, 89, 255, .22);
+            font-size: 25px;
+            margin-bottom: 23px;
         }
 
-        .icon {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .card h3 {
+        .service h3 {
+            font-size: 25px;
             margin-bottom: 10px;
         }
 
-        .card p {
-            color: #9ca3af;
-            line-height: 1.5;
+        .service p {
+            color: #858ca0;
+            line-height: 1.65;
+            margin-bottom: 22px;
         }
+
+        .features {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .features li {
+            color: #c8ccda;
+            font-size: 14px;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #6ee7a6;
+            margin-right: 9px;
+            font-weight: 900;
+        }
+
+        /* GAMES */
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 13px;
+        }
+
+        .game {
+            padding: 21px 10px;
+            text-align: center;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,.07);
+            background: rgba(255,255,255,.025);
+            color: #c7cbd8;
+            font-size: 13px;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .game:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,.055);
+        }
+
+        .game-icon {
+            font-size: 25px;
+            display: block;
+            margin-bottom: 9px;
+        }
+
+        /* PRICING */
+
+        .pricing {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .price-card {
+            padding: 30px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.025);
+        }
+
+        .price-card.featured {
+            border-color: rgba(105, 87, 255, .55);
+            background: linear-gradient(
+                145deg,
+                rgba(105,87,255,.12),
+                rgba(255,255,255,.025)
+            );
+        }
+
+        .price-card h3 {
+            font-size: 21px;
+        }
+
+        .price {
+            font-size: 36px;
+            font-weight: 900;
+            margin: 20px 0 5px;
+        }
+
+        .price small {
+            color: #777f94;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .price-card p {
+            color: #858ca0;
+            line-height: 1.5;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .price-card .btn {
+            width: 100%;
+        }
+
+        /* CTA */
+
+        .cta {
+            text-align: center;
+            padding: 75px 25px;
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,.08);
+            background:
+                radial-gradient(circle at center, rgba(101,83,255,.18), transparent 55%),
+                rgba(255,255,255,.025);
+        }
+
+        .cta h2 {
+            font-size: clamp(30px, 5vw, 48px);
+            letter-spacing: -2px;
+        }
+
+        .cta p {
+            color: #858ca0;
+            margin: 14px auto 28px;
+            max-width: 570px;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
 
         footer {
-            border-top: 1px solid #1f2937;
-            text-align: center;
-            padding: 25px;
-            color: #6b7280;
+            border-top: 1px solid rgba(255,255,255,.07);
+            margin-top: 80px;
+            padding: 35px 0;
+            color: #70788d;
+            font-size: 13px;
         }
 
-        @media (max-width: 600px) {
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
 
-            header {
-                padding: 0 15px;
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                display: none;
             }
 
-            nav a {
-                padding: 8px;
-                font-size: 14px;
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .services,
+            .pricing {
+                grid-template-columns: 1fr;
+            }
+
+            .games {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                width: min(100% - 22px, 1180px);
+            }
+
+            .nav {
+                height: 64px;
+            }
+
+            .logo {
+                font-size: 17px;
+            }
+
+            .logo-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-buttons .btn {
+                padding: 9px 12px;
+                font-size: 12px;
             }
 
             .hero {
-                min-height: 520px;
+                padding: 75px 0 55px;
             }
 
-            .description {
-                font-size: 16px;
+            h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero-text {
+                font-size: 15px;
+            }
+
+            section {
+                padding: 55px 0;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                margin-bottom: 45px;
+            }
+
+            .stat {
+                padding: 18px 8px;
+            }
+
+            .games {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service {
+                padding: 25px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -203,130 +530,325 @@
 <body>
 
 <header>
+    <div class="container nav">
 
-    <div class="logo">
-        REWET <span>HOST</span>
+        <a href="/" class="logo">
+            <span class="logo-icon">⚡</span>
+            REWET HOST
+        </a>
+
+        <nav class="nav-links">
+            <a href="#services">Услуги</a>
+            <a href="#games">Игры</a>
+            <a href="#pricing">Тарифы</a>
+            <a href="#support">Поддержка</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="/login" class="btn btn-outline">Войти</a>
+            <a href="/register" class="btn btn-primary">Регистрация</a>
+        </div>
+
     </div>
-
-    <nav>
-        <a href="/login" class="login">
-            Войти
-        </a>
-
-        <a href="/register" class="register">
-            Регистрация
-        </a>
-    </nav>
-
 </header>
 
-<section class="hero">
+<main>
 
-    <div class="hero-content">
+    <!-- HERO -->
 
-        <div class="badge">
-            🎮 Игровой хостинг нового поколения
+    <section class="hero">
+        <div class="container">
+
+            <div class="badge">
+                <span class="badge-dot"></span>
+                REWET HOST онлайн
+            </div>
+
+            <h1>
+                Твой сервер.
+                <br>
+                <span class="gradient-text">Твоя инфраструктура.</span>
+            </h1>
+
+            <p class="hero-text">
+                Игровой и веб-хостинг в одной панели.
+                Создавай игровые серверы и сайты,
+                управляй ими и развивай свой проект вместе с REWET HOST.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/register" class="btn btn-primary">
+                    🚀 Начать бесплатно
+                </a>
+
+                <a href="#services" class="btn btn-outline">
+                    Узнать больше
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- STATS -->
+
+    <div class="container stats">
+
+        <div class="stat">
+            <strong>20 дней</strong>
+            <span>бесплатного теста</span>
         </div>
 
-        <h1>
-            REWET <span>HOST</span>
-        </h1>
+        <div class="stat">
+            <strong>24/7</strong>
+            <span>доступ к панели</span>
+        </div>
 
-        <p class="description">
-            Управляй своими игровыми серверами,
-            приглашай совладельцев и следи за ними
-            в одной удобной панели.
-        </p>
+        <div class="stat">
+            <strong>2+</strong>
+            <span>направления</span>
+        </div>
 
-        <div class="buttons">
-
-            <a
-                href="/register"
-                class="button primary"
-            >
-                Создать аккаунт
-            </a>
-
-            <a
-                href="/login"
-                class="button secondary"
-            >
-                Войти в панель
-            </a>
-
+        <div class="stat">
+            <strong>1</strong>
+            <span>единая панель</span>
         </div>
 
     </div>
 
-</section>
+    <!-- SERVICES -->
 
-<section class="features">
+    <section id="services">
+        <div class="container">
 
-    <h2>
-        Возможности REWET HOST
-    </h2>
+            <div class="section-title">
+                <h2>Всё необходимое в одном месте</h2>
+                <p>Выбирай нужную инфраструктуру и управляй ей из одной панели.</p>
+            </div>
 
-    <div class="grid">
+            <div class="services">
 
-        <div class="card">
-            <div class="icon">🖥️</div>
+                <div class="service">
+                    <div class="service-icon">🎮</div>
 
-            <h3>
-                Управление серверами
-            </h3>
+                    <h3>Игровой хостинг</h3>
 
-            <p>
-                Создавай и управляй своими
-                игровыми серверами из одной панели.
-            </p>
+                    <p>
+                        Запускай игровые серверы и управляй ими
+                        через удобную панель REWET HOST.
+                    </p>
+
+                    <ul class="features">
+                        <li>Бесплатный тест 20 дней</li>
+                        <li>Управление сервером</li>
+                        <li>Система совладельцев</li>
+                        <li>Доступ к серверной панели</li>
+                    </ul>
+                </div>
+
+                <div class="service">
+                    <div class="service-icon">🌐</div>
+
+                    <h3>Веб-хостинг</h3>
+
+                    <p>
+                        Размещай сайты и веб-проекты
+                        на инфраструктуре REWET HOST.
+                    </p>
+
+                    <ul class="features">
+                        <li>Размещение сайтов</li>
+                        <li>Подключение домена</li>
+                        <li>SSL / HTTPS</li>
+                        <li>Управление файлами</li>
+                    </ul>
+                </div>
+
+            </div>
+
         </div>
+    </section>
 
-        <div class="card">
-            <div class="icon">🔑</div>
+    <!-- GAMES -->
 
-            <h3>
-                Совладельцы
-            </h3>
+    <section id="games">
+        <div class="container">
 
-            <p>
-                Выдавай ключ доступа друзьям,
-                чтобы они могли получить доступ
-                к серверу.
-            </p>
+            <div class="section-title">
+                <h2>Популярные игры</h2>
+                <p>Поддержка игр будет постепенно расширяться.</p>
+            </div>
+
+            <div class="games">
+
+                <div class="game">
+                    <span class="game-icon">🚗</span>
+                    SA:MP
+                </div>
+
+                <div class="game">
+                    <span class="game-icon">🌆</span>
+                    CRMP
+                </div>
+
+                <div class="game">
+                    <span class="game-icon">🎯</span>
+                    MTA
+                </div>
+
+                <div class="game">
+                    <span class="game-icon">⛏️</span>
+                    Minecraft
+                </div>
+
+                <div class="game">
+                    <span class="game-icon">🔫</span>
+                    CS 1.6
+                </div>
+
+                <div class="game">
+                    <span class="game-icon">💥</span>
+                    CS2
+                </div>
+
+            </div>
+
         </div>
+    </section>
 
-        <div class="card">
-            <div class="icon">📅</div>
+    <!-- PRICING -->
 
-            <h3>
-                Тестовый период
-            </h3>
+    <section id="pricing">
+        <div class="container">
 
-            <p>
-                Новый сервер получает
-                тестовый период на 20 дней.
-            </p>
+            <div class="section-title">
+                <h2>Простые тарифы</h2>
+                <p>Начни с тестового периода и выбери подходящий вариант.</p>
+            </div>
+
+            <div class="pricing">
+
+                <div class="price-card">
+                    <h3>Тест</h3>
+
+                    <div class="price">
+                        0 ₽
+                        <small>/ 20 дней</small>
+                    </div>
+
+                    <p>
+                        Попробуй REWET HOST перед покупкой.
+                    </p>
+
+                    <ul class="features">
+                        <li>Игровой сервер</li>
+                        <li>Панель управления</li>
+                        <li>20 дней теста</li>
+                    </ul>
+
+                    <br>
+
+                    <a href="/register" class="btn btn-outline">
+                        Начать
+                    </a>
+                </div>
+
+                <div class="price-card featured">
+                    <h3>Игровой</h3>
+
+                    <div class="price">
+                        Скоро
+                    </div>
+
+                    <p>
+                        Полноценный игровой хостинг
+                        для твоего проекта.
+                    </p>
+
+                    <ul class="features">
+                        <li>Игровой сервер</li>
+                        <li>Расширенные ресурсы</li>
+                        <li>Бэкапы</li>
+                        <li>Управление сервером</li>
+                    </ul>
+
+                    <br>
+
+                    <a href="/register" class="btn btn-primary">
+                        Попробовать
+                    </a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Web</h3>
+
+                    <div class="price">
+                        Скоро
+                    </div>
+
+                    <p>
+                        Хостинг для сайтов и веб-приложений.
+                    </p>
+
+                    <ul class="features">
+                        <li>Веб-сайт</li>
+                        <li>Домен</li>
+                        <li>SSL</li>
+                        <li>Файловый менеджер</li>
+                    </ul>
+
+                    <br>
+
+                    <a href="/register" class="btn btn-outline">
+                        Попробовать
+                    </a>
+                </div>
+
+            </div>
+
         </div>
+    </section>
 
-        <div class="card">
-            <div class="icon">🌙</div>
+    <!-- CTA -->
 
-            <h3>
-                Современная панель
-            </h3>
+    <section id="support">
+        <div class="container">
 
-            <p>
-                Удобный адаптивный интерфейс
-                для компьютера и телефона.
-            </p>
+            <div class="cta">
+
+                <h2>
+                    Готов запустить свой проект?
+                </h2>
+
+                <p>
+                    Создай аккаунт REWET HOST и получи
+                    доступ к панели управления.
+                </p>
+
+                <a href="/register" class="btn btn-primary">
+                    🚀 Создать аккаунт
+                </a>
+
+            </div>
+
         </div>
+    </section>
 
-    </div>
-
-</section>
+</main>
 
 <footer>
-    © 2026 REWET HOST. Все права защищены.
+    <div class="container footer-content">
+
+        <div>
+            © 2026 REWET HOST. Все права защищены.
+        </div>
+
+        <div class="footer-links">
+            <a href="/login">Войти</a>
+            <a href="/register">Регистрация</a>
+            <a href="/api/health">Статус</a>
+        </div>
+
+    </div>
 </footer>
 
 </body>
