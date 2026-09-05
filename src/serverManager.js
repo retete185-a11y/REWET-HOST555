@@ -1,5 +1,8 @@
 const { query } = require("./db");
 
+/*
+ * Получение сервера с проверкой доступа пользователя
+ */
 async function getServerForUser(userId, serverId) {
     const result = await query(
         `
@@ -10,6 +13,7 @@ async function getServerForUser(userId, serverId) {
             s.game,
             s.status,
             s.expires_at,
+            s.created_at,
             CASE
                 WHEN s.owner_id = $1 THEN 'owner'
                 ELSE sm.role
@@ -34,9 +38,10 @@ async function getServerForUser(userId, serverId) {
     return result.rows[0];
 }
 
-
+/*
+ * Запуск сервера
+ */
 async function startServer(userId, serverId) {
-
     const server =
         await getServerForUser(
             userId,
@@ -58,6 +63,12 @@ async function startServer(userId, serverId) {
         );
     }
 
+    if (server.status === "starting") {
+        throw new Error(
+            "Сервер уже запускается"
+        );
+    }
+
     await query(
         `
         UPDATE servers
@@ -67,21 +78,18 @@ async function startServer(userId, serverId) {
         [serverId]
     );
 
-    /*
-     * Здесь позже будет команда
-     * игровому node REWET HOST.
-     */
-
     return {
         id: server.id,
         name: server.name,
+        game: server.game,
         status: "starting"
     };
 }
 
-
+/*
+ * Остановка сервера
+ */
 async function stopServer(userId, serverId) {
-
     const server =
         await getServerForUser(
             userId,
@@ -103,6 +111,12 @@ async function stopServer(userId, serverId) {
         );
     }
 
+    if (server.status === "stopping") {
+        throw new Error(
+            "Сервер уже останавливается"
+        );
+    }
+
     await query(
         `
         UPDATE servers
@@ -115,13 +129,15 @@ async function stopServer(userId, serverId) {
     return {
         id: server.id,
         name: server.name,
+        game: server.game,
         status: "stopping"
     };
 }
 
-
+/*
+ * Перезапуск сервера
+ */
 async function restartServer(userId, serverId) {
-
     const server =
         await getServerForUser(
             userId,
@@ -149,26 +165,31 @@ async function restartServer(userId, serverId) {
     return {
         id: server.id,
         name: server.name,
+        game: server.game,
         status: "starting"
     };
 }
 
-
+/*
+ * Изменение статуса серверного процесса.
+ * Позже это будет вызываться игровым Node.
+ */
 async function setServerStatus(
     serverId,
     status
 ) {
-
-    const allowed = [
+    const allowedStatuses = [
         "stopped",
         "starting",
         "running",
         "stopping"
     ];
 
-    if (!allowed.includes(status)) {
+    if (
+        !allowedStatuses.includes(status)
+    ) {
         throw new Error(
-            "Некорректный статус"
+            "Некорректный статус сервера"
         );
     }
 
@@ -178,17 +199,49 @@ async function setServerStatus(
         SET status = $1
         WHERE id = $2
         `,
-        [status, serverId]
+        [
+            status,
+            serverId
+        ]
     );
 
     return true;
 }
 
+/*
+ * Получить статус сервера
+ */
+async function getServerStatus(
+    serverId
+) {
+    const result = await query(
+        `
+        SELECT
+            id,
+            name,
+            game,
+            status,
+            expires_at
+        FROM servers
+        WHERE id = $1
+        `,
+        [serverId]
+    );
+
+    if (result.rows.length === 0) {
+        throw new Error(
+            "Сервер не найден"
+        );
+    }
+
+    return result.rows[0];
+}
 
 module.exports = {
     getServerForUser,
     startServer,
     stopServer,
     restartServer,
-    setServerStatus
+    setServerStatus,
+    getServerStatus
 };
