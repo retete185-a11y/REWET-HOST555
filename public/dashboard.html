@@ -2,417 +2,1153 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>REWET HOST — Панель</title>
+<title>REWET HOST — Панель управления</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+}
 
 body{
-    margin:0;
-    background:#f5f6f8;
-    color:#20242a;
-    font-family:Arial,Helvetica,sans-serif;
+    background:#050505;
+    color:#f5f5f5;
+    font-family:Inter,Arial,Helvetica,sans-serif;
     font-size:13px;
 }
 
-a{text-decoration:none;color:inherit}
+button,
+input,
+select{
+    font:inherit;
+}
 
-.header{
-    height:64px;
-    background:#fff;
-    border-bottom:1px solid #e5e7eb;
+button{
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app{
+    min-height:100vh;
+    display:flex;
+    background:
+        radial-gradient(
+            circle at 80% -10%,
+            rgba(255,255,255,.055),
+            transparent 28%
+        ),
+        #050505;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    width:235px;
+    min-height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+
+    background:#080808;
+    border-right:1px solid #1b1b1b;
+
+    display:flex;
+    flex-direction:column;
+
+    z-index:50;
+}
+
+.brand{
+    height:70px;
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    padding:0 22px;
+    border-bottom:1px solid #181818;
+}
+
+.brand-name{
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:.5px;
+}
+
+.brand-name span{
+    color:#686868;
+}
+
+.nav{
+    padding:18px 12px;
+}
+
+.nav-label{
+    color:#505050;
+    text-transform:uppercase;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:1px;
+    padding:0 10px 9px;
+}
+
+.nav-item{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    padding:11px 12px;
+    margin-bottom:4px;
+
+    border-radius:7px;
+
+    color:#777;
+    font-size:12px;
+
+    transition:.15s;
+}
+
+.nav-item:hover{
+    background:#111;
+    color:#fff;
+}
+
+.nav-item.active{
+    background:#151515;
+    color:#fff;
+    box-shadow:inset 2px 0 0 #fff;
+}
+
+.nav-icon{
+    width:18px;
+    text-align:center;
+    opacity:.9;
+}
+
+.sidebar-bottom{
+    margin-top:auto;
+    padding:12px;
+    border-top:1px solid #181818;
+}
+
+.logout{
+    color:#777;
+}
+
+.logout:hover{
+    color:#ff6969;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    width:calc(100% - 235px);
+    margin-left:235px;
+    min-height:100vh;
+}
+
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+    height:70px;
+
+    background:rgba(7,7,7,.92);
+    border-bottom:1px solid #181818;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
     padding:0 28px;
+
     position:sticky;
     top:0;
-    z-index:10;
-}
+    z-index:30;
 
-.logo{
-    font-size:19px;
-    font-weight:800;
-}
-
-.logo span{
-    color:#89919d;
+    backdrop-filter:blur(14px);
 }
 
 .account{
     display:flex;
     align-items:center;
-    gap:14px;
-    cursor:pointer;
+    gap:11px;
+}
+
+.avatar{
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
+
+    background:#161616;
+    border:1px solid #292929;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:800;
+    font-size:12px;
+}
+
+.account-info{
+    line-height:1.2;
 }
 
 .account-name{
-    font-weight:600;
+    font-weight:700;
+    font-size:12px;
 }
 
-.balance{
-    color:#68707c;
+.account-balance{
+    color:#686868;
+    font-size:10px;
+    margin-top:3px;
 }
 
-.container{
-    max-width:1180px;
-    margin:0 auto;
-    padding:28px 20px 50px;
+.account-menu{
+    color:#555;
+    font-size:16px;
 }
 
-.account-card{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:8px;
-    padding:22px;
+
+/* =========================
+   CONTENT
+========================= */
+
+.content{
+    max-width:1250px;
+    margin:auto;
+    padding:28px;
+}
+
+.page-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+
     margin-bottom:24px;
 }
 
-.title{
-    font-size:18px;
+.page-title{
+    font-size:25px;
+    font-weight:800;
+    letter-spacing:-.7px;
+}
+
+.page-subtitle{
+    color:#666;
+    font-size:11px;
+    margin-top:6px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+    background:#0b0b0b;
+    border:1px solid #1d1d1d;
+    border-radius:9px;
+    overflow:hidden;
+}
+
+.card-head{
+    padding:17px 19px;
+    border-bottom:1px solid #191919;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.card-title{
+    font-size:13px;
     font-weight:700;
+}
+
+.card-description{
+    color:#5e5e5e;
+    font-size:10px;
+    margin-top:4px;
+}
+
+
+/* =========================
+   ACCOUNT
+========================= */
+
+.account-card{
     margin-bottom:20px;
 }
 
 .account-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
+    grid-template-columns:
+        repeat(4,1fr);
+}
+
+.account-item{
+    padding:18px 19px;
+    border-right:1px solid #191919;
+}
+
+.account-item:last-child{
+    border-right:0;
 }
 
 .info-label{
-    color:#89919d;
-    font-size:11px;
-    margin-bottom:5px;
+    color:#555;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+    margin-bottom:7px;
 }
 
 .info-value{
-    font-size:13px;
+    color:#eee;
+    font-size:12px;
     font-weight:600;
+    word-break:break-word;
 }
 
-.balance-row{
+.balance-line{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:9px;
 }
 
 .topup{
-    color:#3678d8;
-    cursor:pointer;
-    font-size:12px;
+    color:#999;
+    font-size:10px;
+    border-bottom:1px dashed #555;
 }
 
-.section{
-    margin-top:24px;
+.topup:hover{
+    color:#fff;
 }
 
-.section-header{
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.stat-card{
+    background:#0b0b0b;
+    border:1px solid #1d1d1d;
+    border-radius:9px;
+    padding:17px;
+}
+
+.stat-top{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:12px;
 }
 
-.section-title{
-    font-size:17px;
-    font-weight:700;
+.stat-icon{
+    width:32px;
+    height:32px;
+    border-radius:7px;
+    background:#151515;
+    border:1px solid #222;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:14px;
 }
 
-.table-wrap{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:8px;
+.stat-label{
+    color:#5d5d5d;
+    font-size:10px;
+}
+
+.stat-number{
+    margin-top:13px;
+    font-size:22px;
+    font-weight:800;
+}
+
+
+/* =========================
+   SERVERS
+========================= */
+
+.server-card{
+    margin-bottom:20px;
+}
+
+.table-scroll{
     overflow-x:auto;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    min-width:700px;
+    min-width:720px;
 }
 
 th{
-    background:#fafafa;
-    color:#747c87;
-    font-size:11px;
-    font-weight:600;
+    padding:12px 18px;
     text-align:left;
-    padding:13px 16px;
-    border-bottom:1px solid #e5e7eb;
+
+    color:#505050;
+    background:#090909;
+
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+    font-weight:700;
+
+    border-bottom:1px solid #191919;
 }
 
 td{
-    padding:14px 16px;
-    border-bottom:1px solid #edf0f2;
+    padding:14px 18px;
+    border-bottom:1px solid #151515;
+    color:#aaa;
+    font-size:11px;
 }
 
-tr:last-child td{
+tbody tr{
+    transition:.12s;
+}
+
+tbody tr:hover{
+    background:#101010;
+}
+
+tbody tr:last-child td{
     border-bottom:0;
 }
 
 .server-id{
+    color:#fff;
     font-weight:700;
+}
+
+.game{
+    color:#777;
+}
+
+.ip{
+    font-family:monospace;
+    color:#888;
 }
 
 .status{
     display:inline-flex;
-    padding:5px 9px;
+    align-items:center;
+    gap:6px;
+
+    padding:5px 8px;
     border-radius:5px;
-    font-size:11px;
-    font-weight:600;
+
+    font-size:9px;
+    font-weight:700;
+}
+
+.status::before{
+    content:"";
+    width:5px;
+    height:5px;
+    border-radius:50%;
 }
 
 .status-on{
-    background:#e9f8ef;
-    color:#25834a;
+    background:#102017;
+    color:#65c982;
+}
+
+.status-on::before{
+    background:#65c982;
 }
 
 .status-off{
-    background:#f1f2f4;
-    color:#747b84;
+    background:#151515;
+    color:#777;
+}
+
+.status-off::before{
+    background:#555;
 }
 
 .status-start{
-    background:#fff5df;
-    color:#9b6b15;
+    background:#201b10;
+    color:#d0a85a;
+}
+
+.status-start::before{
+    background:#d0a85a;
+}
+
+.actions{
+    display:flex;
+    gap:6px;
 }
 
 .action{
-    display:inline-block;
-    padding:7px 11px;
-    background:#f0f2f5;
-    border:1px solid #e0e3e7;
+    border:1px solid #292929;
+    background:#141414;
+    color:#bbb;
+
+    padding:7px 10px;
     border-radius:5px;
-    font-size:11px;
-    cursor:pointer;
+
+    font-size:9px;
+    font-weight:600;
 }
 
 .action:hover{
-    background:#e7e9ec;
-}
-
-.empty{
-    padding:28px;
-    text-align:center;
-    color:#8b929c;
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:8px;
-}
-
-.create-btn{
-    background:#20242a;
+    background:#1c1c1c;
     color:#fff;
-    border:0;
-    border-radius:6px;
-    padding:9px 14px;
-    cursor:pointer;
-    font-size:12px;
 }
 
-.footer{
+.empty-row{
     text-align:center;
-    color:#9299a3;
-    font-size:11px;
-    padding:30px 0;
+    padding:35px !important;
+    color:#555;
 }
 
-.logout{
-    color:#c34b4b;
-    cursor:pointer;
-    margin-left:18px;
+
+/* =========================
+   CREATE
+========================= */
+
+.primary{
+    border:1px solid #eee;
+    background:#eee;
+    color:#080808;
+
+    padding:8px 13px;
+    border-radius:6px;
+
+    font-size:10px;
+    font-weight:800;
+}
+
+.primary:hover{
+    background:#fff;
+}
+
+
+/* =========================
+   OTHER SECTIONS
+========================= */
+
+.empty-card{
+    padding:42px 20px;
+    text-align:center;
+}
+
+.empty-icon{
+    width:40px;
+    height:40px;
+    margin:0 auto 12px;
+
+    border:1px solid #222;
+    background:#111;
+    border-radius:8px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.empty-title{
+    color:#aaa;
+    font-weight:700;
     font-size:12px;
 }
 
-@media(max-width:700px){
+.empty-text{
+    color:#555;
+    font-size:10px;
+    margin-top:6px;
+}
 
-    .header{
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu{
+    display:none;
+}
+
+@media(max-width:850px){
+
+    .sidebar{
+        width:0;
+        overflow:hidden;
+        border:0;
+    }
+
+    .main{
+        width:100%;
+        margin-left:0;
+    }
+
+    .mobile-menu{
+        display:flex;
+        width:32px;
+        height:32px;
+        align-items:center;
+        justify-content:center;
+
+        background:#111;
+        border:1px solid #252525;
+        border-radius:6px;
+        color:#fff;
+    }
+
+    .topbar{
+        justify-content:space-between;
         padding:0 14px;
     }
 
-    .account{
-        gap:6px;
-    }
-
-    .balance{
-        display:none;
-    }
-
-    .container{
-        padding:18px 10px 35px;
+    .content{
+        padding:18px 12px;
     }
 
     .account-grid{
         grid-template-columns:1fr 1fr;
     }
 
-    .account-card{
-        padding:16px;
+    .account-item{
+        border-right:0;
+        border-bottom:1px solid #191919;
     }
 
-    .title{
-        font-size:16px;
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .page-head{
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .page-title{
+        font-size:21px;
     }
 }
+
+@media(max-width:500px){
+
+    .account-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:7px;
+    }
+
+    .stat-card{
+        padding:13px;
+    }
+
+    .stat-number{
+        font-size:19px;
+    }
+
+    .account-name{
+        max-width:120px;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+}
+
 </style>
 </head>
 
+
 <body>
 
-<header class="header">
+<div class="app">
 
-    <div class="logo">
-        REWET <span>HOST</span>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-name">
+            REWET <span>HOST</span>
+        </div>
     </div>
 
-    <div class="account">
-        <span class="account-name" id="topName">
-            Загрузка...
-        </span>
 
-        <span>|</span>
+    <nav class="nav">
 
-        <span class="balance" id="topBalance">
-            0.00 ₽
-        </span>
+        <div class="nav-label">
+            Панель
+        </div>
 
-        <span class="logout" onclick="logout()">
+        <a class="nav-item active" href="/dashboard">
+            <span class="nav-icon">⌂</span>
+            Обзор
+        </a>
+
+        <a class="nav-item" href="#servers">
+            <span class="nav-icon">▣</span>
+            Мои серверы
+        </a>
+
+        <a class="nav-item" href="#sites">
+            <span class="nav-icon">◉</span>
+            Мои сайты
+        </a>
+
+        <a class="nav-item" href="#vds">
+            <span class="nav-icon">▤</span>
+            Мои VDS
+        </a>
+
+
+        <div class="nav-label" style="margin-top:20px">
+            Аккаунт
+        </div>
+
+        <a class="nav-item" href="#account">
+            <span class="nav-icon">●</span>
+            Профиль
+        </a>
+
+        <a class="nav-item" href="#balance">
+            <span class="nav-icon">₽</span>
+            Баланс
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <a
+            class="nav-item logout"
+            href="javascript:logout()">
+
+            <span class="nav-icon">↪</span>
+
             Выйти
-        </span>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+
+<!-- TOPBAR -->
+
+<header class="topbar">
+
+    <button
+        class="mobile-menu"
+        onclick="toggleMenu()">
+        ☰
+    </button>
+
+
+    <div class="account">
+
+        <div
+            class="avatar"
+            id="avatar">
+            ?
+        </div>
+
+        <div class="account-info">
+
+            <div
+                class="account-name"
+                id="topName">
+                Загрузка...
+            </div>
+
+            <div
+                class="account-balance"
+                id="topBalance">
+                0.00 ₽
+            </div>
+
+        </div>
+
+        <div class="account-menu">
+            ⋮
+        </div>
+
     </div>
 
 </header>
 
 
-<main class="container">
+<!-- CONTENT -->
 
-    <!-- ACCOUNT -->
+<div class="content">
 
-    <section class="account-card">
 
-        <div class="title">
-            Информация об аккаунте
+    <div class="page-head">
+
+        <div>
+
+            <div class="page-title">
+                Панель управления
+            </div>
+
+            <div class="page-subtitle">
+                Управление аккаунтом и вашими услугами REWET HOST
+            </div>
+
         </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACCOUNT
+    ========================= -->
+
+    <section
+        class="card account-card"
+        id="account">
+
+        <div class="card-head">
+
+            <div>
+
+                <div class="card-title">
+                    Информация об аккаунте
+                </div>
+
+                <div class="card-description">
+                    Основная информация вашего аккаунта
+                </div>
+
+            </div>
+
+        </div>
+
 
         <div class="account-grid">
 
-            <div>
+
+            <div class="account-item">
+
                 <div class="info-label">
                     ID аккаунта
                 </div>
 
-                <div class="info-value" id="accountId">
+                <div
+                    class="info-value"
+                    id="accountId">
                     —
                 </div>
+
             </div>
 
 
-            <div>
+            <div class="account-item">
+
                 <div class="info-label">
                     Имя
                 </div>
 
-                <div class="info-value" id="firstName">
+                <div
+                    class="info-value"
+                    id="firstName">
                     —
                 </div>
+
             </div>
 
 
-            <div>
+            <div class="account-item">
+
                 <div class="info-label">
                     Фамилия
                 </div>
 
-                <div class="info-value" id="lastName">
+                <div
+                    class="info-value"
+                    id="lastName">
                     —
                 </div>
+
             </div>
 
 
-            <div>
+            <div class="account-item">
+
                 <div class="info-label">
                     E-Mail
                 </div>
 
-                <div class="info-value" id="email">
+                <div
+                    class="info-value"
+                    id="email">
                     —
                 </div>
+
             </div>
 
 
-            <div>
+            <div
+                class="account-item"
+                id="balance">
+
                 <div class="info-label">
                     Баланс
                 </div>
 
-                <div class="balance-row">
+                <div class="balance-line">
 
                     <span
                         class="info-value"
-                        id="balance">
+                        id="balanceValue">
                         0.00 ₽
                     </span>
 
-                    <span
+                    <a
                         class="topup"
-                        onclick="topup()">
-                        Пополнить баланс
-                    </span>
+                        href="javascript:topup()">
+                        Пополнить
+                    </a>
 
                 </div>
 
             </div>
+
 
         </div>
 
     </section>
 
 
-    <!-- SERVERS -->
+    <!-- =========================
+         STATS
+    ========================= -->
 
-    <section class="section">
+    <section class="stats">
 
-        <div class="section-header">
 
-            <div class="section-title">
-                Мои серверы
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-label">
+                    Серверы
+                </div>
+
+                <div class="stat-icon">
+                    ▣
+                </div>
+
             </div>
 
+            <div
+                class="stat-number"
+                id="serverCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-label">
+                    Запущено
+                </div>
+
+                <div class="stat-icon">
+                    ▶
+                </div>
+
+            </div>
+
+            <div
+                class="stat-number"
+                id="runningCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-label">
+                    Сайты
+                </div>
+
+                <div class="stat-icon">
+                    ◉
+                </div>
+
+            </div>
+
+            <div class="stat-number">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-label">
+                    VDS
+                </div>
+
+                <div class="stat-icon">
+                    ▤
+                </div>
+
+            </div>
+
+            <div class="stat-number">
+                0
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         SERVERS
+    ========================= -->
+
+    <section
+        class="card server-card"
+        id="servers">
+
+        <div class="card-head">
+
+            <div>
+
+                <div class="card-title">
+                    Мои серверы
+                </div>
+
+                <div class="card-description">
+                    Управление игровыми серверами
+                </div>
+
+            </div>
+
+
             <button
-                class="create-btn"
+                class="primary"
                 onclick="createServer()">
+
                 + Создать сервер
+
             </button>
 
         </div>
 
 
-        <div class="table-wrap">
+        <div class="table-scroll">
 
             <table>
 
                 <thead>
 
                     <tr>
-                        <th>ID</th>
-                        <th>Статус</th>
-                        <th>Тариф</th>
-                        <th>IP</th>
-                        <th>Действия</th>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Статус
+                        </th>
+
+                        <th>
+                            Тариф
+                        </th>
+
+                        <th>
+                            IP
+                        </th>
+
+                        <th>
+                            Действия
+                        </th>
+
                     </tr>
 
                 </thead>
 
+
                 <tbody id="serversTable">
 
                     <tr>
-                        <td colspan="5"
-                            style="text-align:center;color:#89919d">
+
+                        <td
+                            colspan="5"
+                            class="empty-row">
+
                             Загрузка серверов...
+
                         </td>
+
                     </tr>
 
                 </tbody>
@@ -424,53 +1160,114 @@ tr:last-child td{
     </section>
 
 
-    <!-- WEBSITES -->
+    <!-- =========================
+         SITES
+    ========================= -->
 
-    <section class="section">
+    <section
+        class="card server-card"
+        id="sites">
 
-        <div class="section-title">
-            Мои сайты
+        <div class="card-head">
+
+            <div>
+
+                <div class="card-title">
+                    Мои сайты
+                </div>
+
+                <div class="card-description">
+                    Управление веб-проектами
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="empty">
-            На данный момент у вас нет сайтов.
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                ◉
+            </div>
+
+            <div class="empty-title">
+                У вас пока нет сайтов
+            </div>
+
+            <div class="empty-text">
+                Здесь появятся ваши веб-проекты.
+            </div>
+
         </div>
 
     </section>
 
 
-    <!-- VDS -->
+    <!-- =========================
+         VDS
+    ========================= -->
 
-    <section class="section">
+    <section
+        class="card server-card"
+        id="vds">
 
-        <div class="section-title">
-            Мои VDS
+        <div class="card-head">
+
+            <div>
+
+                <div class="card-title">
+                    Мои VDS
+                </div>
+
+                <div class="card-description">
+                    Виртуальные выделенные серверы
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="empty">
-            На данный момент у вас нет VDS.
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                ▤
+            </div>
+
+            <div class="empty-title">
+                У вас пока нет VDS
+            </div>
+
+            <div class="empty-text">
+                Здесь появятся ваши виртуальные серверы.
+            </div>
+
         </div>
 
     </section>
 
 
-    <div class="footer">
+    <footer class="footer">
         © 2026 REWET HOST
-    </div>
+    </footer>
+
+
+</div>
 
 </main>
 
+</div>
+
 
 <script>
-
-let currentUser = null;
 
 
 /* =========================
    API
 ========================= */
 
-async function api(url, options = {}){
+async function api(url,options={}){
 
     const token =
         localStorage.getItem("token");
@@ -481,8 +1278,10 @@ async function api(url, options = {}){
     };
 
     if(token){
+
         headers.Authorization =
             "Bearer " + token;
+
     }
 
     const response =
@@ -492,7 +1291,9 @@ async function api(url, options = {}){
         });
 
     const data =
-        await response.json().catch(() => ({}));
+        await response
+            .json()
+            .catch(() => ({}));
 
     if(response.status === 401){
 
@@ -501,6 +1302,7 @@ async function api(url, options = {}){
         throw new Error(
             "Сессия истекла"
         );
+
     }
 
     if(!response.ok){
@@ -509,9 +1311,11 @@ async function api(url, options = {}){
             data.message ||
             "Ошибка запроса"
         );
+
     }
 
     return data;
+
 }
 
 
@@ -521,84 +1325,90 @@ async function api(url, options = {}){
 
 async function loadUser(){
 
-    try{
+    const data =
+        await api("/api/auth/me");
 
-        const data =
-            await api("/api/auth/me");
-
-        currentUser =
-            data.user || data;
-
-        const user =
-            currentUser;
-
-        document.getElementById(
-            "accountId"
-        ).textContent =
-            "#" + user.id;
-
-        document.getElementById(
-            "email"
-        ).textContent =
-            user.email || "—";
-
-        document.getElementById(
-            "balance"
-        ).textContent =
-            Number(user.balance || 0)
-            .toFixed(2) + " ₽";
-
-        document.getElementById(
-            "topBalance"
-        ).textContent =
-            Number(user.balance || 0)
-            .toFixed(2) + " ₽";
+    const user =
+        data.user || data;
 
 
-        /*
-         * Сейчас база REWET HOST
-         * содержит username, а не
-         * отдельные имя/фамилию.
-         */
-
-        document.getElementById(
-            "firstName"
-        ).textContent =
-            user.first_name ||
-            user.firstName ||
-            user.username ||
-            "—";
-
-        document.getElementById(
-            "lastName"
-        ).textContent =
-            user.last_name ||
-            user.lastName ||
-            "—";
+    const username =
+        user.username || "Пользователь";
 
 
-        const name =
-            (
-                (user.first_name ||
-                user.firstName ||
-                user.username ||
-                "") +
-                " " +
-                (user.last_name ||
-                user.lastName ||
-                "")
-            ).trim();
+    const first =
+        user.first_name ||
+        user.firstName ||
+        username;
 
-        document.getElementById(
-            "topName"
-        ).textContent =
-            name || "Аккаунт";
 
-    }catch(error){
+    const last =
+        user.last_name ||
+        user.lastName ||
+        "";
 
-        console.error(error);
 
-    }
+    const fullName =
+        (first + " " + last).trim();
+
+
+    const balance =
+        Number(user.balance || 0)
+        .toFixed(2);
+
+
+    document.getElementById(
+        "accountId"
+    ).textContent =
+        "#" + user.id;
+
+
+    document.getElementById(
+        "firstName"
+    ).textContent =
+        first;
+
+
+    document.getElementById(
+        "lastName"
+    ).textContent =
+        last || "—";
+
+
+    document.getElementById(
+        "email"
+    ).textContent =
+        user.email || "—";
+
+
+    document.getElementById(
+        "balanceValue"
+    ).textContent =
+        balance + " ₽";
+
+
+    document.getElementById(
+        "topBalance"
+    ).textContent =
+        balance + " ₽";
+
+
+    document.getElementById(
+        "topName"
+    ).textContent =
+        fullName;
+
+
+    const avatar =
+        fullName
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        "avatar"
+    ).textContent =
+        avatar;
 
 }
 
@@ -624,19 +1434,22 @@ async function loadServers(){
             data ||
             [];
 
+
         if(!Array.isArray(servers) ||
            servers.length === 0){
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="5"
-                        style="text-align:center;color:#89919d;padding:28px">
+                    <td colspan="5" class="empty-row">
                         У вас пока нет серверов.
                     </td>
                 </tr>
             `;
 
+            updateStats([]);
+
             return;
+
         }
 
 
@@ -658,30 +1471,38 @@ async function loadServers(){
                     statusClass =
                         "status-on";
 
-                }else if(
-                    server.status === "starting" ||
+                }
+
+                else if(
+                    server.status === "starting"
+                ){
+
+                    statusText =
+                        "Запускается";
+
+                    statusClass =
+                        "status-start";
+
+                }
+
+                else if(
                     server.status === "stopping"
                 ){
 
                     statusText =
-                        server.status === "starting"
-                        ? "Запускается"
-                        : "Останавливается";
+                        "Останавливается";
 
                     statusClass =
                         "status-start";
+
                 }
 
-
-                /*
-                 * Тариф и IP пока не хранятся
-                 * в таблице servers.
-                 */
 
                 const tariff =
                     server.tariff ||
                     server.plan ||
                     "GTA SAMP/CRMP - Lite";
+
 
                 const ip =
                     server.ip ||
@@ -689,6 +1510,7 @@ async function loadServers(){
 
 
                 return `
+
                     <tr>
 
                         <td class="server-id">
@@ -696,43 +1518,54 @@ async function loadServers(){
                         </td>
 
                         <td>
+
                             <span
                                 class="status ${statusClass}">
                                 ${statusText}
                             </span>
+
                         </td>
 
-                        <td>
+                        <td class="game">
                             ${escapeHtml(tariff)}
                         </td>
 
-                        <td>
+                        <td class="ip">
                             ${escapeHtml(ip)}
                         </td>
 
                         <td>
 
-                            <button
-                                class="action"
-                                onclick="openServer(${server.id})">
-                                Управление
-                            </button>
+                            <div class="actions">
+
+                                <button
+                                    class="action"
+                                    onclick="openServer(${server.id})">
+                                    Управление
+                                </button>
+
+                            </div>
 
                         </td>
 
                     </tr>
+
                 `;
 
             }).join("");
 
-    }catch(error){
+
+        updateStats(servers);
+
+    }
+
+    catch(error){
 
         console.error(error);
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="5"
-                    style="text-align:center;color:#c34b4b;padding:28px">
+                <td colspan="5" class="empty-row">
                     Не удалось загрузить серверы.
                 </td>
             </tr>
@@ -744,13 +1577,41 @@ async function loadServers(){
 
 
 /* =========================
+   STATS
+========================= */
+
+function updateStats(servers){
+
+    document.getElementById(
+        "serverCount"
+    ).textContent =
+        servers.length;
+
+
+    const running =
+        servers.filter(
+            server =>
+                server.status === "running"
+        ).length;
+
+
+    document.getElementById(
+        "runningCount"
+    ).textContent =
+        running;
+
+}
+
+
+/* =========================
    ACTIONS
 ========================= */
 
 function openServer(id){
 
     window.location.href =
-        "/server?id=" + encodeURIComponent(id);
+        "/server?id=" +
+        encodeURIComponent(id);
 
 }
 
@@ -759,6 +1620,7 @@ function createServer(){
 
     window.location.href =
         "/server";
+
 }
 
 
@@ -773,10 +1635,34 @@ function topup(){
 
 function logout(){
 
-    localStorage.removeItem("token");
+    localStorage.removeItem(
+        "token"
+    );
 
     window.location.href =
         "/login";
+
+}
+
+
+function toggleMenu(){
+
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
+        );
+
+    if(
+        sidebar.style.width === "235px"
+    ){
+
+        sidebar.style.width = "0";
+
+    }else{
+
+        sidebar.style.width = "235px";
+
+    }
 
 }
 
@@ -803,17 +1689,31 @@ function escapeHtml(value){
 
 (async function(){
 
-    if(!localStorage.getItem("token")){
+    if(
+        !localStorage.getItem("token")
+    ){
 
         window.location.href =
             "/login";
 
         return;
+
     }
 
-    await loadUser();
 
-    await loadServers();
+    try{
+
+        await loadUser();
+
+        await loadServers();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
 
 })();
 
