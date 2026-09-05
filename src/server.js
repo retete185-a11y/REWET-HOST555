@@ -1,7 +1,8 @@
 const express = require("express");
 const path = require("path");
 
-const { query, testDatabase } = require("./db");
+const { testDatabase } = require("./db");
+
 const {
     registerUser,
     loginUser,
@@ -43,58 +44,71 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+
+/* =========================
+   MIDDLEWARE
+========================= */
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(
+    express.static(
+        path.join(__dirname, "../public")
+    )
+);
 
 
 /* =========================
    AUTH
 ========================= */
 
+const {
+    authMiddleware
+} = require("./auth");
+
+
 async function auth(req, res, next) {
 
     try {
 
-        const header =
-            req.headers.authorization || "";
+        await new Promise((resolve, reject) => {
 
-        if (!header.startsWith("Bearer ")) {
+            authMiddleware(
+                req,
+                res,
+                (error) => {
+
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve();
+                    }
+
+                }
+            );
+
+        });
+
+        if (!req.user || !req.user.id) {
+
             return res.status(401).json({
                 success: false,
-                message: "Необходима авторизация"
+                message: "Недействительная авторизация"
             });
-        }
 
-        const token =
-            header.substring(7).trim();
-
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: "Недействительный токен"
-            });
-        }
-
-        const userId =
-            Number(token);
-
-        if (!Number.isInteger(userId) || userId <= 0) {
-            return res.status(401).json({
-                success: false,
-                message: "Недействительный токен"
-            });
         }
 
         const user =
-            await getUserById(userId);
+            await getUserById(req.user.id);
 
         if (!user) {
+
             return res.status(401).json({
                 success: false,
                 message: "Пользователь не найден"
             });
+
         }
 
         req.user = user;
@@ -103,13 +117,22 @@ async function auth(req, res, next) {
 
     } catch (error) {
 
-        console.error("AUTH ERROR:", error);
+        console.error(
+            "AUTH ERROR:",
+            error
+        );
 
-        return res.status(500).json({
-            success: false,
-            message: "Ошибка авторизации"
-        });
+        if (!res.headersSent) {
+
+            return res.status(401).json({
+                success: false,
+                message: "Недействительный токен"
+            });
+
+        }
+
     }
+
 }
 
 
@@ -117,30 +140,22 @@ async function auth(req, res, next) {
    ADMIN
 ========================= */
 
-async function admin(req, res, next) {
+function admin(req, res, next) {
 
-    try {
+    if (
+        !req.user ||
+        !req.user.is_admin
+    ) {
 
-        if (!req.user || !req.user.is_admin) {
-
-            return res.status(403).json({
-                success: false,
-                message: "Доступ запрещён"
-            });
-
-        }
-
-        next();
-
-    } catch (error) {
-
-        console.error("ADMIN ERROR:", error);
-
-        return res.status(500).json({
+        return res.status(403).json({
             success: false,
-            message: "Ошибка проверки прав"
+            message: "Доступ запрещён"
         });
+
     }
+
+    next();
+
 }
 
 
@@ -148,18 +163,37 @@ async function admin(req, res, next) {
    HEALTH
 ========================= */
 
-app.get("/api/health", async (req, res) => {
+app.get(
+    "/api/health",
+    async (req, res) => {
 
-    const database =
-        await testDatabase();
+        try {
 
-    res.json({
-        success: true,
-        app: "REWET HOST",
-        database,
-        time: new Date().toISOString()
-    });
-});
+            const database =
+                await testDatabase();
+
+            res.json({
+                status: "ok",
+                service: "REWET HOST",
+                version: "1.0.0",
+                database:
+                    database
+                        ? "connected"
+                        : "disconnected"
+            });
+
+        } catch (error) {
+
+            res.status(500).json({
+                status: "error",
+                service: "REWET HOST",
+                database: "disconnected"
+            });
+
+        }
+
+    }
+);
 
 
 /* =========================
@@ -201,7 +235,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -213,23 +249,20 @@ app.post(
         try {
 
             const {
-                email,
+                login,
                 password
             } = req.body;
 
-            const user =
+            const result =
                 await loginUser(
-                    email,
+                    login,
                     password
                 );
 
             res.json({
                 success: true,
-
-                token:
-                    String(user.id),
-
-                user
+                token: result.token,
+                user: result.user
             });
 
         } catch (error) {
@@ -243,7 +276,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -257,6 +292,7 @@ app.get(
             success: true,
             user: req.user
         });
+
     }
 );
 
@@ -293,7 +329,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -333,7 +371,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -355,8 +395,10 @@ app.get(
 
                 return res.status(400).json({
                     success: false,
-                    message: "Некорректный ID сервера"
+                    message:
+                        "Некорректный ID сервера"
                 });
+
             }
 
             const server =
@@ -381,7 +423,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -413,16 +457,13 @@ app.post(
 
         } catch (error) {
 
-            console.error(
-                "CREATE ACCESS KEY ERROR:",
-                error
-            );
-
             res.status(400).json({
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -451,16 +492,13 @@ app.post(
 
         } catch (error) {
 
-            console.error(
-                "USE ACCESS KEY ERROR:",
-                error
-            );
-
             res.status(400).json({
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -498,7 +536,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -532,7 +572,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -566,7 +608,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -594,7 +638,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -628,7 +674,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -658,7 +706,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -694,7 +744,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -726,7 +778,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -758,7 +812,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -787,7 +843,9 @@ app.delete(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -821,7 +879,9 @@ app.post(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -852,7 +912,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -879,7 +941,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -906,7 +970,9 @@ app.get(
                 success: false,
                 message: error.message
             });
+
         }
+
     }
 );
 
@@ -925,6 +991,7 @@ app.get(
                 "../public/index.html"
             )
         );
+
     }
 );
 
@@ -939,6 +1006,7 @@ app.get(
                 "../public/register.html"
             )
         );
+
     }
 );
 
@@ -953,6 +1021,7 @@ app.get(
                 "../public/login.html"
             )
         );
+
     }
 );
 
@@ -967,17 +1036,10 @@ app.get(
                 "../public/dashboard.html"
             )
         );
+
     }
 );
 
-
-/*
-    НОВАЯ СТРАНИЦА
-    Управление конкретным сервером
-
-    Пример:
-    /server?id=1
-*/
 
 app.get(
     "/server",
@@ -989,6 +1051,7 @@ app.get(
                 "../public/server.html"
             )
         );
+
     }
 );
 
@@ -1003,6 +1066,7 @@ app.get(
                 "../public/admin.html"
             )
         );
+
     }
 );
 
@@ -1014,17 +1078,22 @@ app.get(
 app.use(
     (req, res) => {
 
-        if (req.path.startsWith("/api/")) {
+        if (
+            req.path.startsWith("/api/")
+        ) {
 
             return res.status(404).json({
                 success: false,
-                message: "API маршрут не найден"
+                message:
+                    "API маршрут не найден"
             });
+
         }
 
         res.status(404).send(
             "Страница не найдена"
         );
+
     }
 );
 
@@ -1041,11 +1110,16 @@ app.use(
             error
         );
 
-        res.status(500).json({
-            success: false,
-            message:
-                "Внутренняя ошибка сервера"
-        });
+        if (!res.headersSent) {
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Внутренняя ошибка сервера"
+            });
+
+        }
+
     }
 );
 
@@ -1062,5 +1136,6 @@ app.listen(
         console.log(
             `REWET HOST запущен на порту ${PORT}`
         );
+
     }
 );
