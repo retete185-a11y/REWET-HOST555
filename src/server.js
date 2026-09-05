@@ -1,9 +1,7 @@
 const express = require("express");
 const path = require("path");
 
-const {
-    testDatabase
-} = require("./db");
+const { testDatabase } = require("./db");
 
 const {
     registerUser,
@@ -26,6 +24,16 @@ const {
 } = require("./serverManager");
 
 const {
+    listFiles,
+    readFile,
+    writeFile,
+    createDirectory,
+    createFile,
+    deleteFile,
+    renameFile
+} = require("./fileManager");
+
+const {
     getAdminStats,
     getAllUsers,
     getAllServers
@@ -35,12 +43,18 @@ const app = express();
 
 const PORT = process.env.PORT || 10000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({
+    extended: true,
+    limit: "10mb"
+}));
 
-app.use(express.static(
-    path.join(__dirname, "../public")
-));
+app.use(
+    express.static(
+        path.join(__dirname, "../public")
+    )
+);
+
 
 /* =========================
    AUTH MIDDLEWARE
@@ -48,11 +62,13 @@ app.use(express.static(
 
 async function authMiddleware(req, res, next) {
     try {
+        const authorization =
+            req.headers.authorization || "";
+
         const token =
-            req.headers.authorization?.replace(
-                "Bearer ",
-                ""
-            );
+            authorization.startsWith("Bearer ")
+                ? authorization.substring(7)
+                : null;
 
         if (!token) {
             return res.status(401).json({
@@ -93,51 +109,36 @@ async function authMiddleware(req, res, next) {
             error
         );
 
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             message: "Ошибка авторизации"
         });
     }
 }
 
+
 /* =========================
    ADMIN MIDDLEWARE
 ========================= */
 
-async function adminMiddleware(
-    req,
-    res,
-    next
-) {
-    try {
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Необходима авторизация"
-            });
-        }
-
-        if (!req.user.is_admin) {
-            return res.status(403).json({
-                success: false,
-                message: "Недостаточно прав"
-            });
-        }
-
-        next();
-
-    } catch (error) {
-        console.error(
-            "Admin error:",
-            error
-        );
-
-        res.status(403).json({
+function adminMiddleware(req, res, next) {
+    if (!req.user) {
+        return res.status(401).json({
             success: false,
-            message: "Доступ запрещён"
+            message: "Необходима авторизация"
         });
     }
+
+    if (!req.user.is_admin) {
+        return res.status(403).json({
+            success: false,
+            message: "Недостаточно прав"
+        });
+    }
+
+    next();
 }
+
 
 /* =========================
    HEALTH
@@ -146,20 +147,35 @@ async function adminMiddleware(
 app.get(
     "/api/health",
     async (req, res) => {
-        const database =
-            await testDatabase();
+        try {
+            const database =
+                await testDatabase();
 
-        res.json({
-            success: true,
-            service: "REWET HOST",
-            database:
-                database
-                    ? "connected"
-                    : "disconnected",
-            time: new Date().toISOString()
-        });
+            res.json({
+                success: true,
+                service: "REWET HOST",
+                database:
+                    database
+                        ? "connected"
+                        : "disconnected",
+                time: new Date().toISOString()
+            });
+
+        } catch (error) {
+            console.error(
+                "Health error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                service: "REWET HOST",
+                database: "disconnected"
+            });
+        }
     }
 );
+
 
 /* =========================
    AUTH
@@ -184,8 +200,7 @@ app.post(
 
             res.json({
                 success: true,
-                message:
-                    "Регистрация успешна",
+                message: "Регистрация успешна",
                 user
             });
 
@@ -197,12 +212,12 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
+
 
 app.post(
     "/api/auth/login",
@@ -219,20 +234,10 @@ app.post(
                     password
                 );
 
-            /*
-             * Пока используем ID
-             * пользователя как простой
-             * токен.
-             *
-             * Позже заменим на JWT.
-             */
-
             res.json({
                 success: true,
-                message:
-                    "Авторизация успешна",
-                token:
-                    String(user.id),
+                message: "Авторизация успешна",
+                token: String(user.id),
                 user
             });
 
@@ -244,12 +249,12 @@ app.post(
 
             res.status(401).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
+
 
 app.get(
     "/api/auth/me",
@@ -262,13 +267,13 @@ app.get(
     }
 );
 
+
 /* =========================
    SERVERS
 ========================= */
 
-/*
- * Получить мои серверы
- */
+
+/* Получить серверы пользователя */
 
 app.get(
     "/api/servers",
@@ -300,9 +305,8 @@ app.get(
     }
 );
 
-/*
- * Создать сервер
- */
+
+/* Создать сервер */
 
 app.post(
     "/api/servers",
@@ -323,8 +327,7 @@ app.post(
 
             res.json({
                 success: true,
-                message:
-                    "Сервер создан",
+                message: "Сервер создан",
                 server
             });
 
@@ -336,16 +339,14 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
-/*
- * Получить один сервер
- */
+
+/* Получить один сервер */
 
 app.get(
     "/api/servers/:id",
@@ -385,20 +386,19 @@ app.get(
 
             res.status(404).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
+
 /* =========================
    ACCESS KEYS
 ========================= */
 
-/*
- * Создать ключ доступа
- */
+
+/* Создать ключ сервера */
 
 app.post(
     "/api/servers/:id/access-key",
@@ -427,8 +427,7 @@ app.post(
 
             res.json({
                 success: true,
-                message:
-                    "Ключ создан",
+                message: "Ключ создан",
                 key
             });
 
@@ -440,16 +439,14 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
-/*
- * Использовать ключ
- */
+
+/* Использовать ключ сервера */
 
 app.post(
     "/api/servers/access-key/use",
@@ -468,8 +465,7 @@ app.post(
 
             res.json({
                 success: true,
-                message:
-                    "Сервер добавлен",
+                message: "Сервер добавлен",
                 result
             });
 
@@ -481,20 +477,19 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
+
 /* =========================
    SERVER CONTROL
 ========================= */
 
-/*
- * START
- */
+
+/* Запуск */
 
 app.post(
     "/api/servers/:id/start",
@@ -536,16 +531,14 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
-/*
- * STOP
- */
+
+/* Остановка */
 
 app.post(
     "/api/servers/:id/stop",
@@ -587,16 +580,14 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
-/*
- * RESTART
- */
+
+/* Перезапуск */
 
 app.post(
     "/api/servers/:id/restart",
@@ -638,16 +629,352 @@ app.post(
 
             res.status(400).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
 
+
+/* =========================
+   FILE MANAGER
+========================= */
+
+
+/* Список файлов */
+
+app.get(
+    "/api/servers/:id/files",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const requestedPath =
+                req.query.path || "";
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            const files =
+                await listFiles(
+                    req.user.id,
+                    serverId,
+                    requestedPath
+                );
+
+            res.json({
+                success: true,
+                path: requestedPath,
+                files
+            });
+
+        } catch (error) {
+            console.error(
+                "Files error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Прочитать файл */
+
+app.get(
+    "/api/servers/:id/file",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const requestedPath =
+                req.query.path;
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            if (!requestedPath) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Не указан файл"
+                });
+            }
+
+            const content =
+                await readFile(
+                    req.user.id,
+                    serverId,
+                    requestedPath
+                );
+
+            res.json({
+                success: true,
+                path: requestedPath,
+                content
+            });
+
+        } catch (error) {
+            console.error(
+                "Read file error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Сохранить файл */
+
+app.post(
+    "/api/servers/:id/file",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const {
+                path: requestedPath,
+                content
+            } = req.body;
+
+            if (
+                !Number.isInteger(serverId) ||
+                serverId <= 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Некорректный ID сервера"
+                });
+            }
+
+            await writeFile(
+                req.user.id,
+                serverId,
+                requestedPath,
+                content
+            );
+
+            res.json({
+                success: true,
+                message:
+                    "Файл сохранён"
+            });
+
+        } catch (error) {
+            console.error(
+                "Write file error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Создать папку */
+
+app.post(
+    "/api/servers/:id/files/mkdir",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const requestedPath =
+                req.body.path;
+
+            await createDirectory(
+                req.user.id,
+                serverId,
+                requestedPath
+            );
+
+            res.json({
+                success: true,
+                message:
+                    "Папка создана"
+            });
+
+        } catch (error) {
+            console.error(
+                "Mkdir error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Создать файл */
+
+app.post(
+    "/api/servers/:id/files/touch",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const requestedPath =
+                req.body.path;
+
+            await createFile(
+                req.user.id,
+                serverId,
+                requestedPath
+            );
+
+            res.json({
+                success: true,
+                message:
+                    "Файл создан"
+            });
+
+        } catch (error) {
+            console.error(
+                "Create file error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Удалить файл / папку */
+
+app.delete(
+    "/api/servers/:id/file",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const requestedPath =
+                req.body.path;
+
+            await deleteFile(
+                req.user.id,
+                serverId,
+                requestedPath
+            );
+
+            res.json({
+                success: true,
+                message: "Удалено"
+            });
+
+        } catch (error) {
+            console.error(
+                "Delete file error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
+/* Переименовать */
+
+app.post(
+    "/api/servers/:id/files/rename",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            const serverId =
+                Number(req.params.id);
+
+            const {
+                oldPath,
+                newName
+            } = req.body;
+
+            await renameFile(
+                req.user.id,
+                serverId,
+                oldPath,
+                newName
+            );
+
+            res.json({
+                success: true,
+                message:
+                    "Переименовано"
+            });
+
+        } catch (error) {
+            console.error(
+                "Rename error:",
+                error
+            );
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+);
+
+
 /* =========================
    ADMIN
 ========================= */
+
+
+/* Статистика */
 
 app.get(
     "/api/admin/stats",
@@ -671,12 +998,14 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
+
+
+/* Пользователи */
 
 app.get(
     "/api/admin/users",
@@ -700,12 +1029,14 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
+
+
+/* Серверы */
 
 app.get(
     "/api/admin/servers",
@@ -729,12 +1060,12 @@ app.get(
 
             res.status(500).json({
                 success: false,
-                message:
-                    error.message
+                message: error.message
             });
         }
     }
 );
+
 
 /* =========================
    PAGES
@@ -800,6 +1131,7 @@ app.get(
     }
 );
 
+
 /* =========================
    404
 ========================= */
@@ -822,6 +1154,7 @@ app.use(
     }
 );
 
+
 /* =========================
    ERROR HANDLER
 ========================= */
@@ -840,6 +1173,7 @@ app.use(
         });
     }
 );
+
 
 /* =========================
    START
