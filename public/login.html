@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>REWET HOST — Вход</title>
+    <title>Вход — REWET HOST</title>
 
     <style>
         * {
@@ -14,10 +14,12 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #0b0f19;
-            color: white;
             min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, #181818 0, #080808 40%),
+                #050505;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -26,77 +28,120 @@
 
         .box {
             width: 100%;
-            max-width: 420px;
-            background: #111827;
-            border: 1px solid #1f2937;
+            max-width: 430px;
+            background: #0d0d0d;
+            border: 1px solid #242424;
             border-radius: 18px;
-            padding: 30px;
+            padding: 35px;
+            box-shadow: 0 25px 70px rgba(0,0,0,.45);
         }
 
         .logo {
             text-align: center;
             font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
         }
 
         .logo span {
-            color: #6366f1;
+            color: #888;
         }
 
         .subtitle {
             text-align: center;
-            color: #9ca3af;
-            margin-bottom: 25px;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 8px;
         }
 
         input {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 14px;
-            background: #0b0f19;
-            border: 1px solid #374151;
-            border-radius: 9px;
-            color: white;
+            height: 48px;
+            background: #151515;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            color: #fff;
+            padding: 0 14px;
             outline: none;
+            margin-bottom: 18px;
+            font-size: 14px;
         }
 
         input:focus {
-            border-color: #6366f1;
+            border-color: #555;
         }
 
         button {
             width: 100%;
-            padding: 14px;
-            background: #6366f1;
-            color: white;
-            border: none;
-            border-radius: 9px;
+            height: 50px;
+            border: 0;
+            border-radius: 10px;
+            background: #fff;
+            color: #000;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+            transition: .2s;
         }
 
         button:hover {
-            opacity: .9;
+            background: #ddd;
+            transform: translateY(-1px);
         }
 
-        .message {
-            min-height: 22px;
-            margin-top: 15px;
-            text-align: center;
-            color: #f59e0b;
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            display: none;
+            background: #241010;
+            border: 1px solid #4a1e1e;
+            color: #ff8f8f;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+            font-size: 13px;
         }
 
         .register {
             text-align: center;
-            margin-top: 20px;
-            color: #9ca3af;
+            margin-top: 22px;
+            color: #777;
+            font-size: 14px;
         }
 
         .register a {
-            color: #818cf8;
+            color: #fff;
             text-decoration: none;
+            font-weight: 700;
+        }
+
+        .register a:hover {
+            text-decoration: underline;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #aaa;
         }
     </style>
 </head>
@@ -113,109 +158,128 @@
         Вход в панель управления
     </div>
 
+    <div id="error" class="error"></div>
+
     <form id="loginForm">
 
+        <label for="login">
+            Логин или E-Mail
+        </label>
+
         <input
-            id="login"
             type="text"
-            placeholder="Логин или Email"
+            id="login"
+            placeholder="Введите логин или email"
             autocomplete="username"
             required
         >
 
+        <label for="password">
+            Пароль
+        </label>
+
         <input
-            id="password"
             type="password"
-            placeholder="Пароль"
+            id="password"
+            placeholder="Введите пароль"
             autocomplete="current-password"
             required
         >
 
-        <button type="submit">
+        <button id="loginButton" type="submit">
             Войти
         </button>
 
     </form>
 
-    <div id="message" class="message"></div>
-
     <div class="register">
         Нет аккаунта?
-        <a href="/register">Регистрация</a>
+        <a href="/register">Зарегистрироваться</a>
     </div>
+
+    <a class="back" href="/">
+        ← Вернуться на главную
+    </a>
 
 </div>
 
 <script>
+    const form = document.getElementById("loginForm");
+    const errorBox = document.getElementById("error");
+    const loginButton = document.getElementById("loginButton");
 
-const form = document.getElementById("loginForm");
-const message = document.getElementById("message");
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = "block";
+    }
 
-form.addEventListener("submit", async function(event) {
+    // Если пользователь уже авторизован —
+    // сразу открываем панель.
+    const existingToken = localStorage.getItem("token");
 
-    event.preventDefault();
+    if (existingToken) {
+        window.location.href = "/dashboard";
+    }
 
-    message.textContent = "Выполняется вход...";
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
 
-    const login =
-        document.getElementById("login").value.trim();
+        errorBox.style.display = "none";
+        loginButton.disabled = true;
+        loginButton.textContent = "Вход...";
 
-    const password =
-        document.getElementById("password").value;
+        const login = document.getElementById("login").value.trim();
+        const password = document.getElementById("password").value;
 
-    try {
-
-        const response = await fetch(
-            "/api/auth/login",
-            {
+        try {
+            const response = await fetch("/api/auth/login", {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
-                    login,
-                    password
+                    login: login,
+                    password: password
                 })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Не удалось войти"
+                );
             }
-        );
 
-        const data = await response.json();
+            if (!data.token) {
+                throw new Error("Сервер не вернул токен авторизации");
+            }
 
-        if (!response.ok) {
-            throw new Error(
-                data.message || "Ошибка авторизации"
-            );
-        }
+            // Сохраняем авторизацию.
+            // Она НЕ удаляется при закрытии сайта.
+            localStorage.setItem("token", data.token);
 
-        if (!data.token) {
-            throw new Error(
-                "Сервер не вернул токен авторизации"
-            );
-        }
+            // Сохраняем данные пользователя для быстрого отображения.
+            if (data.user) {
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(data.user)
+                );
+            }
 
-        localStorage.setItem(
-            "token",
-            data.token
-        );
-
-        message.textContent =
-            "Вход выполнен!";
-
-        setTimeout(() => {
             window.location.href = "/dashboard";
-        }, 300);
 
-    } catch (error) {
+        } catch (error) {
+            console.error(error);
 
-        message.textContent =
-            error.message;
+            showError(
+                error.message || "Ошибка подключения к серверу"
+            );
 
-    }
-
-});
-
+            loginButton.disabled = false;
+            loginButton.textContent = "Войти";
+        }
+    });
 </script>
 
 </body>
