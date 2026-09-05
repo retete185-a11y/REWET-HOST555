@@ -6,130 +6,216 @@
 
     <title>REWET HOST — Вход</title>
 
-    <link rel="stylesheet" href="/style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0f19;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 420px;
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 18px;
+            padding: 30px;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #6366f1;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: #0b0f19;
+            border: 1px solid #374151;
+            border-radius: 9px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .message {
+            min-height: 22px;
+            margin-top: 15px;
+            text-align: center;
+            color: #f59e0b;
+        }
+
+        .register {
+            text-align: center;
+            margin-top: 20px;
+            color: #9ca3af;
+        }
+
+        .register a {
+            color: #818cf8;
+            text-decoration: none;
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="header">
-    <div class="container">
-        <a href="/" class="logo">REWET HOST</a>
+<div class="box">
+
+    <div class="logo">
+        REWET <span>HOST</span>
     </div>
-</header>
 
-<main class="container" style="max-width: 500px; padding-top: 70px;">
+    <div class="subtitle">
+        Вход в панель управления
+    </div>
 
-    <div class="card">
+    <form id="loginForm">
 
-        <h1 style="margin-bottom: 10px;">
-            Вход
-        </h1>
-
-        <p class="text-muted" style="margin-bottom: 30px;">
-            Войди в свой аккаунт REWET HOST
-        </p>
-
-        <form id="loginForm">
-
-            <label>Логин или Email</label>
-
-            <input
-                class="input"
-                type="text"
-                id="login"
-                placeholder="Логин или email"
-                required
-                style="margin: 8px 0 18px;"
-            >
-
-            <label>Пароль</label>
-
-            <input
-                class="input"
-                type="password"
-                id="password"
-                placeholder="Пароль"
-                required
-                style="margin: 8px 0 25px;"
-            >
-
-            <button
-                class="btn btn-primary"
-                type="submit"
-                style="width: 100%;"
-            >
-                Войти
-            </button>
-
-        </form>
-
-        <div
-            id="message"
-            style="margin-top: 20px; text-align: center;"
-        ></div>
-
-        <p
-            style="text-align: center; margin-top: 25px;"
-            class="text-muted"
+        <input
+            id="login"
+            type="text"
+            placeholder="Логин или Email"
+            autocomplete="username"
+            required
         >
-            Нет аккаунта?
-            <a href="/register.html" class="text-red">
-                Зарегистрироваться
-            </a>
-        </p>
 
+        <input
+            id="password"
+            type="password"
+            placeholder="Пароль"
+            autocomplete="current-password"
+            required
+        >
+
+        <button type="submit">
+            Войти
+        </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="register">
+        Нет аккаунта?
+        <a href="/register">Регистрация</a>
     </div>
 
-</main>
-
-<script src="/app.js"></script>
+</div>
 
 <script>
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
 
-        const login =
-            document.getElementById("login").value.trim();
+form.addEventListener("submit", async function(event) {
 
-        const password =
-            document.getElementById("password").value;
+    event.preventDefault();
 
-        message.textContent = "Выполняется вход...";
-        message.style.color = "#aaa";
+    message.textContent = "Выполняется вход...";
 
-        try {
+    const login =
+        document.getElementById("login").value.trim();
 
-            const result = await apiRequest(
-                "/auth/login",
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        login,
-                        password
-                    })
-                }
+    const password =
+        document.getElementById("password").value;
+
+    try {
+
+        const response = await fetch(
+            "/api/auth/login",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    login,
+                    password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Ошибка авторизации"
             );
-
-            saveToken(result.token);
-
-            message.textContent =
-                "Вход выполнен!";
-
-            message.style.color = "#35d07f";
-
-            setTimeout(() => {
-                window.location.href = "/dashboard.html";
-            }, 500);
-
-        } catch (error) {
-
-            message.textContent = error.message;
-            message.style.color = "#ff2020";
         }
-    });
+
+        if (!data.token) {
+            throw new Error(
+                "Сервер не вернул токен авторизации"
+            );
+        }
+
+        localStorage.setItem(
+            "token",
+            data.token
+        );
+
+        message.textContent =
+            "Вход выполнен!";
+
+        setTimeout(() => {
+            window.location.href = "/dashboard";
+        }, 300);
+
+    } catch (error) {
+
+        message.textContent =
+            error.message;
+
+    }
+
+});
+
 </script>
 
 </body>
