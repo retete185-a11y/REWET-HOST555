@@ -4,34 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>REWET HOST — игровой и веб-хостинг</title>
+    <title>REWET HOST — Gaming Infrastructure</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<div class="background-glow glow-one"></div>
+<div class="background-glow glow-two"></div>
+
+
 <header class="header">
 
-    <div class="logo">
-        ⚡ REWET HOST
-    </div>
+    <a class="logo" href="#">
+        <span class="logo-mark">⚡</span>
+        <span>REWET <b>HOST</b></span>
+    </a>
 
     <nav class="nav">
         <a href="#services">Услуги</a>
         <a href="#games">Игры</a>
+        <a href="#advantages">Возможности</a>
         <a href="#plans">Тарифы</a>
-        <a href="#support">Поддержка</a>
     </nav>
 
     <div class="auth-buttons" data-auth-buttons>
 
-        <button onclick="openLogin()">
+        <button
+            class="login-button"
+            onclick="openLogin()"
+        >
             Войти
         </button>
 
-        <button class="primary" onclick="openRegister()">
-            Регистрация
+        <button
+            class="register-button"
+            onclick="openRegister()"
+        >
+            Создать аккаунт
         </button>
 
     </div>
@@ -41,88 +52,278 @@
 
 <main>
 
+    <!-- ================================================= -->
     <!-- HERO -->
+    <!-- ================================================= -->
 
     <section class="hero">
 
-        <div class="hero-content">
+        <div class="hero-left">
 
-            <div class="badge">
-                ⚡ REWET HOST онлайн
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                REWET HOST ONLINE
             </div>
 
             <h1>
-                Твой сервер.<br>
-                Твоя инфраструктура.
+                Запускай.<br>
+                <span>Управляй.</span><br>
+                Развивай.
             </h1>
 
-            <p>
-                Игровой и веб-хостинг в одной панели.
-                Создавай серверы, управляй ими
-                и развивай свой проект вместе с REWET HOST.
+            <p class="hero-description">
+                Мощная инфраструктура для игровых серверов
+                и веб-проектов. Всё необходимое —
+                в одной современной панели управления.
             </p>
 
-            <div class="hero-buttons">
+            <div class="hero-actions">
 
                 <button
-                    class="primary big"
+                    class="main-button"
                     onclick="openRegister()"
                 >
-                    🚀 Начать бесплатно
+                    <span>🚀</span>
+                    Начать бесплатно
                 </button>
 
                 <a
                     href="#services"
-                    class="secondary big"
+                    class="outline-button"
                 >
                     Узнать больше
+                    <span>→</span>
                 </a>
 
             </div>
 
-        </div>
-
-
-        <div class="hero-panel">
-
-            <div class="panel-top">
-                <span>REWET HOST</span>
-                <span class="online">
-                    ● ONLINE
-                </span>
-            </div>
-
-            <div class="server-card">
+            <div class="hero-trust">
 
                 <div>
-                    <small>Твой сервер</small>
-
-                    <strong>
-                        Пока серверов нет
-                    </strong>
+                    <strong>20</strong>
+                    <span>дней теста</span>
                 </div>
 
-                <div class="server-status">
-                    Готов
+                <div class="trust-line"></div>
+
+                <div>
+                    <strong>24/7</strong>
+                    <span>панель</span>
+                </div>
+
+                <div class="trust-line"></div>
+
+                <div>
+                    <strong>0 ₽</strong>
+                    <span>старт</span>
                 </div>
 
             </div>
 
-            <div class="panel-line"></div>
+        </div>
 
-            <div class="panel-info">
-                <span>CPU</span>
-                <span>0%</span>
-            </div>
 
-            <div class="panel-info">
-                <span>RAM</span>
-                <span>0 MB</span>
-            </div>
+        <!-- DASHBOARD PREVIEW -->
 
-            <div class="panel-info">
-                <span>Игроки</span>
-                <span>0 / 0</span>
+        <div class="hero-right">
+
+            <div class="dashboard">
+
+                <div class="dashboard-top">
+
+                    <div class="window-dots">
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                    </div>
+
+                    <span>
+                        REWET HOST / PANEL
+                    </span>
+
+                    <div class="dashboard-online">
+                        ● ONLINE
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-body">
+
+                    <aside class="dashboard-sidebar">
+
+                        <div class="side-logo">
+                            ⚡
+                        </div>
+
+                        <div class="side-item active">
+                            ▦
+                        </div>
+
+                        <div class="side-item">
+                            ◈
+                        </div>
+
+                        <div class="side-item">
+                            ◫
+                        </div>
+
+                        <div class="side-item">
+                            ⚙
+                        </div>
+
+                    </aside>
+
+
+                    <div class="dashboard-content">
+
+                        <div class="dashboard-heading">
+
+                            <div>
+                                <small>
+                                    ПАНЕЛЬ УПРАВЛЕНИЯ
+                                </small>
+
+                                <h3>
+                                    Мои серверы
+                                </h3>
+                            </div>
+
+                            <button class="add-server">
+                                + Создать сервер
+                            </button>
+
+                        </div>
+
+
+                        <div class="server-preview">
+
+                            <div class="server-header">
+
+                                <div class="server-name">
+
+                                    <div class="game-icon">
+                                        SA
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            REWET RP
+                                        </strong>
+
+                                        <span>
+                                            SA:MP · 0 игроков
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <span class="running">
+                                    ● Работает
+                                </span>
+
+                            </div>
+
+
+                            <div class="metrics">
+
+                                <div class="metric">
+
+                                    <div class="metric-title">
+                                        CPU
+                                    </div>
+
+                                    <div class="metric-value">
+                                        24%
+                                    </div>
+
+                                    <div class="metric-bar">
+                                        <span style="width:24%"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="metric">
+
+                                    <div class="metric-title">
+                                        RAM
+                                    </div>
+
+                                    <div class="metric-value">
+                                        1.8 GB
+                                    </div>
+
+                                    <div class="metric-bar">
+                                        <span style="width:45%"></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="metric">
+
+                                    <div class="metric-title">
+                                        DISK
+                                    </div>
+
+                                    <div class="metric-value">
+                                        12 GB
+                                    </div>
+
+                                    <div class="metric-bar">
+                                        <span style="width:32%"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="server-controls">
+
+                                <button>
+                                    ▶ Запустить
+                                </button>
+
+                                <button>
+                                    ↻ Перезапустить
+                                </button>
+
+                                <button>
+                                    ⚙ Управление
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mini-cards">
+
+                            <div>
+                                <span>Серверов</span>
+                                <strong>1</strong>
+                            </div>
+
+                            <div>
+                                <span>Онлайн</span>
+                                <strong>24/7</strong>
+                            </div>
+
+                            <div>
+                                <span>Состояние</span>
+                                <strong class="green">
+                                    Stable
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
@@ -130,54 +331,46 @@
     </section>
 
 
-    <!-- STATS -->
-
-    <section class="stats">
-
-        <div>
-            <strong>20 дней</strong>
-            <span>бесплатного теста</span>
-        </div>
-
-        <div>
-            <strong>24/7</strong>
-            <span>доступ к панели</span>
-        </div>
-
-        <div>
-            <strong>2+</strong>
-            <span>направления</span>
-        </div>
-
-        <div>
-            <strong>1</strong>
-            <span>единая панель</span>
-        </div>
-
-    </section>
-
-
+    <!-- ================================================= -->
     <!-- SERVICES -->
+    <!-- ================================================= -->
 
-    <section id="services" class="section">
+    <section
+        class="section"
+        id="services"
+    >
 
-        <div class="section-title">
+        <div class="section-head">
 
-            <span>ВОЗМОЖНОСТИ</span>
+            <div>
 
-            <h2>
-                Всё необходимое<br>
-                для твоего проекта
-            </h2>
+                <span class="section-label">
+                    INFRASTRUCTURE
+                </span>
+
+                <h2>
+                    Всё под контролем.
+                </h2>
+
+            </div>
+
+            <p>
+                Одна панель для управления
+                всей инфраструктурой проекта.
+            </p>
 
         </div>
 
 
-        <div class="cards">
+        <div class="service-grid">
 
-            <div class="card">
+            <article class="service-card featured">
 
-                <div class="card-icon">
+                <div class="service-number">
+                    01
+                </div>
+
+                <div class="service-icon">
                     🎮
                 </div>
 
@@ -186,20 +379,26 @@
                 </h3>
 
                 <p>
-                    Создавай и управляй игровыми
-                    серверами через удобную панель.
+                    Запускай игровые серверы,
+                    управляй файлами, консолью,
+                    настройками и ресурсами
+                    из одной панели.
                 </p>
 
-                <span class="soon">
-                    Скоро
-                </span>
+                <div class="service-footer">
+                    SA:MP · CRMP · MTA · Minecraft · CS
+                </div>
 
-            </div>
+            </article>
 
 
-            <div class="card">
+            <article class="service-card">
 
-                <div class="card-icon">
+                <div class="service-number">
+                    02
+                </div>
+
+                <div class="service-icon">
                     🌐
                 </div>
 
@@ -208,64 +407,109 @@
                 </h3>
 
                 <p>
-                    Размещай сайты и веб-проекты
-                    на инфраструктуре REWET HOST.
+                    Размещай сайты и веб-приложения
+                    с удобным управлением проектом.
                 </p>
 
-                <span class="soon">
-                    Скоро
-                </span>
+                <div class="service-footer">
+                    WEB · API · DATABASE
+                </div>
 
-            </div>
+            </article>
+
+
+            <article class="service-card">
+
+                <div class="service-number">
+                    03
+                </div>
+
+                <div class="service-icon">
+                    🛡️
+                </div>
+
+                <h3>
+                    Защита
+                </h3>
+
+                <p>
+                    Надёжная инфраструктура,
+                    мониторинг и контроль
+                    состояния твоих серверов.
+                </p>
+
+                <div class="service-footer">
+                    MONITORING · SECURITY
+                </div>
+
+            </article>
 
         </div>
 
     </section>
 
 
+    <!-- ================================================= -->
     <!-- GAMES -->
+    <!-- ================================================= -->
 
-    <section id="games" class="section dark-section">
+    <section
+        class="games-section"
+        id="games"
+    >
 
-        <div class="section-title">
+        <div class="section-head">
 
-            <span>ИГРЫ</span>
+            <div>
 
-            <h2>
-                Запускай любимые игры
-            </h2>
+                <span class="section-label">
+                    SUPPORTED GAMES
+                </span>
+
+                <h2>
+                    Твоя игра.<br>
+                    Твой сервер.
+                </h2>
+
+            </div>
 
         </div>
 
 
         <div class="games-grid">
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">SA</div>
                 <strong>SA:MP</strong>
-                <span>San Andreas Multiplayer</span>
+                <span>Grand Theft Auto</span>
             </div>
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">CR</div>
                 <strong>CRMP</strong>
                 <span>Criminal Russia</span>
             </div>
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">MT</div>
                 <strong>MTA</strong>
                 <span>Multi Theft Auto</span>
             </div>
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">MC</div>
                 <strong>Minecraft</strong>
                 <span>Java Edition</span>
             </div>
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">CS</div>
                 <strong>CS 1.6</strong>
                 <span>Counter-Strike</span>
             </div>
 
-            <div class="game">
+            <div class="game-card">
+                <div class="game-big">CS2</div>
                 <strong>CS2</strong>
                 <span>Counter-Strike 2</span>
             </div>
@@ -275,60 +519,164 @@
     </section>
 
 
-    <!-- PLANS -->
+    <!-- ================================================= -->
+    <!-- ADVANTAGES -->
+    <!-- ================================================= -->
 
-    <section id="plans" class="section">
+    <section
+        class="section"
+        id="advantages"
+    >
 
-        <div class="section-title">
+        <div class="section-head">
 
-            <span>ТАРИФЫ</span>
+            <div>
 
-            <h2>
-                Начни бесплатно
-            </h2>
+                <span class="section-label">
+                    WHY REWET
+                </span>
+
+                <h2>
+                    Создано для проектов,
+                    а не просто серверов.
+                </h2>
+
+            </div>
 
         </div>
 
 
-        <div class="plans">
+        <div class="advantages">
 
-            <div class="plan active-plan">
+            <div class="advantage">
+                <span>01</span>
+                <h3>Одна панель</h3>
+                <p>
+                    Управляй серверами,
+                    файлами и ресурсами
+                    из одного места.
+                </p>
+            </div>
 
-                <span class="plan-label">
-                    ТЕСТ
+            <div class="advantage">
+                <span>02</span>
+                <h3>Быстрый запуск</h3>
+                <p>
+                    Создай сервер и начни
+                    работу без сложной настройки.
+                </p>
+            </div>
+
+            <div class="advantage">
+                <span>03</span>
+                <h3>Мониторинг</h3>
+                <p>
+                    Следи за CPU, RAM,
+                    диском и состоянием сервера.
+                </p>
+            </div>
+
+            <div class="advantage">
+                <span>04</span>
+                <h3>24/7</h3>
+                <p>
+                    Панель доступна тогда,
+                    когда она тебе нужна.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- PLANS -->
+    <!-- ================================================= -->
+
+    <section
+        class="plans-section"
+        id="plans"
+    >
+
+        <div class="section-head center">
+
+            <span class="section-label">
+                PRICING
+            </span>
+
+            <h2>
+                Начни без риска.
+            </h2>
+
+            <p>
+                Попробуй REWET HOST бесплатно.
+            </p>
+
+        </div>
+
+
+        <div class="plans-grid">
+
+            <div class="plan-card test-plan">
+
+                <span class="plan-tag">
+                    START
                 </span>
 
                 <h3>
-                    0 ₽
+                    Тестовый
                 </h3>
 
+                <div class="price">
+                    0 ₽
+                </div>
+
                 <p>
-                    20 дней бесплатного тестирования
+                    20 дней бесплатного теста
                 </p>
 
+                <ul>
+                    <li>✓ Панель управления</li>
+                    <li>✓ Управление сервером</li>
+                    <li>✓ Мониторинг</li>
+                    <li>✓ Поддержка</li>
+                </ul>
+
                 <button
-                    class="primary"
+                    class="main-button full"
                     onclick="openRegister()"
                 >
-                    Создать аккаунт
+                    Начать бесплатно
                 </button>
 
             </div>
 
 
-            <div class="plan">
+            <div class="plan-card">
 
-                <span class="plan-label">
+                <span class="plan-tag">
                     GAMING
                 </span>
 
                 <h3>
-                    Скоро
+                    Игровой
                 </h3>
+
+                <div class="price">
+                    Скоро
+                </div>
 
                 <p>
                     Полноценный игровой хостинг
                 </p>
+
+                <ul>
+                    <li>✓ Высокая производительность</li>
+                    <li>✓ Резервные копии</li>
+                    <li>✓ Расширенное управление</li>
+                    <li>✓ Защита</li>
+                </ul>
 
                 <button disabled>
                     Скоро
@@ -337,19 +685,30 @@
             </div>
 
 
-            <div class="plan">
+            <div class="plan-card">
 
-                <span class="plan-label">
+                <span class="plan-tag">
                     WEB
                 </span>
 
                 <h3>
-                    Скоро
+                    Веб
                 </h3>
 
+                <div class="price">
+                    Скоро
+                </div>
+
                 <p>
-                    Хостинг веб-проектов
+                    Для сайтов и приложений
                 </p>
+
+                <ul>
+                    <li>✓ Размещение сайта</li>
+                    <li>✓ SSL</li>
+                    <li>✓ База данных</li>
+                    <li>✓ Управление проектом</li>
+                </ul>
 
                 <button disabled>
                     Скоро
@@ -362,21 +721,32 @@
     </section>
 
 
-    <!-- CTA -->
+    <!-- ================================================= -->
+    <!-- FINAL CTA -->
+    <!-- ================================================= -->
 
-    <section class="cta" id="support">
+    <section class="final-cta">
 
-        <h2>
-            Готов запустить свой проект?
-        </h2>
+        <div>
 
-        <p>
-            Создай аккаунт и начни пользоваться
-            REWET HOST.
-        </p>
+            <span class="section-label">
+                REWET HOST
+            </span>
+
+            <h2>
+                Готов запустить
+                свой проект?
+            </h2>
+
+            <p>
+                Создай аккаунт и получи
+                доступ к панели управления.
+            </p>
+
+        </div>
 
         <button
-            class="primary big"
+            class="main-button"
             onclick="openRegister()"
         >
             🚀 Создать аккаунт
@@ -387,24 +757,57 @@
 </main>
 
 
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+
 <footer>
 
-    <div class="footer-logo">
-        ⚡ REWET HOST
+    <div class="footer-top">
+
+        <div>
+
+            <a class="logo">
+                <span class="logo-mark">⚡</span>
+                <span>REWET <b>HOST</b></span>
+            </a>
+
+            <p>
+                Gaming & Web Infrastructure.
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+
+            <a href="#services">Услуги</a>
+            <a href="#games">Игры</a>
+            <a href="#plans">Тарифы</a>
+            <a href="#support">Поддержка</a>
+
+        </div>
+
     </div>
 
-    <p>
-        Игровой и веб-хостинг нового поколения.
-    </p>
 
-    <span>
-        © 2026 REWET HOST
-    </span>
+    <div class="footer-bottom">
+
+        <span>
+            © 2026 REWET HOST
+        </span>
+
+        <span>
+            Made for your project.
+        </span>
+
+    </div>
 
 </footer>
 
 
+<!-- ================================================= -->
 <!-- AUTH MODAL -->
+<!-- ================================================= -->
 
 <div
     id="authModal"
@@ -419,4 +822,4 @@
 <script src="script.js"></script>
 
 </body>
-</html>
+                </html>
