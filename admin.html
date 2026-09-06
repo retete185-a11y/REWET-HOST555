@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>REWET HOST — Админ-панель</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #07111f;
+    color: white;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background: #081321;
+    border-right: 1px solid rgba(255,255,255,.08);
+    z-index: 1000;
+}
+
+.logo {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-size: 20px;
+    font-weight: 900;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.logo span {
+    color: #1683ff;
+}
+
+.admin-badge {
+    margin: 18px 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(168,85,247,.10);
+    border: 1px solid rgba(168,85,247,.20);
+    color: #c084fc;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.menu {
+    padding: 0 12px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 45px;
+    padding: 0 13px;
+    margin-bottom: 4px;
+    border-radius: 9px;
+    color: #91a2b7;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.menu a:hover,
+.menu a.active {
+    color: white;
+    background: rgba(22,131,255,.12);
+}
+
+.main {
+    margin-left: 250px;
+}
+
+.topbar {
+    height: 75px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(7,17,31,.85);
+}
+
+.title {
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.admin-user {
+    color: #91a2b7;
+    font-size: 12px;
+}
+
+.content {
+    padding: 30px;
+    max-width: 1500px;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome h1 {
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.welcome p {
+    color: #8192a8;
+    font-size: 13px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #0b1728;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.stat-title {
+    color: #8192a8;
+    font-size: 11px;
+    margin-bottom: 9px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.section {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 13px;
+}
+
+.panel {
+    background: #0b1728;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 12px;
+}
+
+input {
+    height: 45px;
+    width: 100%;
+    padding: 0 13px;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: #071321;
+    color: white;
+    outline: none;
+}
+
+input:focus {
+    border-color: #1683ff;
+}
+
+button {
+    border: 0;
+    border-radius: 9px;
+    padding: 0 18px;
+    height: 45px;
+    background: linear-gradient(135deg,#1683ff,#005de5);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: .9;
+}
+
+.danger {
+    background: rgba(239,68,68,.12);
+    color: #ff8f8f;
+    border: 1px solid rgba(239,68,68,.18);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th {
+    text-align: left;
+    padding: 14px;
+    color: #71849b;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px 14px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    color: #b9c6d5;
+    font-size: 12px;
+}
+
+.code {
+    color: #69b0ff;
+    font-family: monospace;
+    font-weight: 800;
+}
+
+.green {
+    color: #5ee58b;
+}
+
+.red {
+    color: #ff7777;
+}
+
+.message {
+    display: none;
+    margin-top: 13px;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.success {
+    background: rgba(34,197,94,.08);
+    color: #70e69a;
+}
+
+.message.error {
+    background: rgba(239,68,68,.08);
+    color: #ff9999;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+@media(max-width:1000px) {
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(max-width:750px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .mobile-menu {
+        display: block;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        font-size: 20px;
+        margin-right: 12px;
+    }
+
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .content {
+        padding: 20px 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:500px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome h1 {
+        font-size: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        ⚡ REWET <span>HOST</span>
+    </div>
+
+    <div class="admin-badge">
+        👑 АДМИНИСТРАТОР
+    </div>
+
+    <nav class="menu">
+
+        <a href="admin.html" class="active">
+            📊 Главная
+        </a>
+
+        <a href="#users">
+            👥 Пользователи
+        </a>
+
+        <a href="#servers">
+            🖥️ Серверы
+        </a>
+
+        <a href="#promocodes">
+            🎁 Промокоды
+        </a>
+
+        <a href="#balance">
+            💰 Балансы
+        </a>
+
+        <a href="#support">
+            🎧 Поддержка
+        </a>
+
+        <a href="dashboard.html">
+            ← Панель пользователя
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<main class="main">
+
+    <header class="topbar">
+
+        <div style="display:flex;align-items:center;">
+
+            <button
+                class="mobile-menu"
+                onclick="toggleMenu()">
+                ☰
+            </button>
+
+            <div class="title">
+                Админ-панель
+            </div>
+
+        </div>
+
+        <div class="admin-user" id="adminUser">
+            Проверка доступа...
+        </div>
+
+    </header>
+
+
+    <div class="content">
+
+        <div class="welcome">
+
+            <h1>
+                Админ-панель 👑
+            </h1>
+
+            <p>
+                Управление REWET HOST
+            </p>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="card">
+                <div class="stat-title">
+                    Пользователи
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="usersCount">
+                    —
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="stat-title">
+                    Серверы
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="serversCount">
+                    3
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="stat-title">
+                    Промокоды
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="promoCount">
+                    —
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="stat-title">
+                    Онлайн
+                </div>
+
+                <div
+                    class="stat-value green"
+                    id="onlineCount">
+                    1
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- PROMOCODES -->
+
+        <section
+            class="section"
+            id="promocodes">
+
+            <div class="section-title">
+                🎁 Создать промокод
+            </div>
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <input
+                        id="promoCode"
+                        type="text"
+                        placeholder="Промокод, например REWET100">
+
+                    <input
+                        id="promoBonus"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Бонус ₽">
+
+                    <input
+                        id="promoUses"
+                        type="number"
+                        min="1"
+                        value="100"
+                        placeholder="Макс. активаций">
+
+                    <button onclick="createPromo()">
+                        Создать
+                    </button>
+
+                </div>
+
+                <div
+                    id="promoMessage"
+                    class="message">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROMO TABLE -->
+
+        <section class="section">
+
+            <div class="section-title">
+                Активные промокоды
+            </div>
+
+            <div class="panel">
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Код</th>
+                                <th>Бонус</th>
+                                <th>Использовано</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="promoTable">
+
+                            <tr>
+                                <td colspan="5">
+                                    Загрузка...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BALANCE -->
+
+        <section
+            class="section"
+            id="balance">
+
+            <div class="section-title">
+                💰 Выдать баланс
+            </div>
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <input
+                        id="balanceUser"
+                        type="number"
+                        placeholder="ID пользователя">
+
+                    <input
+                        id="balanceAmount"
+                        type="number"
+                        step="0.01"
+                        placeholder="Сумма ₽">
+
+                    <input
+                        id="balanceReason"
+                        type="text"
+                        placeholder="Причина">
+
+                    <button onclick="giveBalance()">
+                        Выдать
+                    </button>
+
+                </div>
+
+                <div
+                    id="balanceMessage"
+                    class="message">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- USERS -->
+
+        <section
+            class="section"
+            id="users">
+
+            <div class="section-title">
+                👥 Пользователи
+            </div>
+
+            <div class="panel">
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Баланс</th>
+                                <th>Статус</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="usersTable">
+
+                            <tr>
+                                <td colspan="5">
+                                    Загрузка...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<script>
+
+const API_URL =
+    "https://rewet-host-api.onrender.com";
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function toggleMenu() {
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function message(id, text, type) {
+
+    const el =
+        document.getElementById(id);
+
+    el.textContent = text;
+
+    el.className =
+        "message show " + type;
+
+}
+
+
+/* =====================================================
+   CHECK ADMIN
+===================================================== */
+
+async function checkAdmin() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/api/me",
+                {
+                    credentials: "include"
+                }
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.authenticated ||
+            !data.user
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return false;
+
+        }
+
+
+        /*
+         * После добавления is_admin
+         * backend будет возвращать
+         * этот параметр.
+         */
+
+        if (!data.user.is_admin) {
+
+            document.body.innerHTML = `
+                <div style="
+                    min-height:100vh;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    text-align:center;
+                    padding:20px;
+                    background:#07111f;
+                    color:white;
+                    font-family:Arial;
+                ">
+                    <div>
+                        <div style="font-size:60px;margin-bottom:15px;">
+                            ⛔
+                        </div>
+
+                        <h1 style="margin-bottom:10px;">
+                            Доступ запрещён
+                        </h1>
+
+                        <p style="color:#8192a8;margin-bottom:20px;">
+                            У вас нет прав администратора.
+                        </p>
+
+                        <a
+                            href="dashboard.html"
+                            style="
+                                display:inline-block;
+                                padding:12px 20px;
+                                background:#1683ff;
+                                color:white;
+                                text-decoration:none;
+                                border-radius:9px;
+                                font-weight:700;
+                            ">
+                            Вернуться в панель
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            return false;
+
+        }
+
+
+        document
+            .getElementById("adminUser")
+            .textContent =
+            "👑 " + data.user.username;
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(error);
+
+        window.location.href =
+            "login.html";
+
+        return false;
+
+    }
+
+}
+
+
+/* =====================================================
+   CREATE PROMO
+===================================================== */
+
+async function createPromo() {
+
+    const code =
+        document
+            .getElementById("promoCode")
+            .value
+            .trim();
+
+    const bonus =
+        document
+            .getElementById("promoBonus")
+            .value;
+
+    const maxUses =
+        document
+            .getElementById("promoUses")
+            .value;
+
+
+    if (!code || !bonus || !maxUses) {
+
+        message(
+            "promoMessage",
+            "Заполните все поля.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/api/admin/promocodes",
+                {
+                    method: "POST",
+
+                    credentials: "include",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        code: code,
+                        bonus: Number(bonus),
+                        max_uses: Number(maxUses)
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Не удалось создать промокод."
+            );
+
+        }
+
+
+        message(
+            "promoMessage",
+            "Промокод успешно создан.",
+            "success"
+        );
+
+
+        document
+            .getElementById("promoCode")
+            .value = "";
+
+        document
+            .getElementById("promoBonus")
+            .value = "";
+
+
+        loadPromos();
+
+    } catch (error) {
+
+        message(
+            "promoMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD PROMOS
+===================================================== */
+
+async function loadPromos() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL + "/api/admin/promocodes",
+                {
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const promos =
+            data.promocodes || [];
+
+
+        document
+            .getElementById("promoCount")
+            .textContent =
+            promos.length;
+
+
+        const table =
+            document.getElementById("promoTable");
+
+
+        if (!promos.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5"
+                        style="text-align:center;color:#71849b;">
+                        Промокодов пока нет.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        table.innerHTML =
+            promos.map(promo => `
+
+                <tr>
+
+                    <td class="code">
+                        ${escapeHtml(promo.code)}
+                    </td>
+
+                    <td>
+                        ${Number(promo.bonus).toFixed(2)} ₽
+                    </td>
+
+                    <td>
+                        ${promo.uses} / ${promo.max_uses}
+                    </td>
+
+                    <td class="${promo.active ? "green" : "red"}">
+                        ${promo.active ? "Активен" : "Выключен"}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="danger"
+                            onclick="deletePromo(${promo.id})">
+                            Удалить
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =====================================================
+   DELETE PROMO
+===================================================== */
+
+async function deletePromo(id) {
+
+    if (
+        !confirm(
+            "Удалить этот промокод?"
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/api/admin/promocodes/" +
+                id,
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Ошибка удаления."
+            );
+
+        }
+
+
+        loadPromos();
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   GIVE BALANCE
+===================================================== */
+
+async function giveBalance() {
+
+    const userId =
+        document
+            .getElementById("balanceUser")
+            .value;
+
+    const amount =
+        document
+            .getElementById("balanceAmount")
+            .value;
+
+    const reason =
+        document
+            .getElementById("balanceReason")
+            .value
+            .trim();
+
+
+    if (!userId || !amount) {
+
+        message(
+            "balanceMessage",
+            "Введите ID пользователя и сумму.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/api/admin/users/" +
+                userId +
+                "/balance",
+                {
+                    method: "POST",
+
+                    credentials: "include",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        amount: Number(amount),
+                        reason: reason
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Не удалось изменить баланс."
+            );
+
+        }
+
+
+        message(
+            "balanceMessage",
+            "Баланс успешно изменён.",
+            "success"
+        );
+
+
+        loadUsers();
+
+    } catch (error) {
+
+        message(
+            "balanceMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD USERS
+===================================================== */
+
+async function loadUsers() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/api/admin/users",
+                {
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const users =
+            data.users || [];
+
+
+        document
+            .getElementById("usersCount")
+            .textContent =
+            users.length;
+
+
+        const table =
+            document.getElementById("usersTable");
+
+
+        if (!users.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Пользователей нет.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        table.innerHTML =
+            users.map(user => `
+
+                <tr>
+
+                    <td>
+                        #${user.id}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(user.username)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(user.email)}
+                    </td>
+
+                    <td>
+                        ${Number(user.balance).toFixed(2)} ₽
+                    </td>
+
+                    <td class="green">
+                        Активен
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =====================================================
+   SECURITY
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+(async function() {
+
+    const isAdmin =
+        await checkAdmin();
+
+
+    if (!isAdmin) {
+        return;
+    }
+
+
+    await loadPromos();
+
+    await loadUsers();
+
+})();
+
+</script>
+
+</body>
+              </html>
