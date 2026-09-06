@@ -1,47 +1,87 @@
+"use strict";
+
+/*
+=========================================================
+REWET HOST — FRONTEND CORE
+=========================================================
+API:
+https://rewet-host-api.onrender.com
+
+Поддерживается:
+- Регистрация
+- Вход
+- Сессия
+- Профиль
+- Выход
+- Google OAuth через /api/auth/google
+- Красивые сообщения
+- Защита от двойной отправки
+- Таймаут запросов
+- Безопасный вывод данных
+=========================================================
+*/
+
 const API_URL = "https://rewet-host-api.onrender.com";
 
 let currentUser = null;
+let requestController = null;
 
 
 // =====================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ОСНОВНЫЕ УТИЛИТЫ
 // =====================================================
 
-function getElement(id) {
+function $(id) {
     return document.getElementById(id);
 }
 
 
-function showMessage(message, type = "error") {
-    const old = document.querySelector(".auth-message");
-
-    if (old) {
-        old.remove();
+function escapeHTML(value) {
+    if (value === null || value === undefined) {
+        return "";
     }
 
-    const box = document.querySelector(".auth-box");
-
-    if (!box) {
-        alert(message);
-        return;
-    }
-
-    const messageElement = document.createElement("div");
-
-    messageElement.className =
-        `auth-message auth-message-${type}`;
-
-    messageElement.textContent = message;
-
-    box.insertBefore(
-        messageElement,
-        box.querySelector("form")
-    );
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 
-async function getResponseData(response) {
+function getErrorMessage(data, fallback) {
+    if (!data) {
+        return fallback;
+    }
 
+    let message =
+        data.detail ||
+        data.message ||
+        data.error ||
+        fallback;
+
+    if (Array.isArray(message)) {
+        message = message
+            .map(item => {
+                if (typeof item === "string") {
+                    return item;
+                }
+
+                return item?.msg || "Ошибка";
+            })
+            .join("\n");
+    }
+
+    if (typeof message !== "string") {
+        return fallback;
+    }
+
+    return message;
+}
+
+
+async function parseResponse(response) {
     const text = await response.text();
 
     if (!text) {
@@ -58,35 +98,121 @@ async function getResponseData(response) {
 }
 
 
+async function apiRequest(
+    endpoint,
+    options = {},
+    timeout = 15000
+) {
+    if (requestController) {
+        requestController.abort();
+    }
+
+    requestController = new AbortController();
+
+    const timer = setTimeout(() => {
+        requestController.abort();
+    }, timeout);
+
+    try {
+        const response = await fetch(
+            `${API_URL}${endpoint}`,
+            {
+                ...options,
+                credentials: "include",
+                signal: requestController.signal,
+                headers: {
+                    "Accept": "application/json",
+                    ...(options.headers || {})
+                }
+            }
+        );
+
+        const data = await parseResponse(response);
+
+        return {
+            response,
+            data
+        };
+
+    } finally {
+        clearTimeout(timer);
+        requestController = null;
+    }
+}
+
+
 // =====================================================
-// ОТКРЫТЬ ОКНО
+// СООБЩЕНИЯ
+// =====================================================
+
+function showMessage(message, type = "error") {
+
+    document
+        .querySelectorAll(".auth-message")
+        .forEach(element => element.remove());
+
+    const box = document.querySelector(
+        "#authContent .auth-box"
+    ) || document.querySelector(".auth-box");
+
+    if (!box) {
+        alert(message);
+        return;
+    }
+
+    const element = document.createElement("div");
+
+    element.className =
+        `auth-message auth-message-${type}`;
+
+    element.textContent = message;
+
+    const form = box.querySelector("form");
+
+    if (form) {
+        box.insertBefore(element, form);
+    } else {
+        box.prepend(element);
+    }
+
+    setTimeout(() => {
+        if (element.isConnected) {
+            element.remove();
+        }
+    }, 7000);
+}
+
+
+// =====================================================
+// МОДАЛЬНОЕ ОКНО
 // =====================================================
 
 function showAuthModal() {
 
-    const modal = getElement("authModal");
+    const modal = $("authModal");
 
     if (!modal) {
-        alert("Ошибка: #authModal отсутствует в index.html");
+        console.error(
+            "REWET HOST: #authModal не найден."
+        );
+
         return false;
     }
 
     modal.classList.add("active");
     modal.classList.add("open");
-
     modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("auth-open");
 
     return true;
 }
 
 
-// =====================================================
-// ЗАКРЫТЬ ОКНО
-// =====================================================
-
 function closeAuth() {
 
-    const modal = getElement("authModal");
+    const modal = $("authModal");
 
     if (!modal) {
         return;
@@ -96,23 +222,27 @@ function closeAuth() {
     modal.classList.remove("open");
 
     modal.style.display = "";
+    modal.setAttribute("aria-hidden", "true");
+
+    document.body.classList.remove("auth-open");
+
+    document
+        .querySelectorAll(".auth-message")
+        .forEach(element => element.remove());
 }
 
 
 // =====================================================
-// ВХОД
+// HTML — ВХОД
 // =====================================================
 
-function openLogin() {
+function renderLogin() {
 
-    const content = getElement("authContent");
+    const content = $("authContent");
 
     if (!content) {
-        alert("Ошибка: #authContent отсутствует в index.html");
         return;
     }
-
-    showAuthModal();
 
     content.innerHTML = `
 
@@ -122,6 +252,7 @@ function openLogin() {
                 class="auth-close"
                 type="button"
                 onclick="closeAuth()"
+                aria-label="Закрыть"
             >
                 ×
             </button>
@@ -133,12 +264,12 @@ function openLogin() {
             <h2>Вход в REWET HOST</h2>
 
             <p class="auth-subtitle">
-                Войдите в панель управления
+                Войдите в свою панель управления
             </p>
 
             <form id="loginForm">
 
-                <label>
+                <label for="login">
                     E-mail или логин
                 </label>
 
@@ -147,10 +278,11 @@ function openLogin() {
                     type="text"
                     placeholder="Введите e-mail или логин"
                     autocomplete="username"
+                    maxlength="120"
                     required
                 >
 
-                <label>
+                <label for="loginPassword">
                     Пароль
                 </label>
 
@@ -181,17 +313,10 @@ function openLogin() {
                 <button
                     type="button"
                     class="auth-social"
-                    onclick="showMessage('Google OAuth будет подключён после настройки Google Cloud', 'info')"
+                    id="googleLoginButton"
                 >
-                    G&nbsp;&nbsp; Google
-                </button>
-
-                <button
-                    type="button"
-                    class="auth-social"
-                    onclick="showMessage('VK ID будет подключён после настройки VK OAuth', 'info')"
-                >
-                    VK&nbsp;&nbsp; Войти через VK
+                    <strong>G</strong>
+                    &nbsp; Войти через Google
                 </button>
 
             </div>
@@ -212,28 +337,52 @@ function openLogin() {
         </div>
     `;
 
-    const form = getElement("loginForm");
+    const form = $("loginForm");
 
     if (form) {
-        form.addEventListener("submit", login);
+        form.addEventListener(
+            "submit",
+            login
+        );
+    }
+
+    const googleButton =
+        $("googleLoginButton");
+
+    if (googleButton) {
+        googleButton.addEventListener(
+            "click",
+            googleLogin
+        );
     }
 }
 
 
 // =====================================================
-// РЕГИСТРАЦИЯ
+// ОТКРЫТЬ ВХОД
 // =====================================================
 
-function openRegister() {
+function openLogin() {
 
-    const content = getElement("authContent");
-
-    if (!content) {
-        alert("Ошибка: #authContent отсутствует в index.html");
+    if (!showAuthModal()) {
         return;
     }
 
-    showAuthModal();
+    renderLogin();
+}
+
+
+// =====================================================
+// HTML — РЕГИСТРАЦИЯ
+// =====================================================
+
+function renderRegister() {
+
+    const content = $("authContent");
+
+    if (!content) {
+        return;
+    }
 
     content.innerHTML = `
 
@@ -243,6 +392,7 @@ function openRegister() {
                 class="auth-close"
                 type="button"
                 onclick="closeAuth()"
+                aria-label="Закрыть"
             >
                 ×
             </button>
@@ -254,12 +404,12 @@ function openRegister() {
             <h2>Создать аккаунт</h2>
 
             <p class="auth-subtitle">
-                Регистрация в REWET HOST
+                Добро пожаловать в REWET HOST
             </p>
 
             <form id="registerForm">
 
-                <label>
+                <label for="username">
                     Имя пользователя
                 </label>
 
@@ -277,7 +427,7 @@ function openRegister() {
                     От 3 до 24 символов
                 </small>
 
-                <label>
+                <label for="email">
                     E-mail
                 </label>
 
@@ -286,10 +436,11 @@ function openRegister() {
                     type="email"
                     placeholder="you@example.com"
                     autocomplete="email"
+                    maxlength="160"
                     required
                 >
 
-                <label>
+                <label for="registerPassword">
                     Пароль
                 </label>
 
@@ -302,7 +453,7 @@ function openRegister() {
                     required
                 >
 
-                <label>
+                <label for="passwordConfirm">
                     Повторите пароль
                 </label>
 
@@ -348,17 +499,10 @@ function openRegister() {
                 <button
                     type="button"
                     class="auth-social"
-                    onclick="showMessage('Google OAuth будет подключён после настройки Google Cloud', 'info')"
+                    id="googleRegisterButton"
                 >
-                    G&nbsp;&nbsp; Регистрация через Google
-                </button>
-
-                <button
-                    type="button"
-                    class="auth-social"
-                    onclick="showMessage('VK ID будет подключён после настройки VK OAuth', 'info')"
-                >
-                    VK&nbsp;&nbsp; Регистрация через VK
+                    <strong>G</strong>
+                    &nbsp; Регистрация через Google
                 </button>
 
             </div>
@@ -379,27 +523,55 @@ function openRegister() {
         </div>
     `;
 
-    const form = getElement("registerForm");
+    const form = $("registerForm");
 
     if (form) {
-        form.addEventListener("submit", register);
+        form.addEventListener(
+            "submit",
+            register
+        );
+    }
+
+    const googleButton =
+        $("googleRegisterButton");
+
+    if (googleButton) {
+        googleButton.addEventListener(
+            "click",
+            googleLogin
+        );
     }
 }
 
 
 // =====================================================
-// РЕГИСТРАЦИЯ — API
+// ОТКРЫТЬ РЕГИСТРАЦИЮ
+// =====================================================
+
+function openRegister() {
+
+    if (!showAuthModal()) {
+        return;
+    }
+
+    renderRegister();
+}
+
+
+// =====================================================
+// РЕГИСТРАЦИЯ
 // =====================================================
 
 async function register(event) {
 
     event.preventDefault();
 
-    const usernameElement = getElement("username");
-    const emailElement = getElement("email");
-    const passwordElement = getElement("registerPassword");
-    const confirmElement = getElement("passwordConfirm");
-    const submitButton = getElement("registerSubmit");
+    const usernameElement = $("username");
+    const emailElement = $("email");
+    const passwordElement = $("registerPassword");
+    const confirmElement = $("passwordConfirm");
+    const termsElement = $("terms");
+    const submitButton = $("registerSubmit");
 
     if (
         !usernameElement ||
@@ -407,6 +579,10 @@ async function register(event) {
         !passwordElement ||
         !confirmElement
     ) {
+        showMessage(
+            "Ошибка формы регистрации."
+        );
+
         return;
     }
 
@@ -423,29 +599,48 @@ async function register(event) {
         confirmElement.value;
 
 
-    // Проверка имени
+    // -----------------------------------------------
+    // ПРОВЕРКИ
+    // -----------------------------------------------
 
-    if (username.length < 3) {
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
 
         showMessage(
-            "Имя пользователя должно содержать минимум 3 символа."
+            "Логин может содержать только латинские буквы, цифры и _."
         );
+
+        usernameElement.focus();
 
         return;
     }
 
 
-    if (username.length > 24) {
+    if (
+        username.length < 3 ||
+        username.length > 24
+    ) {
 
         showMessage(
-            "Имя пользователя не должно быть длиннее 24 символов."
+            "Имя пользователя должно быть от 3 до 24 символов."
         );
+
+        usernameElement.focus();
 
         return;
     }
 
 
-    // Проверка пароля
+    if (!email.includes("@")) {
+
+        showMessage(
+            "Введите корректный e-mail."
+        );
+
+        emailElement.focus();
+
+        return;
+    }
+
 
     if (password.length < 6) {
 
@@ -453,11 +648,11 @@ async function register(event) {
             "Пароль должен содержать минимум 6 символов."
         );
 
+        passwordElement.focus();
+
         return;
     }
 
-
-    // Проверка паролей
 
     if (password !== passwordConfirm) {
 
@@ -465,15 +660,35 @@ async function register(event) {
             "Пароли не совпадают."
         );
 
+        confirmElement.focus();
+
         return;
     }
 
 
-    // Блокируем кнопку
+    if (
+        termsElement &&
+        !termsElement.checked
+    ) {
+
+        showMessage(
+            "Необходимо принять правила REWET HOST."
+        );
+
+        return;
+    }
+
+
+    // -----------------------------------------------
+    // БЛОКИРОВКА
+    // -----------------------------------------------
 
     if (submitButton) {
 
         submitButton.disabled = true;
+
+        submitButton.dataset.originalText =
+            submitButton.textContent;
 
         submitButton.textContent =
             "Создание аккаунта...";
@@ -482,73 +697,51 @@ async function register(event) {
 
     try {
 
-        const response = await fetch(
-            `${API_URL}/api/register`,
-            {
-                method: "POST",
+        const { response, data } =
+            await apiRequest(
+                "/api/register",
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        password_confirm:
+                            passwordConfirm
+                    })
                 },
-
-                credentials: "include",
-
-                body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    password: password,
-                    password_confirm: passwordConfirm
-                })
-            }
-        );
-
-
-        const data =
-            await getResponseData(response);
+                20000
+            );
 
 
         if (!response.ok) {
 
-            let message =
-                data.detail ||
-                data.message ||
-                "Не удалось создать аккаунт.";
-
-
-            if (Array.isArray(message)) {
-
-                message = message
-                    .map(error => {
-
-                        if (typeof error === "string") {
-                            return error;
-                        }
-
-                        return error.msg || "Ошибка";
-                    })
-                    .join("\n");
-            }
-
-
             showMessage(
-                message
+                getErrorMessage(
+                    data,
+                    "Не удалось создать аккаунт."
+                )
             );
-
-            if (submitButton) {
-
-                submitButton.disabled = false;
-
-                submitButton.textContent =
-                    "Создать аккаунт";
-            }
 
             return;
         }
 
 
+        // -------------------------------------------
+        // УСПЕШНАЯ РЕГИСТРАЦИЯ
+        // -------------------------------------------
+
+        currentUser =
+            data.user || null;
+
         showMessage(
-            "Аккаунт создан! Сейчас откроется вход.",
+            "Аккаунт успешно создан!",
             "success"
         );
 
@@ -557,27 +750,39 @@ async function register(event) {
 
             openLogin();
 
-        }, 1000);
+        }, 1200);
 
 
     } catch (error) {
 
         console.error(
-            "REGISTER ERROR:",
+            "REWET HOST REGISTER:",
             error
         );
 
 
-        showMessage(
-            "Не удалось подключиться к серверу. Проверь, запущен ли API REWET HOST."
-        );
+        if (error.name === "AbortError") {
 
+            showMessage(
+                "Сервер слишком долго отвечает. Попробуйте ещё раз."
+            );
+
+        } else {
+
+            showMessage(
+                "Не удалось подключиться к REWET HOST API."
+            );
+        }
+
+
+    } finally {
 
         if (submitButton) {
 
             submitButton.disabled = false;
 
             submitButton.textContent =
+                submitButton.dataset.originalText ||
                 "Создать аккаунт";
         }
     }
@@ -585,27 +790,23 @@ async function register(event) {
 
 
 // =====================================================
-// ВХОД — API
+// ВХОД
 // =====================================================
 
 async function login(event) {
 
     event.preventDefault();
 
-    const loginElement =
-        getElement("login");
+    const loginElement = $("login");
+    const passwordElement = $("loginPassword");
+    const submitButton = $("loginSubmit");
 
-    const passwordElement =
-        getElement("loginPassword");
-
-    const submitButton =
-        getElement("loginSubmit");
-
-
-    if (!loginElement || !passwordElement) {
+    if (
+        !loginElement ||
+        !passwordElement
+    ) {
         return;
     }
-
 
     const loginValue =
         loginElement.value.trim();
@@ -628,6 +829,9 @@ async function login(event) {
 
         submitButton.disabled = true;
 
+        submitButton.dataset.originalText =
+            submitButton.textContent;
+
         submitButton.textContent =
             "Выполняется вход...";
     }
@@ -635,46 +839,34 @@ async function login(event) {
 
     try {
 
-        const response = await fetch(
-            `${API_URL}/api/login`,
-            {
-                method: "POST",
+        const { response, data } =
+            await apiRequest(
+                "/api/login",
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        login: loginValue,
+                        password
+                    })
                 },
-
-                credentials: "include",
-
-                body: JSON.stringify({
-                    login: loginValue,
-                    password: password
-                })
-            }
-        );
-
-
-        const data =
-            await getResponseData(response);
+                20000
+            );
 
 
         if (!response.ok) {
 
             showMessage(
-                data.detail ||
-                data.message ||
-                "Неверный логин или пароль."
+                getErrorMessage(
+                    data,
+                    "Неверный логин или пароль."
+                )
             );
-
-
-            if (submitButton) {
-
-                submitButton.disabled = false;
-
-                submitButton.textContent =
-                    "Войти";
-            }
 
             return;
         }
@@ -692,24 +884,213 @@ async function login(event) {
     } catch (error) {
 
         console.error(
-            "LOGIN ERROR:",
+            "REWET HOST LOGIN:",
             error
         );
 
 
-        showMessage(
-            "Не удалось подключиться к серверу REWET HOST."
-        );
+        if (error.name === "AbortError") {
 
+            showMessage(
+                "Сервер слишком долго отвечает."
+            );
+
+        } else {
+
+            showMessage(
+                "Не удалось подключиться к серверу REWET HOST."
+            );
+        }
+
+
+    } finally {
 
         if (submitButton) {
 
             submitButton.disabled = false;
 
             submitButton.textContent =
+                submitButton.dataset.originalText ||
                 "Войти";
         }
     }
+}
+
+
+// =====================================================
+// GOOGLE
+// =====================================================
+
+async function googleLogin() {
+
+    /*
+    Здесь используется Google Identity Services.
+
+    Если Google SDK подключён в index.html,
+    можно передать credential в API.
+
+    Если SDK пока не подключён —
+    показываем понятное сообщение вместо ошибки.
+    */
+
+    if (
+        typeof google === "undefined" ||
+        !google.accounts ||
+        !google.accounts.id
+    ) {
+
+        showMessage(
+            "Google пока не подключён на странице. Нужно добавить Google Identity Services.",
+            "info"
+        );
+
+        return;
+    }
+
+
+    showMessage(
+        "Google авторизация запускается...",
+        "info"
+    );
+
+
+    try {
+
+        google.accounts.id.prompt();
+
+    } catch (error) {
+
+        console.error(
+            "GOOGLE ERROR:",
+            error
+        );
+
+        showMessage(
+            "Не удалось открыть Google авторизацию."
+        );
+    }
+}
+
+
+// =====================================================
+// GOOGLE CALLBACK
+// =====================================================
+
+async function handleGoogleCredential(
+    response
+) {
+
+    if (
+        !response ||
+        !response.credential
+    ) {
+
+        showMessage(
+            "Google не вернул данные авторизации."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const result =
+            await apiRequest(
+                "/api/auth/google",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        credential:
+                            response.credential
+                    })
+                },
+                20000
+            );
+
+
+        if (!result.response.ok) {
+
+            showMessage(
+                getErrorMessage(
+                    result.data,
+                    "Не удалось войти через Google."
+                )
+            );
+
+            return;
+        }
+
+
+        currentUser =
+            result.data.user || null;
+
+
+        closeAuth();
+
+        updateAuthButtons();
+
+
+    } catch (error) {
+
+        console.error(
+            "GOOGLE LOGIN ERROR:",
+            error
+        );
+
+        showMessage(
+            "Ошибка подключения Google авторизации."
+        );
+    }
+}
+
+
+// =====================================================
+// ИНИЦИАЛИЗАЦИЯ GOOGLE
+// =====================================================
+
+function initGoogle() {
+
+    if (
+        typeof google === "undefined" ||
+        !google.accounts ||
+        !google.accounts.id
+    ) {
+        return;
+    }
+
+
+    const clientId =
+        window.REWET_GOOGLE_CLIENT_ID;
+
+
+    if (!clientId) {
+
+        console.log(
+            "REWET HOST: Google Client ID не указан."
+        );
+
+        return;
+    }
+
+
+    google.accounts.id.initialize({
+
+        client_id: clientId,
+
+        callback:
+            handleGoogleCredential,
+
+        auto_select: false,
+
+        cancel_on_tap_outside: true
+    });
 }
 
 
@@ -721,16 +1102,13 @@ async function checkSession() {
 
     try {
 
-        const response =
-            await fetch(
-                `${API_URL}/api/me`,
+        const { response, data } =
+            await apiRequest(
+                "/api/me",
                 {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                }
+                    method: "GET"
+                },
+                10000
             );
 
 
@@ -744,10 +1122,6 @@ async function checkSession() {
         }
 
 
-        const data =
-            await getResponseData(response);
-
-
         currentUser =
             data.user || null;
 
@@ -758,7 +1132,7 @@ async function checkSession() {
     } catch (error) {
 
         console.log(
-            "Сессия отсутствует."
+            "REWET HOST: сессия отсутствует."
         );
 
         currentUser = null;
@@ -769,7 +1143,7 @@ async function checkSession() {
 
 
 // =====================================================
-// КНОПКИ В ШАПКЕ
+// ШАПКА
 // =====================================================
 
 function updateAuthButtons() {
@@ -790,7 +1164,7 @@ function updateAuthButtons() {
         container.innerHTML = `
 
             <button
-                class="login-button"
+                class="btn btn-ghost login-button"
                 type="button"
                 onclick="openLogin()"
             >
@@ -798,7 +1172,7 @@ function updateAuthButtons() {
             </button>
 
             <button
-                class="register-button"
+                class="btn btn-primary register-button"
                 type="button"
                 onclick="openRegister()"
             >
@@ -811,18 +1185,25 @@ function updateAuthButtons() {
     }
 
 
+    const username =
+        escapeHTML(
+            currentUser.username ||
+            "Пользователь"
+        );
+
+
     container.innerHTML = `
 
         <button
-            class="login-button"
+            class="btn btn-ghost login-button"
             type="button"
             onclick="openProfile()"
         >
-            👤 ${escapeHTML(currentUser.username)}
+            👤 ${username}
         </button>
 
         <button
-            class="register-button"
+            class="btn btn-primary register-button"
             type="button"
             onclick="logout()"
         >
@@ -848,20 +1229,28 @@ function openProfile() {
 
 
     const content =
-        getElement("authContent");
+        $("authContent");
 
 
     if (!content) {
-
-        alert(
-            `Пользователь: ${currentUser.username}\nE-mail: ${currentUser.email}`
-        );
-
         return;
     }
 
 
-    showAuthModal();
+    if (!showAuthModal()) {
+        return;
+    }
+
+
+    const username =
+        escapeHTML(
+            currentUser.username
+        );
+
+    const email =
+        escapeHTML(
+            currentUser.email
+        );
 
 
     content.innerHTML = `
@@ -872,6 +1261,7 @@ function openProfile() {
                 class="auth-close"
                 type="button"
                 onclick="closeAuth()"
+                aria-label="Закрыть"
             >
                 ×
             </button>
@@ -884,30 +1274,24 @@ function openProfile() {
                 Ваш профиль
             </h2>
 
+            <p class="auth-subtitle">
+                REWET HOST
+            </p>
+
             <div class="profile-info">
 
                 <div class="profile-row">
-
-                    <span>
-                        Логин
-                    </span>
-
+                    <span>Логин</span>
                     <strong>
-                        ${escapeHTML(currentUser.username)}
+                        ${username}
                     </strong>
-
                 </div>
 
                 <div class="profile-row">
-
-                    <span>
-                        E-mail
-                    </span>
-
+                    <span>E-mail</span>
                     <strong>
-                        ${escapeHTML(currentUser.email)}
+                        ${email}
                     </strong>
-
                 </div>
 
             </div>
@@ -915,7 +1299,7 @@ function openProfile() {
             <button
                 type="button"
                 class="auth-submit"
-                onclick="closeAuth()"
+                onclick="openDashboard()"
             >
                 Открыть панель
             </button>
@@ -934,6 +1318,39 @@ function openProfile() {
 
 
 // =====================================================
+// ПАНЕЛЬ
+// =====================================================
+
+function openDashboard() {
+
+    closeAuth();
+
+    /*
+    Здесь позже подключим полноценную
+    панель управления серверами REWET HOST.
+    */
+
+    const dashboard =
+        document.getElementById(
+            "dashboard"
+        );
+
+    if (dashboard) {
+
+        dashboard.scrollIntoView({
+            behavior: "smooth"
+        });
+
+        return;
+    }
+
+    console.log(
+        "REWET HOST: dashboard ещё не подключён."
+    );
+}
+
+
+// =====================================================
 // ВЫХОД
 // =====================================================
 
@@ -941,21 +1358,18 @@ async function logout() {
 
     try {
 
-        await fetch(
-            `${API_URL}/api/logout`,
+        await apiRequest(
+            "/api/logout",
             {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Accept": "application/json"
-                }
-            }
+                method: "POST"
+            },
+            10000
         );
 
     } catch (error) {
 
         console.error(
-            "LOGOUT ERROR:",
+            "REWET HOST LOGOUT:",
             error
         );
     }
@@ -970,26 +1384,7 @@ async function logout() {
 
 
 // =====================================================
-// ЭКРАНИРОВАНИЕ HTML
-// =====================================================
-
-function escapeHTML(value) {
-
-    if (value === null || value === undefined) {
-        return "";
-    }
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-// =====================================================
-// ЗАКРЫТИЕ ПО КЛИКУ ВНЕ ОКНА
+// КЛИК ПО ФОНУ
 // =====================================================
 
 document.addEventListener(
@@ -997,14 +1392,22 @@ document.addEventListener(
     function(event) {
 
         const modal =
-            getElement("authModal");
+            $("authModal");
+
 
         if (!modal) {
             return;
         }
 
+
+        const backdrop =
+            modal.querySelector(
+                ".modal-backdrop"
+            );
+
+
         if (
-            event.target === modal
+            event.target === backdrop
         ) {
             closeAuth();
         }
@@ -1013,32 +1416,128 @@ document.addEventListener(
 
 
 // =====================================================
-// ESC — ЗАКРЫТЬ
+// ESC
 // =====================================================
 
 document.addEventListener(
     "keydown",
     function(event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape"
+        ) {
 
-            closeAuth();
+            const modal =
+                $("authModal");
+
+            if (
+                modal &&
+                modal.classList.contains("active")
+            ) {
+                closeAuth();
+            }
         }
     }
 );
 
 
 // =====================================================
-// ЗАПУСК
+// ПЕРЕХОД ПО МЕНЮ
+// =====================================================
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const link =
+            event.target.closest(
+                'a[href^="#"]'
+            );
+
+
+        if (!link) {
+            return;
+        }
+
+
+        const targetId =
+            link.getAttribute("href");
+
+
+        if (
+            !targetId ||
+            targetId === "#"
+        ) {
+            return;
+        }
+
+
+        const target =
+            document.querySelector(
+                targetId
+            );
+
+
+        if (!target) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        document.body.classList.remove(
+            "menu-open"
+        );
+    }
+);
+
+
+// =====================================================
+// ЗАПУСК REWET HOST
 // =====================================================
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
+    async function() {
+
+        console.log(
+            "⚡ REWET HOST запускается..."
+        );
+
 
         updateAuthButtons();
 
-        checkSession();
 
+        initGoogle();
+
+
+        await checkSession();
+
+
+        console.log(
+            "⚡ REWET HOST готов."
+        );
     }
 );
+
+
+// =====================================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// =====================================================
+
+window.openLogin = openLogin;
+window.openRegister = openRegister;
+window.openProfile = openProfile;
+window.closeAuth = closeAuth;
+window.logout = logout;
+window.openDashboard = openDashboard;
+
+window.handleGoogleCredential =
+    handleGoogleCredential;
