@@ -1,165 +1,108 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    ><title>REWET HOST — игровой хостинг</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+    <title>REWET HOST — Игровой и веб-хостинг</title>
 
-</head><body><!-- ================= HEADER ================= --><header class="header"><div class="container header-content">
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <a href="#home" class="logo">
+<body>
 
-        <span class="logo-r">R</span>
+<header class="header">
+    <div class="container header-inner">
 
-        <span class="logo-text">
-            REWET <b>HOST</b>
-        </span>
+        <a href="#home" class="brand">
+            <span class="brand-icon">⚡</span>
+            <span>REWET <b>HOST</b></span>
+        </a>
 
-    </a>
+        <nav class="nav">
+            <a href="#services">Услуги</a>
+            <a href="#games">Игры</a>
+            <a href="#plans">Тарифы</a>
+            <a href="#support">Поддержка</a>
+        </nav>
 
-    <nav class="navigation">
+        <div class="header-actions">
+            <button class="btn btn-login" onclick="openLogin()">
+                Войти
+            </button>
 
-        <a href="#home">Главная</a>
-        <a href="#games">Игры</a>
-        <a href="#plans">Тарифы</a>
-        <a href="#advantages">Возможности</a>
-
-    </nav>
-
-    <div class="header-buttons">
-
-        <button
-            class="btn btn-login"
-            onclick="openLogin()"
-        >
-            Войти
-        </button>
-
-        <button
-            class="btn btn-primary"
-            onclick="openRegister()"
-        >
-            Регистрация
-        </button>
+            <button class="btn btn-primary" onclick="openRegister()">
+                Регистрация
+            </button>
+        </div>
 
     </div>
+</header>
 
-</div>
 
-</header><!-- ================= MAIN ================= --><main><!-- ================= NEW HOME ================= -->
+<main>
 
-<section id="home" class="home">
+<!-- ================= HERO ================= -->
+
+<section id="home" class="hero">
 
     <div class="container">
 
-        <div class="home-grid">
+        <div class="hero-content">
 
-            <!-- LEFT -->
+            <div class="hero-text">
 
-            <div class="home-main">
-
-                <div class="home-badge">
-                    <span class="live-dot"></span>
-                    REWET HOST ONLINE
+                <div class="online-badge">
+                    <span></span>
+                    REWET HOST онлайн
                 </div>
 
                 <h1>
                     Твой сервер.
-                    <span>Твои правила.</span>
+                    <br>
+                    <span>Твоя инфраструктура.</span>
                 </h1>
 
-                <p class="home-description">
-                    Создавай игровые серверы,
-                    управляй файлами и следи
-                    за состоянием проекта
-                    в одной удобной панели.
+                <p>
+                    Игровой и веб-хостинг в одной панели.
+                    Создавай игровые серверы и сайты,
+                    управляй ими и развивай свой проект
+                    вместе с REWET HOST.
                 </p>
 
-                <div class="home-actions">
+                <div class="hero-buttons">
 
                     <button
-                        class="btn btn-primary btn-large"
+                        class="btn btn-primary btn-big"
                         onclick="openRegister()"
                     >
-                        🚀 Создать сервер
+                        🚀 Начать бесплатно
                     </button>
 
                     <a
-                        href="#games"
-                        class="btn btn-outline btn-large"
+                        href="#services"
+                        class="btn btn-outline btn-big"
                     >
-                        🎮 Выбрать игру
+                        Узнать больше
                     </a>
-
-                </div>
-
-
-                <!-- QUICK INFO -->
-
-                <div class="quick-info">
-
-                    <div class="quick-item">
-
-                        <span class="quick-icon">
-                            ⚡
-                        </span>
-
-                        <div>
-                            <strong>
-                                Быстрый запуск
-                            </strong>
-
-                            <small>
-                                Сервер готов за несколько минут
-                            </small>
-                        </div>
-
-                    </div>
-
-
-                    <div class="quick-item">
-
-                        <span class="quick-icon">
-                            🛡️
-                        </span>
-
-                        <div>
-                            <strong>
-                                Защита
-                            </strong>
-
-                            <small>
-                                Стабильная инфраструктура
-                            </small>
-                        </div>
-
-                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- RIGHT -->
+            <!-- COMPACT PANEL -->
 
-            <div class="home-panel">
+            <div class="hero-dashboard">
 
-                <div class="panel-top">
+                <div class="dashboard-header">
 
                     <div>
-                        <span>
-                            REWET HOST
-                        </span>
-
-                        <strong>
-                            Панель хостинга
-                        </strong>
+                        <small>REWET HOST</small>
+                        <strong>Панель управления</strong>
                     </div>
 
-                    <div class="panel-online">
+                    <div class="dashboard-status">
                         <span></span>
                         ONLINE
                     </div>
@@ -167,51 +110,40 @@
                 </div>
 
 
-                <div class="panel-server">
+                <div class="dashboard-main">
 
-                    <div class="server-icon">
-                        R
+                    <div class="dashboard-icon">
+                        ⚡
                     </div>
 
-                    <div class="server-info">
-
+                    <div>
                         <strong>
-                            Мой сервер
+                            Твоя инфраструктура
                         </strong>
 
-                        <span>
-                            Пока нет серверов
-                        </span>
-
+                        <p>
+                            Всё управление в одном месте
+                        </p>
                     </div>
 
                 </div>
 
 
-                <button
-                    class="panel-create"
-                    onclick="openRegister()"
-                >
-                    <span>+</span>
-                    Создать первый сервер
-                </button>
-
-
-                <div class="panel-stats">
+                <div class="dashboard-lines">
 
                     <div>
-                        <span>Серверы</span>
-                        <strong>0</strong>
+                        <span>Игровой хостинг</span>
+                        <b>Готов</b>
                     </div>
 
                     <div>
-                        <span>Онлайн</span>
-                        <strong>0</strong>
+                        <span>Веб-хостинг</span>
+                        <b>Готов</b>
                     </div>
 
                     <div>
-                        <span>Аптайм</span>
-                        <strong>99.9%</strong>
+                        <span>Панель</span>
+                        <b>24/7</b>
                     </div>
 
                 </div>
@@ -221,34 +153,28 @@
         </div>
 
 
-        <!-- PLATFORM STATUS -->
+        <!-- STATS -->
 
-        <div class="platform-status">
+        <div class="hero-stats">
 
-            <div class="platform-title">
-
-                <span class="status-circle"></span>
-
-                <strong>
-                    Система работает стабильно
-                </strong>
-
+            <div class="stat">
+                <strong>20 дней</strong>
+                <span>бесплатного теста</span>
             </div>
 
-            <div class="platform-items">
+            <div class="stat">
+                <strong>24/7</strong>
+                <span>доступ к панели</span>
+            </div>
 
-                <span>
-                    🟢 API
-                </span>
+            <div class="stat">
+                <strong>2+</strong>
+                <span>направления</span>
+            </div>
 
-                <span>
-                    🟢 Серверы
-                </span>
-
-                <span>
-                    🟢 Авторизация
-                </span>
-
+            <div class="stat">
+                <strong>1</strong>
+                <span>единая панель</span>
             </div>
 
         </div>
@@ -258,97 +184,79 @@
 </section>
 
 
-<!-- ================= ADVANTAGES ================= -->
+<!-- ================= SERVICES ================= -->
 
-<section
-    id="advantages"
-    class="section"
->
+<section id="services" class="section">
 
     <div class="container">
 
-        <div class="section-title">
+        <div class="section-heading">
 
-            <span>REWET HOST</span>
+            <span>ВОЗМОЖНОСТИ</span>
 
             <h2>
-                Всё для управления
-                <b>сервером</b>
+                Всё необходимое
+                <br>
+                <b>в одном месте</b>
             </h2>
+
+            <p>
+                Выбирай нужную инфраструктуру
+                и управляй ей из одной панели.
+            </p>
 
         </div>
 
 
-        <div class="cards">
+        <div class="services-grid">
 
-            <div class="feature-card">
+            <div class="service-card">
 
-                <div class="feature-icon">
-                    🖥️
+                <div class="service-icon">
+                    🎮
                 </div>
 
                 <h3>
-                    Панель управления
+                    Игровой хостинг
                 </h3>
 
                 <p>
-                    Управляй сервером
-                    из удобной панели.
+                    Запускай игровые серверы
+                    и управляй ими через
+                    удобную панель REWET HOST.
                 </p>
+
+                <ul>
+                    <li>✓ Бесплатный тест 20 дней</li>
+                    <li>✓ Управление сервером</li>
+                    <li>✓ Система совладельцев</li>
+                    <li>✓ Доступ к серверной панели</li>
+                </ul>
 
             </div>
 
 
-            <div class="feature-card">
+            <div class="service-card">
 
-                <div class="feature-icon">
-                    ⚡
+                <div class="service-icon">
+                    🌐
                 </div>
 
                 <h3>
-                    Быстрый запуск
+                    Веб-хостинг
                 </h3>
 
                 <p>
-                    Создавай и запускай
-                    серверы быстро.
+                    Размещай сайты и веб-проекты
+                    на инфраструктуре REWET HOST.
                 </p>
 
-            </div>
-
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    📁
-                </div>
-
-                <h3>
-                    Файловый менеджер
-                </h3>
-
-                <p>
-                    Управляй файлами
-                    своего проекта.
-                </p>
-
-            </div>
-
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    🎁
-                </div>
-
-                <h3>
-                    Бонусы
-                </h3>
-
-                <p>
-                    Используй промокоды
-                    и получай бонусы.
-                </p>
+                <ul>
+                    <li>✓ Размещение сайтов</li>
+                    <li>✓ Подключение домена</li>
+                    <li>✓ SSL / HTTPS</li>
+                    <li>✓ Управление файлами</li>
+                </ul>
 
             </div>
 
@@ -361,90 +269,56 @@
 
 <!-- ================= GAMES ================= -->
 
-<section
-    id="games"
-    class="section"
->
+<section id="games" class="section games-section">
 
     <div class="container">
 
-        <div class="section-title">
+        <div class="section-heading">
 
             <span>ИГРЫ</span>
 
             <h2>
-                Выбери свою
-                <b>игру</b>
+                Популярные
+                <b>игры</b>
             </h2>
+
+            <p>
+                Поддержка игр будет постепенно расширяться.
+            </p>
 
         </div>
 
 
-        <div class="games">
+        <div class="games-grid">
 
-            <div class="game-card">
-
-                <div class="game-icon">
-                    SA
-                </div>
-
-                <h3>
-                    SA-MP
-                </h3>
-
-                <p>
-                    GTA San Andreas
-                </p>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="openRegister()"
-                >
-                    Создать сервер
-                </button>
-
+            <div class="game">
+                <div class="game-emoji">🚗</div>
+                <strong>SA:MP</strong>
             </div>
 
-
-            <div class="game-card">
-
-                <div class="game-icon">
-                    CR
-                </div>
-
-                <h3>
-                    CR-MP
-                </h3>
-
-                <p>
-                    Criminal Russia
-                </p>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="openRegister()"
-                >
-                    Создать сервер
-                </button>
-
+            <div class="game">
+                <div class="game-emoji">🌆</div>
+                <strong>CRMP</strong>
             </div>
 
+            <div class="game">
+                <div class="game-emoji">🎯</div>
+                <strong>MTA</strong>
+            </div>
 
-            <div class="game-card">
+            <div class="game">
+                <div class="game-emoji">⛏️</div>
+                <strong>Minecraft</strong>
+            </div>
 
-                <div class="game-icon">
-                    +
-                </div>
+            <div class="game">
+                <div class="game-emoji">🔫</div>
+                <strong>CS 1.6</strong>
+            </div>
 
-                <h3>
-                    Скоро
-                </h3>
-
-                <p>
-                    Новые игры
-                    появятся здесь.
-                </p>
-
+            <div class="game">
+                <div class="game-emoji">💥</div>
+                <strong>CS2</strong>
             </div>
 
         </div>
@@ -456,21 +330,23 @@
 
 <!-- ================= PLANS ================= -->
 
-<section
-    id="plans"
-    class="section plans"
->
+<section id="plans" class="section">
 
     <div class="container">
 
-        <div class="section-title">
+        <div class="section-heading">
 
             <span>ТАРИФЫ</span>
 
             <h2>
-                Выбери свой
-                <b>тариф</b>
+                Простые
+                <b>тарифы</b>
             </h2>
+
+            <p>
+                Начни с тестового периода
+                и выбери подходящий вариант.
+            </p>
 
         </div>
 
@@ -480,70 +356,31 @@
 
             <div class="plan-card">
 
-                <h3>
-                    START
-                </h3>
+                <div class="plan-name">
+                    Тест
+                </div>
 
-                <div class="price">
-                    Бесплатно
+                <div class="plan-price">
+                    0 ₽
+                    <small>/ 20 дней</small>
                 </div>
 
                 <p>
-                    Для знакомства
-                    с REWET HOST
+                    Попробуй REWET HOST
+                    перед покупкой.
                 </p>
 
                 <ul>
-
-                    <li>✓ Базовые ресурсы</li>
+                    <li>✓ Игровой сервер</li>
                     <li>✓ Панель управления</li>
-                    <li>✓ Поддержка</li>
-
+                    <li>✓ 20 дней теста</li>
                 </ul>
 
                 <button
                     class="btn btn-primary"
                     onclick="openRegister()"
                 >
-                    Выбрать
-                </button>
-
-            </div>
-
-
-            <div class="plan-card popular">
-
-                <div class="popular-label">
-                    ПОПУЛЯРНЫЙ
-                </div>
-
-                <h3>
-                    PRO
-                </h3>
-
-                <div class="price">
-                    99 ₽
-                    <small>/ месяц</small>
-                </div>
-
-                <p>
-                    Для активных проектов
-                </p>
-
-                <ul>
-
-                    <li>✓ Больше ресурсов</li>
-                    <li>✓ Панель управления</li>
-                    <li>✓ Файловый менеджер</li>
-                    <li>✓ Приоритетная поддержка</li>
-
-                </ul>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="openRegister()"
-                >
-                    Выбрать
+                    Начать
                 </button>
 
             </div>
@@ -551,37 +388,60 @@
 
             <div class="plan-card">
 
-                <h3>
-                    ULTRA
-                </h3>
+                <div class="plan-name">
+                    Игровой
+                </div>
 
-                <div class="price">
-                    199 ₽
-                    <small>/ месяц</small>
+                <div class="plan-soon">
+                    Скоро
                 </div>
 
                 <p>
-                    Максимальные возможности
+                    Полноценный игровой
+                    хостинг для твоего проекта.
                 </p>
 
                 <ul>
-
-                    <li>✓ Максимум ресурсов</li>
-                    <li>✓ Файловый менеджер</li>
-                    <li>✓ Полная панель</li>
-                    <li>✓ Приоритетная поддержка</li>
-
+                    <li>✓ Игровой сервер</li>
+                    <li>✓ Расширенные ресурсы</li>
+                    <li>✓ Бэкапы</li>
+                    <li>✓ Управление сервером</li>
                 </ul>
 
-                <button
-                    class="btn btn-primary"
-                    onclick="openRegister()"
-                >
-                    Выбрать
+                <button class="btn btn-disabled">
+                    Скоро
                 </button>
 
             </div>
 
+
+            <div class="plan-card">
+
+                <div class="plan-name">
+                    Web
+                </div>
+
+                <div class="plan-soon">
+                    Скоро
+                </div>
+
+                <p>
+                    Хостинг для сайтов
+                    и веб-приложений.
+                </p>
+
+                <ul>
+                    <li>✓ Веб-сайт</li>
+                    <li>✓ Домен</li>
+                    <li>✓ SSL</li>
+                    <li>✓ Файловый менеджер</li>
+                </ul>
+
+                <button class="btn btn-disabled">
+                    Скоро
+                </button>
+
+            </div>
 
         </div>
 
@@ -589,37 +449,112 @@
 
 </section>
 
-</main><!-- ================= FOOTER ================= --><footer class="footer"><div class="container">
 
-    <div class="footer-logo">
-        REWET <b>HOST</b>
+<!-- ================= CTA ================= -->
+
+<section class="cta">
+
+    <div class="container">
+
+        <div class="cta-box">
+
+            <div>
+
+                <span>
+                    REWET HOST
+                </span>
+
+                <h2>
+                    Готов запустить
+                    свой проект?
+                </h2>
+
+                <p>
+                    Создай аккаунт и получи
+                    доступ к панели управления.
+                </p>
+
+            </div>
+
+            <button
+                class="btn btn-primary btn-big"
+                onclick="openRegister()"
+            >
+                🚀 Создать аккаунт
+            </button>
+
+        </div>
+
     </div>
 
-    <p>
-        Игровой хостинг нового поколения.
-    </p>
+</section>
 
-    <div class="footer-bottom">
-        © 2026 REWET HOST. Все права защищены.
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+
+                <div class="brand">
+                    <span class="brand-icon">⚡</span>
+                    REWET <b>HOST</b>
+                </div>
+
+                <p>
+                    Игровой и веб-хостинг
+                    в одной панели.
+                </p>
+
+            </div>
+
+            <div class="footer-links">
+
+                <a href="#home">Главная</a>
+                <a href="#services">Услуги</a>
+                <a href="#games">Игры</a>
+                <a href="#plans">Тарифы</a>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 REWET HOST. Все права защищены.
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- ================= AUTH MODAL ================= -->
+
+<div id="authModal" class="modal">
+
+    <div class="modal-content">
+
+        <button
+            class="modal-close"
+            onclick="closeAuth()"
+        >
+            ×
+        </button>
+
+        <div id="authContent"></div>
+
     </div>
 
 </div>
 
-</footer><!-- ================= AUTH ================= --><div
-    id="authModal"
-    class="modal"
-><div class="modal-content">
 
-    <button
-        class="modal-close"
-        onclick="closeAuth()"
-    >
-        ×
-    </button>
+<script src="script.js"></script>
 
-    <div id="authContent"></div>
-
-</div>
-
-</div><script src="script.js"></script></body>
+</body>
 </html>
