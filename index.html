@@ -1,2000 +1,2227 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b84ff">
-<meta name="description" content="REWET HOST — игровой и веб-хостинг с быстрым запуском, защитой и удобной панелью управления.">
-<title>REWET HOST — игровой и веб-хостинг</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#2563eb"
+    >
+
+    <meta
+        name="description"
+        content="REWET HOST — игровой хостинг нового поколения"
+    >
+
+    <title>REWET HOST — Игровой хостинг</title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+           ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 50% -20%,
+                    #2563eb 0%,
+                    #172554 32%,
+                    #0f172a 58%,
+                    #020617 100%
+                );
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
+           BACKGROUND
+           ===================================================== */
+
+        .background-glow {
+
+            position: fixed;
+
+            width: 500px;
+            height: 500px;
+
+            top: -250px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background:
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.25
+                );
+
+            filter: blur(100px);
+
+            border-radius: 50%;
+
+            pointer-events: none;
+
+            z-index: -1;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        header {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            width: 100%;
+
+            background:
+                rgba(
+                    2,
+                    6,
+                    23,
+                    0.78
+                );
+
+            border-bottom:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.15
+                );
+
+            backdrop-filter:
+                blur(18px);
+        }
+
+
+        .navbar {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            min-height: 72px;
+
+            padding:
+                0 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        /* =====================================================
+           LOGO
+           ===================================================== */
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+
+        .logo-icon {
+
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #60a5fa
+                );
+
+            box-shadow:
+                0 8px 25px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.35
+                );
+
+            font-size: 19px;
+        }
+
+
+        .logo-text span {
+            color: #60a5fa;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+           ===================================================== */
+
+        .nav-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .nav-link {
+
+            padding:
+                10px 14px;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+
+            border-radius: 10px;
+
+            transition: 0.2s;
+        }
+
+
+        .nav-link:hover {
+
+            color: white;
+
+            background:
+                rgba(
+                    59,
+                    130,
+                    246,
+                    0.10
+                );
+        }
+
+
+        .nav-login {
+
+            padding:
+                10px 17px;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.35
+                );
+
+            border-radius: 10px;
+
+            color: #bfdbfe;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .nav-login:hover {
+
+            background:
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.15
+                );
+
+            border-color:
+                #3b82f6;
+        }
+
+
+        .nav-register {
+
+            padding:
+                11px 18px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 7px 20px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.25
+                );
+
+            transition: 0.2s;
+        }
+
+
+        .nav-register:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 10px 25px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.4
+                );
+        }
+
+
+        /* =====================================================
+           USER MENU
+           ===================================================== */
+
+        .user-menu {
+
+            display: none;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .user-menu.visible {
+            display: flex;
+        }
+
+
+        .user-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding:
+                7px 11px;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.2
+                );
+
+            border-radius: 12px;
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.7
+                );
+        }
+
+
+        .avatar {
+
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #60a5fa
+                );
+
+            font-size: 13px;
+
+            font-weight: 900;
+        }
+
+
+        .username {
+
+            max-width: 130px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: #e2e8f0;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+
+        .logout-btn {
+
+            padding:
+                9px 13px;
+
+            border:
+                1px solid
+                rgba(
+                    248,
+                    113,
+                    113,
+                    0.25
+                );
+
+            border-radius: 10px;
+
+            background:
+                rgba(
+                    127,
+                    29,
+                    29,
+                    0.15
+                );
+
+            color: #fca5a5;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .logout-btn:hover {
+
+            background:
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.15
+                );
+
+            border-color:
+                rgba(
+                    248,
+                    113,
+                    113,
+                    0.5
+                );
+        }
+
+
+        /* =====================================================
+           AUTH BUTTONS
+           ===================================================== */
+
+        .auth-buttons {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .auth-buttons.hidden {
+            display: none;
+        }
+
+
+        /* =====================================================
+           HERO
+           ===================================================== */
+
+        .hero {
+
+            max-width: 1100px;
+
+            margin:
+                0 auto;
+
+            padding:
+                105px 24px
+                85px;
+
+            text-align: center;
+        }
+
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                8px 14px;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.25
+                );
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+
+            color: #93c5fd;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-bottom: 22px;
+        }
+
+
+        .badge-dot {
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #60a5fa;
+
+            box-shadow:
+                0 0 10px
+                #3b82f6;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(
+                    45px,
+                    8vw,
+                    82px
+                );
+
+            line-height: 0.98;
+
+            font-weight: 950;
+
+            letter-spacing:
+                -3px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .hero h1 span {
+
+            color: #60a5fa;
+
+            text-shadow:
+                0 0 40px
+                rgba(
+                    59,
+                    130,
+                    246,
+                    0.3
+                );
+        }
+
+
+        .hero-description {
+
+            max-width: 650px;
+
+            margin:
+                0 auto;
+
+            color: #94a3b8;
+
+            font-size:
+                clamp(
+                    16px,
+                    2vw,
+                    19px
+                );
+
+            line-height: 1.7;
+        }
+
+
+        .hero-buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 13px;
+
+            margin-top: 35px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .primary-button {
+
+            min-height: 52px;
+
+            padding:
+                0 25px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 12px 30px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.3
+                );
+
+            transition: 0.2s;
+        }
+
+
+        .primary-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 16px 35px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.45
+                );
+        }
+
+
+        .secondary-button {
+
+            min-height: 52px;
+
+            padding:
+                0 25px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid
+                #334155;
+
+            border-radius: 13px;
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.65
+                );
+
+            color: #e2e8f0;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .secondary-button:hover {
+
+            border-color:
+                #3b82f6;
+
+            background:
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+
+        /* =====================================================
+           STATS
+           ===================================================== */
+
+        .stats {
+
+            max-width: 850px;
+
+            margin:
+                0 auto 90px;
+
+            padding:
+                0 24px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .stat {
+
+            padding: 22px;
+
+            text-align: center;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.12
+                );
+
+            border-radius: 16px;
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.55
+                );
+        }
+
+
+        .stat-number {
+
+            font-size: 26px;
+
+            font-weight: 900;
+
+            color: #60a5fa;
+
+            margin-bottom: 5px;
+        }
+
+
+        .stat-text {
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           SECTION
+           ===================================================== */
+
+        .section {
+
+            max-width: 1100px;
+
+            margin:
+                0 auto;
+
+            padding:
+                35px 24px
+                100px;
+        }
+
+
+        .section-title {
+
+            text-align: center;
+
+            margin-bottom: 45px;
+        }
+
+
+        .section-title h2 {
+
+            font-size:
+                clamp(
+                    28px,
+                    5vw,
+                    42px
+                );
+
+            font-weight: 900;
+
+            margin-bottom: 10px;
+        }
+
+
+        .section-title p {
+
+            color: #64748b;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           FEATURES
+           ===================================================== */
+
+        .features {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+
+        .feature {
+
+            padding: 27px;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.13
+                );
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.9
+                    ),
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.55
+                    )
+                );
+
+            transition:
+                transform 0.25s,
+                border-color 0.25s;
+        }
+
+
+        .feature:hover {
+
+            transform:
+                translateY(-5px);
+
+            border-color:
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.35
+                );
+        }
+
+
+        .feature-icon {
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.14
+                );
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.18
+                );
+
+            font-size: 21px;
+
+            margin-bottom: 19px;
+        }
+
+
+        .feature h3 {
+
+            font-size: 17px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .feature p {
+
+            color: #64748b;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           CREATE SERVER
+           ===================================================== */
+
+        .create-section {
+
+            max-width: 1100px;
+
+            margin:
+                0 auto;
+
+            padding:
+                0 24px
+                100px;
+        }
+
+
+        .create-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+                45px 40px;
+
+            border:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.22
+                );
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(
+                        30,
+                        64,
+                        175,
+                        0.22
+                    ),
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.88
+                    )
+                );
+        }
+
+
+        .create-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            right: -130px;
+            top: -150px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    59,
+                    130,
+                    246,
+                    0.16
+                );
+
+            filter: blur(60px);
+        }
+
+
+        .create-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+
+        .create-text h2 {
+
+            font-size:
+                clamp(
+                    25px,
+                    4vw,
+                    34px
+                );
+
+            margin-bottom: 10px;
+        }
+
+
+        .create-text p {
+
+            color: #94a3b8;
+
+            line-height: 1.6;
+
+            max-width: 570px;
+        }
+
+
+        .create-button {
+
+            flex-shrink: 0;
+
+            padding:
+                15px 24px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #3b82f6
+                );
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 800;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .create-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.35
+                );
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        footer {
+
+            border-top:
+                1px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.1
+                );
+
+            background:
+                rgba(
+                    2,
+                    6,
+                    23,
+                    0.65
+                );
+        }
+
+
+        .footer-inner {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding:
+                30px 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .footer-logo {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+
+        .footer-logo span {
+            color: #60a5fa;
+        }
+
+
+        .footer-copy {
+
+            color: #475569;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        #authLoading {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 9999;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                #020617;
+
+            transition:
+                opacity 0.25s;
+        }
+
+
+        #authLoading.hidden {
+
+            opacity: 0;
+
+            pointer-events: none;
+        }
+
+
+        .loader {
+
+            width: 42px;
+            height: 42px;
+
+            border:
+                4px solid
+                rgba(
+                    96,
+                    165,
+                    250,
+                    0.2
+                );
+
+            border-top-color:
+                #3b82f6;
+
+            border-radius: 50%;
+
+            animation:
+                spin 0.8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform:
+                    rotate(360deg);
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 0 16px;
+            }
+
+
+            .nav-link {
+                display: none;
+            }
+
+
+            .username {
+                max-width: 80px;
+            }
+
+
+            .hero {
+
+                padding:
+                    80px 20px
+                    65px;
+            }
+
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+
+                max-width: 400px;
+
+                margin-bottom: 65px;
+            }
+
+
+            .features {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .section {
+
+                padding:
+                    20px 20px
+                    70px;
+            }
+
+
+            .create-section {
+
+                padding:
+                    0 20px
+                    70px;
+            }
+
+
+            .create-card {
+
+                padding:
+                    30px 25px;
+            }
+
+
+            .create-content {
+
+                flex-direction: column;
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .create-button {
+
+                width: 100%;
+            }
+
+
+            .footer-inner {
+
+                flex-direction:
+                    column;
+
+                text-align: center;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+
+            .logo-icon {
+
+                width: 34px;
+                height: 34px;
+
+                font-size: 16px;
+            }
+
+
+            .nav-register {
+
+                padding:
+                    9px 12px;
+
+                font-size: 12px;
+            }
+
+
+            .nav-login {
+
+                padding:
+                    9px 11px;
+
+                font-size: 12px;
+            }
+
+
+            .user-profile {
+
+                padding:
+                    6px 8px;
+            }
+
+
+            .logout-btn {
+
+                padding:
+                    8px 9px;
+
+                font-size: 11px;
+            }
+
+
+            .hero h1 {
+
+                letter-spacing:
+                    -2px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-<div class="site-bg"></div>
-<header class="topbar">
-  <div class="container nav-wrap">
-    <a class="brand" href="#top" aria-label="REWET HOST">
-      <span class="brand-mark">⚡</span><span>REWET</span><b>HOST</b>
-    </a>
-    <nav class="main-nav" aria-label="Главное меню">
-      <a href="#services">Услуги</a>
-      <a href="#games">Игры</a>
-      <a href="#features">Возможности</a>
-      <a href="#pricing">Тарифы</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <div class="nav-actions" data-auth-buttons>
-      <button class="btn btn-ghost login-button" type="button" onclick="openLogin()">Войти</button>
-      <button class="btn btn-primary register-button" type="button" onclick="openRegister()">Регистрация</button>
+
+
+    <!-- =====================================================
+         LOADING
+         ===================================================== -->
+
+    <div id="authLoading">
+
+        <div class="loader"></div>
+
     </div>
-    <button class="mobile-menu" type="button" aria-label="Открыть меню" onclick="document.body.classList.toggle('menu-open')">☰</button>
-  </div>
-</header>
-<main id="top">
-<section class="hero section">
- <div class="container hero-grid">
-  <div class="hero-copy">
-   <div class="eyebrow"><span class="pulse"></span> Серверы готовы к запуску</div>
-   <h1>Хостинг, который<br><span>не тормозит.</span></h1>
-   <p class="hero-lead">Запускайте игровые и веб-серверы за минуты. Управляйте ресурсами, файлами и доступами из одной современной панели REWET HOST.</p>
-   <div class="hero-actions">
-    <button class="btn btn-primary btn-large" onclick="openRegister()">Начать бесплатно <span>→</span></button>
-    <a class="btn btn-dark btn-large" href="#services">Посмотреть услуги</a>
-   </div>
-   <div class="hero-trust">
-    <div><strong>99.9%</strong><span>доступность</span></div>
-    <div><strong>24/7</strong><span>мониторинг</span></div>
-    <div><strong>1 клик</strong><span>до запуска</span></div>
-   </div>
-  </div>
-  <div class="hero-panel-wrap">
-   <div class="glow glow-one"></div><div class="glow glow-two"></div>
-   <div class="control-card">
-    <div class="window-head"><div class="dots"><i></i><i></i><i></i></div><span>REWET CONTROL</span><em>LIVE</em></div>
-    <div class="control-body">
-      <aside class="mini-side"><div class="mini-logo">R</div><span class="side-active">▣</span><span>◫</span><span>◉</span><span>⚙</span></aside>
-      <div class="mini-main">
-       <div class="mini-top"><div><small>ПАНЕЛЬ УПРАВЛЕНИЯ</small><h3>Мои серверы</h3></div><span class="online-chip">● Онлайн</span></div>
-       <div class="server-row"><div class="server-icon">S</div><div class="server-name"><b>REWET RolePlay</b><small>SA:MP • EU-1</small></div><div class="server-state">●</div><div class="server-more">•••</div></div>
-       <div class="metric-grid"><div><small>CPU</small><strong>18%</strong><div class="bar"><i style="width:18%"></i></div></div><div><small>RAM</small><strong>2.4 / 8 GB</strong><div class="bar"><i style="width:30%"></i></div></div><div><small>SSD</small><strong>34 GB</strong><div class="bar"><i style="width:42%"></i></div></div></div>
-       <div class="terminal"><div><span>$</span> rewet server status</div><div class="ok">✓ server is running</div><div><span>$</span> players --online</div><div class="ok">✓ 127 players online</div></div>
-      </div>
-    </div>
-   </div>
-  </div>
- </div>
-</section>
-<section class="ticker"><div class="container ticker-inner"><span>⚡ Мгновенная активация</span><span>◆ NVMe SSD</span><span>◆ DDoS-защита</span><span>◆ Автобэкапы</span><span>◆ 24/7 мониторинг</span><span>◆ Удобная панель</span></div></section>
-<section class="section intro" id="services">
- <div class="container">
-  <div class="section-head"><div><span class="kicker">УСЛУГИ</span><h2>Всё для вашего проекта</h2></div><p>От маленького игрового сервера до серьёзного веб-проекта — выбирайте нужные ресурсы и масштабируйтесь без переезда.</p></div>
-  <div class="service-grid">
-   <article class="service-card service-featured"><div class="service-icon">🎮</div><div class="service-meta">GAME HOSTING</div><h3>Игровые серверы</h3><p>SA:MP, CRMP, MTA, Minecraft и другие проекты. Быстрый запуск, стабильный онлайн и понятное управление.</p><a href="#games">Выбрать игру <span>→</span></a><div class="service-art"><div class="server-orb">GAME</div></div></article>
-   <article class="service-card"><div class="service-icon">⌁</div><div class="service-meta">WEB HOSTING</div><h3>Веб-хостинг</h3><p>Размещайте сайты, панели, API и небольшие приложения на быстрых SSD-серверах.</p><a href="#pricing">Смотреть тарифы <span>→</span></a><div class="service-lines"></div></article>
-   <article class="service-card"><div class="service-icon">▣</div><div class="service-meta">VDS / VPS</div><h3>Виртуальные серверы</h3><p>Полный доступ к окружению для ботов, баз данных, игровых серверов и собственных сервисов.</p><a href="#pricing">Подробнее <span>→</span></a><div class="service-grid-art"></div></article>
-  </div>
- </div>
-</section>
-<section class="section games" id="games">
- <div class="container">
-  <div class="section-head"><div><span class="kicker">GAME HOSTING</span><h2>Запускайте любимые игры</h2></div><p>Готовые конфигурации и автоматическая установка. Выберите игру и настройте сервер под себя.</p></div>
-  <div class="game-grid">
-   <article class="game-card"><div class="game-cover samp"><span>SA:MP</span></div><div class="game-info"><h3>SA:MP</h3><p>San Andreas Multiplayer</p><div class="game-bottom"><b>от 99 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-   <article class="game-card"><div class="game-cover crmp"><span>CRMP</span></div><div class="game-info"><h3>CRMP</h3><p>Criminal Russia Multiplayer</p><div class="game-bottom"><b>от 99 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-   <article class="game-card"><div class="game-cover mta"><span>MTA</span></div><div class="game-info"><h3>MTA:SA</h3><p>Multi Theft Auto</p><div class="game-bottom"><b>от 99 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-   <article class="game-card"><div class="game-cover minecraft"><span>MC</span></div><div class="game-info"><h3>Minecraft</h3><p>Java / Bedrock</p><div class="game-bottom"><b>от 149 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-   <article class="game-card"><div class="game-cover cs"><span>CS2</span></div><div class="game-info"><h3>Counter-Strike 2</h3><p>Игровые серверы</p><div class="game-bottom"><b>от 199 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-   <article class="game-card"><div class="game-cover cs16"><span>1.6</span></div><div class="game-info"><h3>CS 1.6</h3><p>Классический сервер</p><div class="game-bottom"><b>от 79 ₽/мес.</b><button onclick="openRegister()">Выбрать →</button></div></div></article>
-  </div>
- </div>
-</section>
-<section class="section infrastructure">
- <div class="container infra-layout">
-  <div><span class="kicker">ИНФРАСТРУКТУРА</span><h2>Железо без компромиссов</h2><p>Мы строим REWET HOST вокруг производительности: быстрые накопители, стабильные соединения и резервирование критичных компонентов.</p><div class="spec-list"><div><b>NVMe</b><span>быстрые диски</span></div><div><b>10 Gbps</b><span>сетевой запас</span></div><div><b>DDoS</b><span>фильтрация атак</span></div></div></div>
-  <div class="rack"><div class="rack-top">REWET DATACENTER <span>● ONLINE</span></div><div class="rack-unit"><i></i><b>NODE-01</b><span>CPU 31%</span><em>ONLINE</em></div><div class="rack-unit"><i></i><b>NODE-02</b><span>CPU 24%</span><em>ONLINE</em></div><div class="rack-unit"><i></i><b>NODE-03</b><span>CPU 19%</span><em>ONLINE</em></div><div class="rack-unit"><i></i><b>NODE-04</b><span>CPU 27%</span><em>ONLINE</em></div><div class="rack-foot"><span>NETWORK</span><b>● ● ● ● ● ●</b></div></div>
- </div>
-</section>
-<section class="section features" id="features">
- <div class="container"><div class="center-head"><span class="kicker">ВОЗМОЖНОСТИ</span><h2>Панель, в которой всё под рукой</h2><p>Не нужно разбираться в десятках сложных инструментов. Основные действия собраны в одном интерфейсе.</p></div>
-  <div class="feature-grid">
-   <article><span>01</span><div class="feature-icon">▶</div><h3>Запуск в один клик</h3><p>Создайте сервер, выберите тариф и установите нужное ПО без ручной настройки.</p></article>
-   <article><span>02</span><div class="feature-icon">⌘</div><h3>Полный доступ</h3><p>Файлы, консоль, настройки, перезапуск и управление ресурсами доступны из панели.</p></article>
-   <article><span>03</span><div class="feature-icon">◒</div><h3>Мониторинг</h3><p>Следите за CPU, RAM, диском и состоянием сервера в реальном времени.</p></article>
-   <article><span>04</span><div class="feature-icon">↺</div><h3>Резервные копии</h3><p>Сохраняйте важные данные и восстанавливайте проект после изменений.</p></article>
-   <article><span>05</span><div class="feature-icon">♢</div><h3>Защита</h3><p>Базовые механизмы защиты и сетевой мониторинг помогают держать сервис онлайн.</p></article>
-   <article><span>06</span><div class="feature-icon">⌁</div><h3>Масштабирование</h3><p>Увеличивайте ресурсы проекта по мере роста без смены всей инфраструктуры.</p></article>
-  </div>
- </div>
-</section>
-<section class="section pricing" id="pricing">
- <div class="container"><div class="section-head"><div><span class="kicker">ТАРИФЫ</span><h2>Простые цены</h2></div><p>Стартуйте с минимального тарифа и переходите на более мощную конфигурацию, когда она понадобится.</p></div>
-  <div class="price-grid">
-   <article class="price-card"><div class="price-top"><span>START</span><i>Для небольших проектов</i></div><h3>Игровой Mini</h3><div class="price"><b>99</b><small>₽/мес.</small></div><ul><li>2 GB RAM</li><li>1 vCPU</li><li>20 GB NVMe</li><li>DDoS-защита</li><li>Панель управления</li></ul><button onclick="openRegister()">Создать сервер</button></article>
-   <article class="price-card popular"><div class="popular-label">ПОПУЛЯРНЫЙ</div><div class="price-top"><span>PRO</span><i>Оптимальный баланс</i></div><h3>Игровой Pro</h3><div class="price"><b>249</b><small>₽/мес.</small></div><ul><li>8 GB RAM</li><li>4 vCPU</li><li>80 GB NVMe</li><li>Расширенная защита</li><li>Резервные копии</li></ul><button onclick="openRegister()">Выбрать Pro</button></article>
-   <article class="price-card"><div class="price-top"><span>MAX</span><i>Для серьёзных проектов</i></div><h3>VDS Max</h3><div class="price"><b>599</b><small>₽/мес.</small></div><ul><li>16 GB RAM</li><li>8 vCPU</li><li>160 GB NVMe</li><li>Полный root-доступ</li><li>Приоритетная поддержка</li></ul><button onclick="openRegister()">Выбрать Max</button></article>
-  </div>
- </div>
-</section>
-<section class="section process"><div class="container"><div class="center-head"><span class="kicker">СТАРТ ЗА 3 ШАГА</span><h2>От регистрации до работающего сервера</h2></div><div class="steps"><div><b>01</b><h3>Создайте аккаунт</h3><p>Регистрация занимает меньше минуты.</p></div><div><b>02</b><h3>Выберите услугу</h3><p>Подберите игру или конфигурацию.</p></div><div><b>03</b><h3>Запустите проект</h3><p>Установите сервер и начинайте работу.</p></div></div></div></section>
-<section class="section security"><div class="container security-box"><div><span class="kicker">БЕЗОПАСНОСТЬ</span><h2>Ваш проект — под контролем</h2><p>Разделяйте доступы, следите за активностью и управляйте сервером через личный кабинет.</p><button class="btn btn-primary" onclick="openRegister()">Создать аккаунт →</button></div><div class="security-stack"><div>✓ Сессии аккаунта</div><div>✓ Управление доступом</div><div>✓ Мониторинг сервера</div><div>✓ Резервное копирование</div></div></div></section>
-<section class="section faq" id="faq"><div class="container"><div class="center-head"><span class="kicker">FAQ</span><h2>Частые вопросы</h2></div><div class="faq-list">
- <details><summary>Как быстро запускается сервер?<span>+</span></summary><p>После создания заказа сервер может быть подготовлен автоматически. Точное время зависит от выбранной услуги и нагрузки.</p></details>
- <details><summary>Можно ли увеличить ресурсы?<span>+</span></summary><p>Да. Конфигурацию можно расширять по мере роста проекта, если выбранная услуга поддерживает масштабирование.</p></details>
- <details><summary>Есть ли защита от DDoS?<span>+</span></summary><p>Для игровых и серверных услуг предусмотрены сетевые механизмы защиты. Набор защиты зависит от тарифа.</p></details>
- <details><summary>Есть ли панель управления?<span>+</span></summary><p>Да. REWET HOST рассчитан на управление сервером через личный кабинет: состояние, ресурсы, настройки и другие действия.</p></details>
- <details><summary>Можно ли перенести существующий сервер?<span>+</span></summary><p>Да, перенос можно выполнить вручную или с помощью поддержки, если формат услуги это позволяет.</p></details>
- </div></div></section>
-<section class="section cta"><div class="container cta-box"><div><span class="kicker">REWET HOST</span><h2>Готовы запустить свой проект?</h2><p>Создайте аккаунт и начните с подходящего тарифа.</p></div><button class="btn btn-white btn-large" onclick="openRegister()">Начать сейчас <span>→</span></button></div></section>
-</main>
-<footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand" href="#top"><span class="brand-mark">⚡</span><span>REWET</span><b>HOST</b></a><p>Современный игровой и веб-хостинг для ваших проектов.</p><div class="status"><i></i> Все системы работают</div></div><div><h4>Услуги</h4><a href="#games">Игровой хостинг</a><a href="#pricing">VDS / VPS</a><a href="#pricing">Веб-хостинг</a></div><div><h4>Компания</h4><a href="#features">Возможности</a><a href="#faq">FAQ</a><a href="#top">О REWET HOST</a></div><div><h4>Аккаунт</h4><button onclick="openLogin()">Войти</button><button onclick="openRegister()">Регистрация</button></div></div><div class="container footer-bottom"><span>© 2026 REWET HOST. Все права защищены.</span><span>Сделано для проектов, которые должны работать.</span></div></footer>
-<div class="modal" id="authModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeAuth()"></div><div class="auth-box"><button class="auth-close" onclick="closeAuth()" aria-label="Закрыть">×</button><div id="authContent"></div></div></div>
-<script src="script.js"></script>
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
-<!-- REWET HOST component layer: responsive hosting interface -->
+
+
+    <div class="background-glow"></div>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header>
+
+        <nav class="navbar">
+
+
+            <!-- LOGO -->
+
+            <a
+                href="index.html"
+                class="logo"
+            >
+
+                <div class="logo-icon">
+                    R
+                </div>
+
+                <div class="logo-text">
+                    REWET <span>HOST</span>
+                </div>
+
+            </a>
+
+
+            <!-- RIGHT -->
+
+            <div class="nav-right">
+
+
+                <a
+                    href="#features"
+                    class="nav-link"
+                >
+                    Возможности
+                </a>
+
+
+                <!-- AUTH BUTTONS -->
+
+                <div
+                    id="authButtons"
+                    class="auth-buttons"
+                >
+
+                    <a
+                        href="login.html"
+                        class="nav-login"
+                    >
+                        Войти
+                    </a>
+
+
+                    <a
+                        href="register.html"
+                        class="nav-register"
+                    >
+                        Регистрация
+                    </a>
+
+                </div>
+
+
+                <!-- USER MENU -->
+
+                <div
+                    id="userMenu"
+                    class="user-menu"
+                >
+
+                    <a
+                        href="#profile"
+                        class="user-profile"
+                    >
+
+                        <div
+                            id="avatar"
+                            class="avatar"
+                        >
+                            U
+                        </div>
+
+                        <span
+                            id="username"
+                            class="username"
+                        >
+                            Пользователь
+                        </span>
+
+                    </a>
+
+
+                    <button
+                        id="logoutButton"
+                        class="logout-btn"
+                    >
+                        Выйти
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <main>
+
+
+        <section class="hero">
+
+
+            <div class="badge">
+
+                <span class="badge-dot"></span>
+
+                REWET HOST уже работает
+
+            </div>
+
+
+            <h1>
+
+                Твой сервер.
+                <br>
+
+                <span>Твои правила.</span>
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                Создавай и управляй игровыми серверами
+                в удобной панели REWET HOST.
+                Быстро, просто и без лишних ограничений.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+
+                <a
+                    id="heroCreateButton"
+                    href="register.html"
+                    class="primary-button"
+                >
+                    🚀 Создать аккаунт
+                </a>
+
+
+                <a
+                    href="#features"
+                    class="secondary-button"
+                >
+                    Узнать больше
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             STATS
+             ================================================= -->
+
+        <section class="stats">
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    24/7
+                </div>
+
+                <div class="stat-text">
+                    Доступ к панели
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    ⚡
+                </div>
+
+                <div class="stat-text">
+                    Быстрое управление
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    🔐
+                </div>
+
+                <div class="stat-text">
+                    Защита аккаунта
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FEATURES
+             ================================================= -->
+
+        <section
+            id="features"
+            class="section"
+        >
+
+
+            <div class="section-title">
+
+                <h2>
+                    Всё необходимое
+                </h2>
+
+                <p>
+                    REWET HOST создаётся для удобного управления серверами
+                </p>
+
+            </div>
+
+
+            <div class="features">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🚀
+                    </div>
+
+                    <h3>
+                        Быстрый запуск
+                    </h3>
+
+                    <p>
+                        Создавай сервер и управляй им
+                        через удобную панель без сложной настройки.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🖥️
+                    </div>
+
+                    <h3>
+                        Управление сервером
+                    </h3>
+
+                    <p>
+                        Все основные действия с сервером
+                        будут доступны в одном месте.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🔐
+                    </div>
+
+                    <h3>
+                        Личный аккаунт
+                    </h3>
+
+                    <p>
+                        Авторизация, профиль и управление
+                        данными пользователя работают через API.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        👥
+                    </div>
+
+                    <h3>
+                        Совладельцы
+                    </h3>
+
+                    <p>
+                        В дальнейшем можно будет выдавать
+                        доступ к серверу другим пользователям.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ⚙️
+                    </div>
+
+                    <h3>
+                        Удобная панель
+                    </h3>
+
+                    <p>
+                        Современный интерфейс для управления
+                        игровыми проектами.
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        📱
+                    </div>
+
+                    <h3>
+                        Телефон и ПК
+                    </h3>
+
+                    <p>
+                        Сайт адаптирован для смартфонов,
+                        планшетов и компьютеров.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CREATE SERVER
+             ================================================= -->
+
+        <section class="create-section">
+
+
+            <div class="create-card">
+
+
+                <div class="create-content">
+
+
+                    <div class="create-text">
+
+                        <h2>
+                            Готов начать?
+                        </h2>
+
+                        <p>
+                            Создай аккаунт REWET HOST
+                            и получи доступ к возможностям
+                            нашей платформы.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        id="bottomCreateButton"
+                        href="register.html"
+                        class="create-button"
+                    >
+                        Создать аккаунт →
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer>
+
+        <div class="footer-inner">
+
+
+            <div class="footer-logo">
+
+                © 2026
+                <span>REWET HOST</span>
+
+            </div>
+
+
+            <div class="footer-copy">
+
+                Игровой хостинг нового поколения
+
+            </div>
+
+
+        </div>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+
+        // =====================================================
+        // API
+        // =====================================================
+
+        const API_URL =
+            "https://rewet-host-api.onrender.com";
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const authButtons =
+            document.getElementById(
+                "authButtons"
+            );
+
+
+        const userMenu =
+            document.getElementById(
+                "userMenu"
+            );
+
+
+        const usernameElement =
+            document.getElementById(
+                "username"
+            );
+
+
+        const avatarElement =
+            document.getElementById(
+                "avatar"
+            );
+
+
+        const logoutButton =
+            document.getElementById(
+                "logoutButton"
+            );
+
+
+        const heroCreateButton =
+            document.getElementById(
+                "heroCreateButton"
+            );
+
+
+        const bottomCreateButton =
+            document.getElementById(
+                "bottomCreateButton"
+            );
+
+
+        const authLoading =
+            document.getElementById(
+                "authLoading"
+            );
+
+
+        // =====================================================
+        // SHOW GUEST
+        // =====================================================
+
+        function showGuest() {
+
+            authButtons.classList.remove(
+                "hidden"
+            );
+
+            userMenu.classList.remove(
+                "visible"
+            );
+
+
+            heroCreateButton.href =
+                "register.html";
+
+
+            bottomCreateButton.href =
+                "register.html";
+
+        }
+
+
+        // =====================================================
+        // SHOW USER
+        // =====================================================
+
+        function showUser(user) {
+
+            authButtons.classList.add(
+                "hidden"
+            );
+
+            userMenu.classList.add(
+                "visible"
+            );
+
+
+            const username =
+                user.username ||
+                "Пользователь";
+
+
+            usernameElement.textContent =
+                username;
+
+
+            avatarElement.textContent =
+                username
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            /*
+             * Пользователь уже авторизован.
+             * Кнопка создания теперь ведёт
+             * в будущую панель сервера.
+             */
+
+            heroCreateButton.href =
+                "#create-server";
+
+
+            bottomCreateButton.href =
+                "#create-server";
+
+        }
+
+
+        // =====================================================
+        // CHECK AUTH
+        // =====================================================
+
+        async function checkAuth() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_URL +
+                        "/api/me",
+                        {
+                            method: "GET",
+
+                            credentials:
+                                "include",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (
+                    response.ok
+                ) {
+
+                    const data =
+                        await response
+                            .json();
+
+
+                    if (
+                        data &&
+                        data.user
+                    ) {
+
+                        showUser(
+                            data.user
+                        );
+
+                    } else {
+
+                        showGuest();
+
+                    }
+
+                } else {
+
+                    showGuest();
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Ошибка проверки авторизации:",
+                    error
+                );
+
+                showGuest();
+
+            } finally {
+
+                setTimeout(
+                    function() {
+
+                        authLoading.classList.add(
+                            "hidden"
+                        );
+
+                    },
+                    150
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        logoutButton.addEventListener(
+            "click",
+            async function() {
+
+                logoutButton.disabled =
+                    true;
+
+                logoutButton.textContent =
+                    "Выход...";
+
+
+                try {
+
+                    await fetch(
+                        API_URL +
+                        "/api/logout",
+                        {
+                            method: "POST",
+
+                            credentials:
+                                "include"
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+                }
+
+
+                /*
+                 * В любом случае обновляем
+                 * состояние страницы.
+                 */
+
+                showGuest();
+
+
+                logoutButton.disabled =
+                    false;
+
+                logoutButton.textContent =
+                    "Выйти";
+
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        checkAuth();
+
+
+    </script>
+
+
 </body>
-</html>
+
+  </html>
