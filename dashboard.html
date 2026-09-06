@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Панель управления — REWET HOST</title>
+    <title>REWET HOST — Панель</title>
 
     <style>
         * {
@@ -13,411 +13,390 @@
             padding: 0;
         }
 
-        :root {
-            --blue: #168cff;
-            --blue2: #0068d9;
-            --bg: #06111f;
-            --panel: #0a192b;
-            --panel2: #0d2036;
-            --border: rgba(62, 151, 255, .18);
-            --text: #f4f8ff;
-            --muted: #8499b0;
-            --green: #37d68b;
-            --red: #ff5d6c;
-        }
-
         body {
-            min-height: 100vh;
             font-family: Arial, sans-serif;
-            background:
-                radial-gradient(
-                    circle at 15% 0%,
-                    rgba(20, 116, 220, .18),
-                    transparent 35%
-                ),
-                var(--bg);
-            color: var(--text);
+            background: #eef5ff;
+            color: #172033;
+            min-height: 100vh;
         }
 
-        /* =====================================================
+        /* =========================
            SIDEBAR
-        ===================================================== */
+        ========================= */
 
         .sidebar {
             position: fixed;
-            left: 0;
+            left: -280px;
             top: 0;
-            width: 250px;
+            width: 280px;
             height: 100vh;
-            background: rgba(6, 19, 34, .98);
-            border-right: 1px solid var(--border);
-            padding: 18px 14px;
+            background: #ffffff;
+            border-right: 1px solid #dce7f5;
             z-index: 1000;
-            transition: .25s;
+            transition: left 0.25s ease;
+            box-shadow: 8px 0 30px rgba(20, 70, 140, 0.08);
             overflow-y: auto;
         }
 
-        .sidebar.closed {
-            transform: translateX(-100%);
+        .sidebar.active {
+            left: 0;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px 24px;
-        }
-
-        .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(
-                135deg,
-                var(--blue),
-                var(--blue2)
-            );
-            font-weight: 900;
-            box-shadow: 0 8px 25px rgba(0, 120, 255, .25);
-        }
-
-        .brand-name {
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        .brand-name span {
-            color: var(--blue);
-        }
-
-        .menu-title {
-            padding: 10px;
-            color: #58718d;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-        }
-
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .menu a,
-        .menu button {
-            width: 100%;
-            border: 0;
-            background: transparent;
-            color: #9fb1c5;
-            text-decoration: none;
-            padding: 13px 12px;
-            border-radius: 11px;
+        .sidebar-header {
+            height: 76px;
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 0 20px;
+            border-bottom: 1px solid #e5edf8;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #087cff, #0058d9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 17px;
+            box-shadow: 0 7px 20px rgba(0, 105, 255, 0.25);
+        }
+
+        .logo-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #075fd7;
+        }
+
+        .menu {
+            padding: 18px 12px;
+        }
+
+        .menu-title {
+            padding: 10px 12px;
+            font-size: 11px;
+            color: #91a1b7;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #45536a;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin-bottom: 4px;
+            border-radius: 11px;
             font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
             text-align: left;
-            transition: .2s;
+            transition: 0.2s;
         }
 
-        .menu a:hover,
-        .menu button:hover {
-            background: rgba(33, 140, 255, .10);
-            color: white;
+        .menu-item:hover {
+            background: #edf5ff;
+            color: #0768e5;
         }
 
-        .menu a.active {
-            color: white;
-            background: linear-gradient(
-                90deg,
-                rgba(22, 140, 255, .18),
-                rgba(22, 140, 255, .04)
-            );
-            border-left: 3px solid var(--blue);
+        .menu-item.active {
+            background: #e8f2ff;
+            color: #0668e7;
         }
 
         .menu-icon {
-            width: 22px;
+            width: 24px;
             text-align: center;
-            font-size: 17px;
+            font-size: 18px;
         }
 
-        .sidebar-bottom {
-            margin-top: 25px;
-            padding-top: 18px;
-            border-top: 1px solid var(--border);
+        .balance-menu {
+            margin: 15px 4px 0;
+            padding: 15px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #087cff, #0059d8);
+            color: white;
         }
 
-        .balance-box {
-            padding: 14px;
-            border-radius: 13px;
-            background: rgba(22, 140, 255, .08);
-            border: 1px solid rgba(22, 140, 255, .15);
-            margin-bottom: 10px;
-        }
-
-        .balance-label {
-            color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 5px;
-        }
-
-        .balance-value {
-            font-size: 21px;
-            font-weight: 900;
-        }
-
-        .online {
-            padding: 10px 12px;
-            color: #91a6bb;
+        .balance-menu-title {
             font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .balance-menu-value {
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: 5px;
+        }
+
+        .online-menu {
+            margin-top: 12px;
+            padding: 13px 15px;
+            border-radius: 12px;
+            background: #f0f8f3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .online-left {
+            display: flex;
+            gap: 9px;
+            align-items: center;
+            font-weight: 700;
+            font-size: 13px;
         }
 
         .online-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--green);
+            width: 9px;
+            height: 9px;
+            background: #21c46b;
             border-radius: 50%;
-            margin-right: 6px;
-            box-shadow: 0 0 8px rgba(55, 214, 139, .7);
+            box-shadow: 0 0 0 4px rgba(33, 196, 107, 0.12);
         }
 
-        .admin-link {
-            display: none !important;
+        .online-number {
+            font-weight: 900;
+            color: #19a85b;
         }
 
-        .admin-link.visible {
-            display: flex !important;
-        }
+        /* =========================
+           OVERLAY
+        ========================= */
 
-        /* =====================================================
-           HAMBURGER
-        ===================================================== */
-
-        .hamburger {
+        .overlay {
             position: fixed;
-            left: 15px;
-            top: 15px;
-            width: 43px;
-            height: 43px;
-            border: 1px solid var(--border);
-            background: rgba(7, 24, 42, .95);
-            color: white;
-            border-radius: 11px;
-            cursor: pointer;
-            z-index: 1200;
-            font-size: 20px;
+            inset: 0;
+            background: rgba(12, 35, 70, 0.38);
+            z-index: 900;
+            display: none;
         }
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
-
-        .main {
-            margin-left: 250px;
-            min-height: 100vh;
-            transition: .25s;
+        .overlay.active {
+            display: block;
         }
 
-        .main.full {
-            margin-left: 0;
-        }
+        /* =========================
+           HEADER
+        ========================= */
 
         .topbar {
-            height: 74px;
-            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            height: 76px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dfe9f5;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding: 0 28px;
-            background: rgba(4, 15, 27, .75);
-            backdrop-filter: blur(15px);
+            justify-content: space-between;
+            padding: 0 24px;
         }
 
-        .user-mini {
+        .top-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+        }
+
+        .menu-button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 11px;
+            background: #edf5ff;
+            color: #076be8;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-button:hover {
+            background: #dcecff;
+        }
+
+        .page-title {
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .user-box {
+            display: flex;
+            align-items: center;
+            gap: 11px;
         }
 
         .avatar {
-            width: 39px;
-            height: 39px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: linear-gradient(
-                135deg,
-                var(--blue),
-                #004a9b
-            );
+            background: linear-gradient(135deg, #087cff, #0055cf);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
         }
 
-        .user-mini-info {
-            text-align: right;
+        .user-name {
+            font-size: 14px;
+            font-weight: 900;
         }
 
-        .user-mini-name {
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .user-mini-role {
-            color: var(--muted);
+        .user-role {
             font-size: 11px;
+            color: #7d8da4;
             margin-top: 3px;
         }
 
-        .logout {
-            margin-left: 15px;
-            border: 1px solid rgba(255, 80, 100, .2);
-            background: rgba(255, 80, 100, .06);
-            color: #ff7785;
-            border-radius: 9px;
-            padding: 9px 12px;
-            cursor: pointer;
-        }
+        /* =========================
+           MAIN
+        ========================= */
 
-        .content {
-            padding: 30px;
-            max-width: 1500px;
+        .main {
+            max-width: 1250px;
             margin: auto;
+            padding: 30px 24px 50px;
         }
 
         .welcome {
+            background: linear-gradient(135deg, #087cff, #0059d8);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0, 105, 255, 0.18);
             margin-bottom: 25px;
         }
 
         .welcome h1 {
-            font-size: 29px;
-            margin-bottom: 7px;
+            font-size: 28px;
+            margin-bottom: 8px;
         }
 
         .welcome p {
-            color: var(--muted);
+            opacity: 0.9;
             font-size: 14px;
         }
 
-        /* =====================================================
+        /* =========================
            CARDS
-        ===================================================== */
+        ========================= */
 
         .stats {
             display: grid;
-            grid-template-columns:
-                repeat(4, minmax(0, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
             margin-bottom: 25px;
         }
 
         .stat {
-            background: rgba(10, 25, 43, .88);
-            border: 1px solid var(--border);
+            background: white;
+            border: 1px solid #dfebf8;
             border-radius: 16px;
-            padding: 19px;
+            padding: 20px;
         }
 
-        .stat-label {
-            color: var(--muted);
+        .stat-icon {
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .stat-title {
             font-size: 12px;
-            margin-bottom: 8px;
+            color: #8190a6;
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 23px;
             font-weight: 900;
+            margin-top: 5px;
         }
 
-        /* =====================================================
-           SECTION
-        ===================================================== */
-
         .section {
-            background: rgba(10, 25, 43, .88);
-            border: 1px solid var(--border);
-            border-radius: 17px;
+            background: white;
+            border: 1px solid #dfebf8;
+            border-radius: 18px;
+            padding: 22px;
             margin-bottom: 20px;
-            overflow: hidden;
         }
 
         .section-head {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 19px 20px;
-            border-bottom: 1px solid var(--border);
+            justify-content: space-between;
+            margin-bottom: 18px;
         }
 
         .section-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 900;
         }
 
-        .section-action {
-            border: 1px solid rgba(22, 140, 255, .25);
-            background: rgba(22, 140, 255, .08);
-            color: #58adff;
-            padding: 8px 12px;
-            border-radius: 9px;
-            cursor: pointer;
+        .section-subtitle {
+            font-size: 12px;
+            color: #8594aa;
+            margin-top: 4px;
         }
 
-        /* =====================================================
+        /* =========================
            ACCOUNT
-        ===================================================== */
+        ========================= */
 
         .account-grid {
             display: grid;
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
         }
 
-        .account-item {
-            padding: 18px 20px;
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+        .info-box {
+            padding: 15px;
+            border-radius: 12px;
+            background: #f6f9fd;
         }
 
-        .account-item:nth-child(3n) {
-            border-right: 0;
-        }
-
-        .account-label {
-            color: var(--muted);
+        .info-label {
+            color: #8998ad;
             font-size: 11px;
-            margin-bottom: 7px;
+            margin-bottom: 6px;
         }
 
-        .account-value {
-            font-size: 15px;
+        .info-value {
             font-weight: 800;
+            font-size: 14px;
             word-break: break-word;
         }
 
-        .balance-account {
-            color: #58adff;
+        .balance-value {
+            color: #0670ef;
         }
 
-        .recharge {
-            color: #58adff;
-            text-decoration: none;
-            font-size: 11px;
-            margin-left: 8px;
-            font-weight: 700;
+        .button {
+            border: none;
+            background: #087cff;
+            color: white;
+            padding: 11px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
         }
 
-        /* =====================================================
-           TABLE
-        ===================================================== */
+        .button:hover {
+            background: #0068df;
+        }
+
+        /* =========================
+           SERVERS
+        ========================= */
 
         .table-wrap {
             overflow-x: auto;
@@ -426,173 +405,118 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 760px;
+            min-width: 750px;
         }
 
         th {
-            color: #607993;
-            text-align: left;
+            color: #8796aa;
             font-size: 11px;
-            text-transform: uppercase;
-            padding: 14px 20px;
-            font-weight: 800;
+            text-align: left;
+            padding: 12px;
+            background: #f7faff;
         }
 
         td {
-            padding: 16px 20px;
-            border-top: 1px solid var(--border);
+            padding: 15px 12px;
+            border-top: 1px solid #edf2f8;
             font-size: 13px;
-            color: #cbd8e7;
-        }
-
-        .server-id {
-            color: white;
-            font-weight: 900;
+            font-weight: 700;
         }
 
         .status {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 7px;
+            padding: 6px 9px;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .status.off {
+            background: #fff0f0;
+            color: #e04a4a;
+        }
+
+        .status.on {
+            background: #ecfbf3;
+            color: #18a35b;
         }
 
         .status-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
+            background: currentColor;
         }
 
-        .status.online-status {
-            color: var(--green);
-        }
-
-        .status.online-status .status-dot {
-            background: var(--green);
-        }
-
-        .status.offline-status {
-            color: var(--red);
-        }
-
-        .status.offline-status .status-dot {
-            background: var(--red);
-        }
-
-        .tariff {
-            color: #9db2c8;
-        }
-
-        .ip {
-            font-family: monospace;
-            color: #79baff;
-        }
-
-        .action-btn {
-            border: 1px solid var(--border);
-            background: #0b1e33;
-            color: #9ec9f5;
-            padding: 7px 10px;
+        .action {
+            border: none;
+            background: #edf5ff;
+            color: #0769e5;
+            padding: 8px 11px;
             border-radius: 8px;
             cursor: pointer;
+            font-weight: 800;
         }
 
-        /* =====================================================
+        /* =========================
            EMPTY
-        ===================================================== */
+        ========================= */
 
         .empty {
             text-align: center;
-            padding: 45px 20px;
-            color: #71869d;
+            padding: 35px 20px;
+            color: #8b99ad;
         }
 
         .empty-icon {
-            font-size: 35px;
+            font-size: 38px;
             margin-bottom: 10px;
         }
 
         .empty-title {
-            color: #a8b9cb;
-            font-weight: 800;
+            color: #4e5d73;
+            font-weight: 900;
             margin-bottom: 5px;
         }
 
-        .empty-text {
-            font-size: 12px;
-        }
-
-        /* =====================================================
-           LOADING
-        ===================================================== */
-
-        #loading {
-            position: fixed;
-            inset: 0;
-            background: #06111f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5000;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .loader {
-            width: 45px;
-            height: 45px;
-            border: 4px solid #173450;
-            border-top-color: var(--blue);
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* =====================================================
+        /* =========================
            MOBILE
-        ===================================================== */
+        ========================= */
 
-        @media (max-width: 1000px) {
-
+        @media (max-width: 900px) {
             .stats {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .account-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .account-item:nth-child(3n) {
-                border-right: 1px solid var(--border);
-            }
-
-            .account-item:nth-child(2n) {
-                border-right: 0;
-            }
-
-            .main {
-                margin-left: 0;
-            }
-
-            .sidebar {
-                box-shadow: 15px 0 45px rgba(0,0,0,.35);
-            }
-
-            .topbar {
-                padding-left: 75px;
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 600px) {
+            .topbar {
+                padding: 0 14px;
+            }
 
-            .content {
-                padding: 22px 15px;
+            .page-title {
+                font-size: 16px;
+            }
+
+            .user-box > div:not(.avatar) {
+                display: none;
+            }
+
+            .main {
+                padding: 20px 14px 40px;
+            }
+
+            .welcome {
+                padding: 23px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
             }
 
             .stats {
@@ -605,29 +529,15 @@
             }
 
             .stat-value {
-                font-size: 20px;
+                font-size: 19px;
             }
 
             .account-grid {
                 grid-template-columns: 1fr;
             }
 
-            .account-item,
-            .account-item:nth-child(2n),
-            .account-item:nth-child(3n) {
-                border-right: 0;
-            }
-
-            .welcome h1 {
-                font-size: 24px;
-            }
-
-            .user-mini-info {
-                display: none;
-            }
-
-            .logout {
-                padding: 8px 9px;
+            .section {
+                padding: 16px;
             }
         }
     </style>
@@ -635,829 +545,720 @@
 
 <body>
 
-<!-- =====================================================
-     LOADING
-===================================================== -->
-
-<div id="loading">
-
-    <div class="loader"></div>
-
-    <div>
-        Загрузка REWET HOST...
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     HAMBURGER
-===================================================== -->
-
-<button
-    class="hamburger"
-    id="hamburger"
-    onclick="toggleSidebar()"
->
-    ☰
-</button>
-
-
-<!-- =====================================================
+<!-- =========================
      SIDEBAR
-===================================================== -->
+========================= -->
 
 <aside class="sidebar" id="sidebar">
 
-    <div class="brand">
+    <div class="sidebar-header">
+        <div class="logo">RH</div>
+        <div class="logo-name">REWET HOST</div>
+    </div>
 
-        <div class="brand-logo">
+    <div class="menu">
+
+        <div class="menu-title">Навигация</div>
+
+        <button class="menu-item active" onclick="goTo('home')">
+            <span class="menu-icon">🏠</span>
+            <span>Главная</span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('servers')">
+            <span class="menu-icon">🖥️</span>
+            <span>Серверы</span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('sites')">
+            <span class="menu-icon">🌐</span>
+            <span>Сайты</span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('vds')">
+            <span class="menu-icon">⚡</span>
+            <span>VPS/VDS</span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('services')">
+            <span class="menu-icon">🛠️</span>
+            <span>Услуги</span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('support')">
+            <span class="menu-icon">🎧</span>
+            <span>Поддержка</span>
+        </button>
+
+        <div class="menu-title">Аккаунт</div>
+
+        <button class="menu-item" onclick="goTo('balance')">
+            <span class="menu-icon">💰</span>
+            <span>Баланс</span>
+        </button>
+
+        <button class="menu-item">
+            <span class="menu-icon">🟢</span>
+            <span>Online</span>
+            <span style="margin-left:auto" class="online-number" id="onlineMenu">
+                1
+            </span>
+        </button>
+
+        <button class="menu-item" onclick="goTo('profile')">
+            <span class="menu-icon">👤</span>
+            <span>Профиль</span>
+        </button>
+
+        <button
+            class="menu-item"
+            id="adminButton"
+            onclick="location.href='admin.html'"
+            style="display:none;"
+        >
+            <span class="menu-icon">⚙️</span>
+            <span>Админ-панель</span>
+        </button>
+
+        <div class="balance-menu">
+            <div class="balance-menu-title">Ваш баланс</div>
+            <div class="balance-menu-value">
+                <span id="sideBalance">0.00</span> ₽
+            </div>
+        </div>
+
+        <div class="online-menu">
+            <div class="online-left">
+                <span class="online-dot"></span>
+                <span>Сейчас онлайн</span>
+            </div>
+
+            <span class="online-number" id="onlineSide">
+                1
+            </span>
+        </div>
+
+    </div>
+</aside>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+
+<!-- =========================
+     TOPBAR
+========================= -->
+
+<header class="topbar">
+
+    <div class="top-left">
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            onclick="toggleMenu()"
+            aria-label="Меню"
+        >
+            ☰
+        </button>
+
+        <div class="page-title">
+            REWET HOST
+        </div>
+
+    </div>
+
+    <div class="user-box">
+
+        <div>
+            <div class="user-name" id="topUserName">
+                Загрузка...
+            </div>
+
+            <div class="user-role" id="topUserRole">
+                Пользователь
+            </div>
+        </div>
+
+        <div class="avatar" id="avatar">
             R
         </div>
 
-        <div class="brand-name">
-            REWET <span>HOST</span>
-        </div>
-
     </div>
 
-
-    <div class="menu-title">
-        Меню
-    </div>
+</header>
 
 
-    <nav class="menu">
-
-        <a
-            href="dashboard.html"
-            class="active"
-        >
-            <span class="menu-icon">🏠</span>
-            Главная
-        </a>
-
-        <a href="#servers">
-            <span class="menu-icon">🖥️</span>
-            Серверы
-        </a>
-
-        <a href="#sites">
-            <span class="menu-icon">🌐</span>
-            Сайты
-        </a>
-
-        <a href="#vds">
-            <span class="menu-icon">⚡</span>
-            VPS/VDS
-        </a>
-
-        <a href="#services">
-            <span class="menu-icon">🛠️</span>
-            Услуги
-        </a>
-
-        <a href="#support">
-            <span class="menu-icon">🎧</span>
-            Поддержка
-        </a>
-
-    </nav>
-
-
-    <div class="sidebar-bottom">
-
-        <div class="balance-box">
-
-            <div class="balance-label">
-                Баланс
-            </div>
-
-            <div
-                class="balance-value"
-                id="sidebarBalance"
-            >
-                0.00 ₽
-            </div>
-
-        </div>
-
-
-        <div class="online">
-
-            <span class="online-dot"></span>
-
-            Online:
-            <strong id="onlineCount">
-                1
-            </strong>
-            человек
-
-        </div>
-
-
-        <!-- ADMIN -->
-
-        <div class="menu">
-
-            <a
-                href="admin.html"
-                class="admin-link"
-                id="adminLink"
-            >
-                <span class="menu-icon">👑</span>
-                Админ-панель
-            </a>
-
-            <a href="profile.html">
-                <span class="menu-icon">👤</span>
-                Профиль
-            </a>
-
-        </div>
-
-    </div>
-
-</aside>
-
-
-<!-- =====================================================
+<!-- =========================
      MAIN
-===================================================== -->
+========================= -->
 
-<main class="main" id="main">
+<main class="main">
+
+    <section class="welcome" id="home">
+
+        <h1>
+            Добро пожаловать, <span id="welcomeName">клиент</span>! 👋
+        </h1>
+
+        <p>
+            Управляйте своими серверами, сайтами и услугами REWET HOST.
+        </p>
+
+    </section>
 
 
-    <!-- TOPBAR -->
+    <!-- STATS -->
 
-    <header class="topbar">
+    <section class="stats">
 
-        <div class="user-mini">
-
-            <div class="user-mini-info">
-
-                <div
-                    class="user-mini-name"
-                    id="topUserName"
-                >
-                    Загрузка...
-                </div>
-
-                <div
-                    class="user-mini-role"
-                    id="topUserRole"
-                >
-                    Клиент
-                </div>
-
-            </div>
-
-            <div
-                class="avatar"
-                id="avatar"
-            >
-                ?
-            </div>
-
-            <button
-                class="logout"
-                onclick="logout()"
-            >
-                🚪
-            </button>
-
+        <div class="stat">
+            <div class="stat-icon">🖥️</div>
+            <div class="stat-title">Мои серверы</div>
+            <div class="stat-value">3</div>
         </div>
 
-    </header>
-
-
-    <!-- CONTENT -->
-
-    <div class="content">
-
-
-        <!-- WELCOME -->
-
-        <div class="welcome">
-
-            <h1>
-                Добро пожаловать,
-                <span id="welcomeName">
-                    клиент
-                </span> 👋
-            </h1>
-
-            <p>
-                Управляйте своими серверами,
-                сайтами и услугами REWET HOST.
-            </p>
-
+        <div class="stat">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-title">Мои сайты</div>
+            <div class="stat-value">0</div>
         </div>
 
-
-        <!-- STATS -->
-
-        <div class="stats">
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Мои серверы
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="serverCount"
-                >
-                    3
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Мои сайты
-                </div>
-
-                <div class="stat-value">
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Мои VPS/VDS
-                </div>
-
-                <div class="stat-value">
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="stat">
-
-                <div class="stat-label">
-                    Баланс
-                </div>
-
-                <div
-                    class="stat-value"
-                    id="statBalance"
-                >
-                    0.00
-                </div>
-
-            </div>
-
+        <div class="stat">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-title">VPS/VDS</div>
+            <div class="stat-value">0</div>
         </div>
 
+        <div class="stat">
+            <div class="stat-icon">🟢</div>
+            <div class="stat-title">Online</div>
+            <div class="stat-value" id="onlineCount">1</div>
+        </div>
 
-        <!-- =================================================
-             ACCOUNT INFO
-        ================================================== -->
+    </section>
 
-        <section class="section">
 
-            <div class="section-head">
+    <!-- ACCOUNT -->
 
+    <section class="section" id="profile">
+
+        <div class="section-head">
+
+            <div>
                 <div class="section-title">
                     Информация об аккаунте
                 </div>
 
-                <button
-                    class="section-action"
-                    onclick="location.href='profile.html'"
-                >
-                    Профиль
-                </button>
-
+                <div class="section-subtitle">
+                    Данные вашего профиля
+                </div>
             </div>
 
+            <button
+                class="button"
+                onclick="alert('Пополнение баланса скоро будет доступно')"
+            >
+                Пополнить баланс
+            </button>
 
-            <div class="account-grid">
+        </div>
 
+        <div class="account-grid">
 
-                <div class="account-item">
-
-                    <div class="account-label">
-                        ID аккаунта
-                    </div>
-
-                    <div
-                        class="account-value"
-                        id="accountId"
-                    >
-                        —
-                    </div>
-
+            <div class="info-box">
+                <div class="info-label">
+                    ID аккаунта
                 </div>
 
-
-                <div class="account-item">
-
-                    <div class="account-label">
-                        Имя
-                    </div>
-
-                    <div
-                        class="account-value"
-                        id="firstName"
-                    >
-                        —
-                    </div>
-
+                <div class="info-value" id="accountId">
+                    —
                 </div>
-
-
-                <div class="account-item">
-
-                    <div class="account-label">
-                        Фамилия
-                    </div>
-
-                    <div
-                        class="account-value"
-                        id="lastName"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="account-item">
-
-                    <div class="account-label">
-                        Никнейм
-                    </div>
-
-                    <div
-                        class="account-value"
-                        id="username"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="account-item">
-
-                    <div class="account-label">
-                        E-Mail
-                    </div>
-
-                    <div
-                        class="account-value"
-                        id="email"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="account-item">
-
-                    <div class="account-label">
-                        Баланс
-                    </div>
-
-                    <div class="account-value">
-
-                        <span
-                            class="balance-account"
-                            id="accountBalance"
-                        >
-                            0.00
-                        </span>
-
-                        <a
-                            href="#"
-                            class="recharge"
-                            onclick="rechargeBalance(event)"
-                        >
-                            Пополнить баланс
-                        </a>
-
-                    </div>
-
-                </div>
-
-
             </div>
 
-        </section>
+            <div class="info-box">
+                <div class="info-label">
+                    Имя
+                </div>
+
+                <div class="info-value" id="firstName">
+                    —
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-label">
+                    Фамилия
+                </div>
+
+                <div class="info-value" id="lastName">
+                    —
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-label">
+                    E-Mail
+                </div>
+
+                <div class="info-value" id="email">
+                    —
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-label">
+                    Баланс
+                </div>
+
+                <div class="info-value balance-value">
+                    <span id="balance">
+                        0.00
+                    </span>
+                    ₽
+                </div>
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- =================================================
-             SERVERS
-        ================================================== -->
+    <!-- SERVERS -->
 
-        <section
-            class="section"
-            id="servers"
-        >
+    <section class="section" id="servers">
 
-            <div class="section-head">
+        <div class="section-head">
 
+            <div>
                 <div class="section-title">
                     Мои серверы
                 </div>
 
-                <button
-                    class="section-action"
-                    onclick="createServer()"
-                >
-                    + Создать сервер
-                </button>
-
+                <div class="section-subtitle">
+                    Управление вашими игровыми серверами
+                </div>
             </div>
 
+            <button
+                class="button"
+                onclick="alert('Создание сервера скоро будет доступно')"
+            >
+                + Создать сервер
+            </button>
 
-            <div class="table-wrap">
+        </div>
 
-                <table>
+        <div class="table-wrap">
 
-                    <thead>
+            <table>
 
-                        <tr>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>СТАТУС</th>
+                        <th>ТАРИФ</th>
+                        <th>IP</th>
+                        <th>ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
 
-                            <th>ID</th>
+                <tbody>
 
-                            <th>Статус</th>
+                    <tr>
+                        <td>#344242</td>
 
-                            <th>Тариф</th>
+                        <td>
+                            <span class="status off">
+                                <span class="status-dot"></span>
+                                Выключен
+                            </span>
+                        </td>
 
-                            <th>IP</th>
+                        <td>
+                            GTA SAMP/CRMP - Lite
+                        </td>
 
-                            <th>Действия</th>
+                        <td>
+                            185.207.214.14:3985
+                        </td>
 
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <tr>
-
-                            <td class="server-id">
-                                #344242
-                            </td>
-
-                            <td>
-
-                                <span
-                                    class="status offline-status"
-                                >
-                                    <span class="status-dot"></span>
-                                    Выключен
-                                </span>
-
-                            </td>
-
-                            <td class="tariff">
-                                GTA SAMP/CRMP - Lite
-                            </td>
-
-                            <td class="ip">
-                                185.207.214.14:3985
-                            </td>
-
-                            <td>
-
-                                <button
-                                    class="action-btn"
-                                    onclick="serverAction(344242)"
-                                >
-                                    Управление
-                                </button>
-
-                            </td>
-
-                        </tr>
+                        <td>
+                            <button
+                                class="action"
+                                onclick="alert('Управление сервером #344242')"
+                            >
+                                Управление
+                            </button>
+                        </td>
+                    </tr>
 
 
-                        <tr>
+                    <tr>
+                        <td>#348924</td>
 
-                            <td class="server-id">
-                                #348924
-                            </td>
+                        <td>
+                            <span class="status on">
+                                <span class="status-dot"></span>
+                                Включен
+                            </span>
+                        </td>
 
-                            <td>
+                        <td>
+                            GTA SAMP/CRMP - Lite
+                        </td>
 
-                                <span
-                                    class="status online-status"
-                                >
-                                    <span class="status-dot"></span>
-                                    Включен
-                                </span>
+                        <td>
+                            80.242.59.112:6537
+                        </td>
 
-                            </td>
-
-                            <td class="tariff">
-                                GTA SAMP/CRMP - Lite
-                            </td>
-
-                            <td class="ip">
-                                80.242.59.112:6537
-                            </td>
-
-                            <td>
-
-                                <button
-                                    class="action-btn"
-                                    onclick="serverAction(348924)"
-                                >
-                                    Управление
-                                </button>
-
-                            </td>
-
-                        </tr>
+                        <td>
+                            <button
+                                class="action"
+                                onclick="alert('Управление сервером #348924')"
+                            >
+                                Управление
+                            </button>
+                        </td>
+                    </tr>
 
 
-                        <tr>
+                    <tr>
+                        <td>#352280</td>
 
-                            <td class="server-id">
-                                #352280
-                            </td>
+                        <td>
+                            <span class="status off">
+                                <span class="status-dot"></span>
+                                Выключен
+                            </span>
+                        </td>
 
-                            <td>
+                        <td>
+                            GTA SAMP/CRMP - Lite
+                        </td>
 
-                                <span
-                                    class="status offline-status"
-                                >
-                                    <span class="status-dot"></span>
-                                    Выключен
-                                </span>
+                        <td>
+                            80.242.59.112:3825
+                        </td>
 
-                            </td>
+                        <td>
+                            <button
+                                class="action"
+                                onclick="alert('Управление сервером #352280')"
+                            >
+                                Управление
+                            </button>
+                        </td>
+                    </tr>
 
-                            <td class="tariff">
-                                GTA SAMP/CRMP - Lite
-                            </td>
+                </tbody>
 
-                            <td class="ip">
-                                80.242.59.112:3825
-                            </td>
+            </table>
 
-                            <td>
+        </div>
 
-                                <button
-                                    class="action-btn"
-                                    onclick="serverAction(352280)"
-                                >
-                                    Управление
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
+    </section>
 
 
-        <!-- =================================================
-             SITES
-        ================================================== -->
+    <!-- SITES -->
 
-        <section
-            class="section"
-            id="sites"
-        >
+    <section class="section" id="sites">
 
-            <div class="section-head">
+        <div class="section-head">
 
+            <div>
                 <div class="section-title">
                     Мои сайты
                 </div>
 
-                <button
-                    class="section-action"
-                    onclick="createSite()"
-                >
-                    + Создать сайт
-                </button>
-
+                <div class="section-subtitle">
+                    Ваши веб-сайты
+                </div>
             </div>
 
+            <button
+                class="button"
+                onclick="alert('Создание сайта скоро будет доступно')"
+            >
+                + Создать сайт
+            </button>
 
-            <div class="empty">
+        </div>
 
-                <div class="empty-icon">
-                    🌐
-                </div>
+        <div class="empty">
 
-                <div class="empty-title">
-                    У вас пока нет сайтов
-                </div>
-
-                <div class="empty-text">
-                    Здесь будут отображаться ваши сайты.
-                </div>
-
+            <div class="empty-icon">
+                🌐
             </div>
 
-        </section>
+            <div class="empty-title">
+                У вас пока нет сайтов
+            </div>
+
+            <div>
+                Создайте свой первый сайт в REWET HOST.
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- =================================================
-             VPS
-        ================================================== -->
+    <!-- VDS -->
 
-        <section
-            class="section"
-            id="vds"
-        >
+    <section class="section" id="vds">
 
-            <div class="section-head">
+        <div class="section-head">
 
+            <div>
                 <div class="section-title">
-                    Мои VDS
+                    Мои VPS/VDS
                 </div>
 
-                <button
-                    class="section-action"
-                    onclick="createVDS()"
-                >
-                    + Заказать VDS
-                </button>
-
+                <div class="section-subtitle">
+                    Виртуальные серверы
+                </div>
             </div>
 
+            <button
+                class="button"
+                onclick="alert('Создание VPS/VDS скоро будет доступно')"
+            >
+                + Заказать VDS
+            </button>
 
-            <div class="empty">
+        </div>
 
-                <div class="empty-icon">
-                    ⚡
-                </div>
+        <div class="empty">
 
-                <div class="empty-title">
-                    У вас пока нет VDS
-                </div>
-
-                <div class="empty-text">
-                    Здесь будут отображаться ваши VPS/VDS серверы.
-                </div>
-
+            <div class="empty-icon">
+                ⚡
             </div>
 
-        </section>
+            <div class="empty-title">
+                У вас пока нет VPS/VDS
+            </div>
+
+            <div>
+                Здесь будут отображаться ваши виртуальные серверы.
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- =================================================
-             SERVICES
-        ================================================== -->
+    <!-- SERVICES -->
 
-        <section
-            class="section"
-            id="services"
-        >
+    <section class="section" id="services">
 
-            <div class="section-head">
+        <div class="section-head">
 
+            <div>
                 <div class="section-title">
                     Услуги
                 </div>
 
+                <div class="section-subtitle">
+                    Дополнительные возможности REWET HOST
+                </div>
             </div>
 
+        </div>
 
-            <div class="empty">
+        <div class="empty">
 
-                <div class="empty-icon">
-                    🛠️
-                </div>
-
-                <div class="empty-title">
-                    Услуги REWET HOST
-                </div>
-
-                <div class="empty-text">
-                    Раздел находится в разработке.
-                </div>
-
+            <div class="empty-icon">
+                🛠️
             </div>
 
-        </section>
+            <div class="empty-title">
+                Раздел услуг готовится
+            </div>
+
+            <div>
+                Скоро здесь появятся дополнительные услуги.
+            </div>
+
+        </div>
+
+    </section>
 
 
-        <!-- =================================================
-             SUPPORT
-        ================================================== -->
+    <!-- SUPPORT -->
 
-        <section
-            class="section"
-            id="support"
-        >
+    <section class="section" id="support">
 
-            <div class="section-head">
+        <div class="section-head">
 
+            <div>
                 <div class="section-title">
                     Поддержка
                 </div>
 
+                <div class="section-subtitle">
+                    Помощь пользователям REWET HOST
+                </div>
             </div>
 
+        </div>
 
-            <div class="empty">
+        <div class="empty">
 
-                <div class="empty-icon">
-                    🎧
-                </div>
-
-                <div class="empty-title">
-                    Нужна помощь?
-                </div>
-
-                <div class="empty-text">
-                    Система поддержки REWET HOST скоро будет доступна.
-                </div>
-
+            <div class="empty-icon">
+                🎧
             </div>
 
-        </section>
+            <div class="empty-title">
+                Поддержка
+            </div>
+
+            <div>
+                Свяжитесь с поддержкой REWET HOST.
+            </div>
+
+            <br>
+
+            <button
+                class="button"
+                onclick="alert('Раздел поддержки скоро будет подключен')"
+            >
+                Написать в поддержку
+            </button>
+
+        </div>
+
+    </section>
 
 
-    </div>
+    <!-- BALANCE -->
+
+    <section class="section" id="balance">
+
+        <div class="section-head">
+
+            <div>
+                <div class="section-title">
+                    Баланс
+                </div>
+
+                <div class="section-subtitle">
+                    Ваш текущий баланс
+                </div>
+            </div>
+
+        </div>
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                💰
+            </div>
+
+            <div class="empty-title">
+                <span id="balanceBig">
+                    0.00
+                </span>
+                ₽
+            </div>
+
+            <br>
+
+            <button
+                class="button"
+                onclick="alert('Пополнение баланса скоро будет доступно')"
+            >
+                Пополнить баланс
+            </button>
+
+        </div>
+
+    </section>
 
 </main>
 
 
 <script>
 
-const API_URL =
-    "https://rewet-host-api.onrender.com";
+    const API_URL =
+        "https://rewet-host-api.onrender.com";
 
 
-/* =====================================================
-   ELEMENT
-===================================================== */
+    // =====================================================
+    // ELEMENT
+    // =====================================================
 
-function $(id) {
-    return document.getElementById(id);
-}
-
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-function toggleSidebar() {
-
-    const sidebar = $("sidebar");
-    const main = $("main");
-
-    sidebar.classList.toggle("closed");
-
-    if (
-        window.innerWidth > 1000
-    ) {
-        main.classList.toggle("full");
+    function $(id) {
+        return document.getElementById(id);
     }
 
-}
+
+    // =====================================================
+    // MENU
+    // =====================================================
+
+    function toggleMenu() {
+
+        const sidebar = $("sidebar");
+        const overlay = $("overlay");
+
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+
+    }
 
 
-/* =====================================================
-   FORMAT BALANCE
-===================================================== */
+    function closeMenu() {
 
-function formatBalance(value) {
+        $("sidebar").classList.remove("active");
+        $("overlay").classList.remove("active");
 
-    const number =
-        Number(value || 0);
-
-    return number.toFixed(2);
-
-}
+    }
 
 
-/* =====================================================
-   LOAD USER
-===================================================== */
+    function goTo(id) {
 
-async function loadUser() {
+        const element = $(id);
 
-    try {
+        if (!element) {
+            return;
+        }
 
-        const response =
-            await fetch(
+        closeMenu();
+
+        setTimeout(() => {
+
+            element.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 100);
+
+    }
+
+
+    // =====================================================
+    // ESC — ЗАКРЫТЬ МЕНЮ
+    // =====================================================
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+            closeMenu();
+        }
+
+    });
+
+
+    // =====================================================
+    // USER
+    // =====================================================
+
+    async function loadUser() {
+
+        try {
+
+            const response = await fetch(
                 API_URL + "/api/me",
                 {
                     method: "GET",
@@ -1466,309 +1267,222 @@ async function loadUser() {
             );
 
 
-        const data =
-            await response.json();
+            if (!response.ok) {
 
+                window.location.href = "login.html";
 
-        if (
-            !response.ok ||
-            !data.authenticated ||
-            !data.user
-        ) {
-
-            window.location.href =
-                "login.html";
-
-            return;
-        }
-
-
-        const user =
-            data.user;
-
-
-        /* ---------------------------------------------
-           ACCOUNT
-        --------------------------------------------- */
-
-        $("accountId").textContent =
-            user.id ?? "—";
-
-
-        $("firstName").textContent =
-            user.first_name || "—";
-
-
-        $("lastName").textContent =
-            user.last_name || "—";
-
-
-        $("username").textContent =
-            user.username || "—";
-
-
-        $("email").textContent =
-            user.email || "—";
-
-
-        const balance =
-            formatBalance(
-                user.balance
-            );
-
-
-        $("accountBalance").textContent =
-            balance + " ₽";
-
-
-        $("sidebarBalance").textContent =
-            balance + " ₽";
-
-
-        $("statBalance").textContent =
-            balance + " ₽";
-
-
-        /* ---------------------------------------------
-           NAME
-        --------------------------------------------- */
-
-        const firstName =
-            user.first_name ||
-            user.username ||
-            "клиент";
-
-
-        $("welcomeName").textContent =
-            firstName;
-
-
-        $("topUserName").textContent =
-            user.username ||
-            firstName;
-
-
-        /* ---------------------------------------------
-           ROLE
-        --------------------------------------------- */
-
-        if (user.is_admin) {
-
-            $("topUserRole").textContent =
-                "Администратор";
-
-            $("adminLink")
-                .classList
-                .add("visible");
-
-        } else {
-
-            $("topUserRole").textContent =
-                "Клиент";
-
-        }
-
-
-        /* ---------------------------------------------
-           AVATAR
-        --------------------------------------------- */
-
-        const avatarLetter =
-            (
-                user.first_name ||
-                user.username ||
-                "R"
-            )
-            .charAt(0)
-            .toUpperCase();
-
-
-        $("avatar").textContent =
-            avatarLetter;
-
-
-        /* ---------------------------------------------
-           LOADING HIDE
-        --------------------------------------------- */
-
-        $("loading").style.display =
-            "none";
-
-
-    } catch (error) {
-
-        console.error(
-            "ME ERROR:",
-            error
-        );
-
-        window.location.href =
-            "login.html";
-
-    }
-
-}
-
-
-/* =====================================================
-   ONLINE
-===================================================== */
-
-async function loadOnline() {
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL + "/api/online",
-                {
-                    method: "GET",
-                    credentials: "include"
-                }
-            );
-
-
-        if (!response.ok) {
-            return;
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            typeof data.online === "number"
-        ) {
-
-            $("onlineCount").textContent =
-                data.online;
-
-        }
-
-    } catch (error) {
-
-        console.log(
-            "Online API пока недоступен"
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout() {
-
-    try {
-
-        await fetch(
-            API_URL + "/api/logout",
-            {
-                method: "POST",
-                credentials: "include"
+                return;
             }
-        );
 
-    } catch (error) {
 
-        console.error(error);
+            const data =
+                await response.json();
+
+
+            const user =
+                data.user || data;
+
+
+            // ID
+
+            $("accountId").textContent =
+                user.id ?? "—";
+
+
+            // ИМЯ
+
+            $("firstName").textContent =
+                user.first_name || "—";
+
+
+            // ФАМИЛИЯ
+
+            $("lastName").textContent =
+                user.last_name || "—";
+
+
+            // EMAIL
+
+            $("email").textContent =
+                user.email || "—";
+
+
+            // BALANCE
+
+            const balance =
+                Number(user.balance || 0).toFixed(2);
+
+
+            $("balance").textContent =
+                balance;
+
+
+            $("balanceBig").textContent =
+                balance;
+
+
+            $("sideBalance").textContent =
+                balance;
+
+
+            // FULL NAME
+
+            const first =
+                user.first_name || "";
+
+
+            const last =
+                user.last_name || "";
+
+
+            const username =
+                user.username || "";
+
+
+            let fullName =
+                (first + " " + last).trim();
+
+
+            if (!fullName) {
+                fullName = username;
+            }
+
+
+            if (!fullName) {
+                fullName = "Клиент";
+            }
+
+
+            $("welcomeName").textContent =
+                first || username || "клиент";
+
+
+            $("topUserName").textContent =
+                fullName;
+
+
+            // ROLE
+
+            if (user.is_admin) {
+
+                $("topUserRole").textContent =
+                    "Администратор";
+
+
+                $("adminButton").style.display =
+                    "flex";
+
+            } else {
+
+                $("topUserRole").textContent =
+                    "Пользователь";
+
+            }
+
+
+            // AVATAR
+
+            const avatarLetter =
+                (
+                    first ||
+                    username ||
+                    "R"
+                )
+                .charAt(0)
+                .toUpperCase();
+
+
+            $("avatar").textContent =
+                avatarLetter;
+
+
+        } catch (error) {
+
+            console.error(
+                "Ошибка загрузки пользователя:",
+                error
+            );
+
+        }
 
     }
 
-    window.location.href =
-        "login.html";
 
-}
+    // =====================================================
+    // ONLINE
+    // =====================================================
 
+    async function loadOnline() {
 
-/* =====================================================
-   PLACEHOLDER ACTIONS
-===================================================== */
+        try {
 
-function createServer() {
-
-    alert(
-        "Создание сервера REWET HOST скоро будет доступно."
-    );
-
-}
-
-
-function createSite() {
-
-    alert(
-        "Создание сайта скоро будет доступно."
-    );
-
-}
+            const response =
+                await fetch(
+                    API_URL + "/api/online",
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
 
 
-function createVDS() {
-
-    alert(
-        "Заказ VPS/VDS скоро будет доступен."
-    );
-
-}
+            if (!response.ok) {
+                return;
+            }
 
 
-function serverAction(id) {
-
-    alert(
-        "Управление сервером #" +
-        id +
-        " скоро будет доступно."
-    );
-
-}
+            const data =
+                await response.json();
 
 
-function rechargeBalance(event) {
+            if (
+                typeof data.online ===
+                "number"
+            ) {
 
-    event.preventDefault();
+                $("onlineCount").textContent =
+                    data.online;
 
-    alert(
-        "Пополнение баланса скоро будет доступно."
-    );
+                $("onlineMenu").textContent =
+                    data.online;
 
-}
+                $("onlineSide").textContent =
+                    data.online;
 
+            }
 
-/* =====================================================
-   INIT
-===================================================== */
+        } catch (error) {
 
-loadUser();
+            console.log(
+                "Online API пока недоступен"
+            );
 
-loadOnline();
+        }
 
-
-/* Обновляем Online */
-
-setInterval(
-    loadOnline,
-    15000
-);
+    }
 
 
-/* На телефоне sidebar закрыт */
+    // =====================================================
+    // START
+    // =====================================================
 
-if (
-    window.innerWidth <= 1000
-) {
+    async function init() {
 
-    $("sidebar")
-        .classList
-        .add("closed");
+        await loadUser();
 
-}
+        await loadOnline();
 
+        setInterval(
+            loadOnline,
+            15000
+        );
+
+    }
+
+
+    init();
 
 </script>
 
 </body>
-    </html>
+</html>
