@@ -1,197 +1,141 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="theme-color"
-        content="#2563eb"
-    >
-
-    <meta
-        name="description"
-        content="REWET HOST — игровой хостинг нового поколения"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="REWET HOST — игровой хостинг нового поколения">
 
     <title>REWET HOST — Игровой хостинг</title>
 
-
     <style>
-
-        /* =====================================================
-           RESET
-           ===================================================== */
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
-
             min-height: 100vh;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             color: #ffffff;
 
             background:
                 radial-gradient(
                     circle at 50% -20%,
                     #2563eb 0%,
-                    #172554 32%,
-                    #0f172a 58%,
+                    #172554 30%,
+                    #0f172a 60%,
                     #020617 100%
                 );
 
             overflow-x: hidden;
         }
 
-
         a {
             color: inherit;
             text-decoration: none;
         }
 
-
         button {
             font-family: inherit;
         }
 
-
         /* =====================================================
-           BACKGROUND
-           ===================================================== */
+           LOADING
+        ===================================================== */
 
-        .background-glow {
-
+        #authLoading {
             position: fixed;
+            inset: 0;
+            z-index: 9999;
 
-            width: 500px;
-            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            top: -250px;
-            left: 50%;
+            background: #020617;
 
-            transform: translateX(-50%);
+            transition: opacity .25s;
+        }
 
-            background:
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.25
-                );
+        #authLoading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-            filter: blur(100px);
+        .loader {
+            width: 44px;
+            height: 44px;
+
+            border: 4px solid rgba(96,165,250,.15);
+            border-top-color: #3b82f6;
 
             border-radius: 50%;
 
-            pointer-events: none;
-
-            z-index: -1;
+            animation: spin .8s linear infinite;
         }
 
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* =====================================================
            HEADER
-           ===================================================== */
+        ===================================================== */
 
         header {
-
             position: sticky;
-
             top: 0;
-
             z-index: 100;
 
-            width: 100%;
-
-            background:
-                rgba(
-                    2,
-                    6,
-                    23,
-                    0.78
-                );
+            background: rgba(2,6,23,.82);
 
             border-bottom:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.15
-                );
+                rgba(96,165,250,.15);
 
-            backdrop-filter:
-                blur(18px);
+            backdrop-filter: blur(18px);
         }
 
-
         .navbar {
-
             max-width: 1200px;
-
-            margin: 0 auto;
-
             min-height: 72px;
 
-            padding:
-                0 24px;
+            margin: 0 auto;
+            padding: 0 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
         }
 
-
         /* =====================================================
            LOGO
-           ===================================================== */
+        ===================================================== */
 
         .logo {
-
             display: flex;
-
             align-items: center;
-
             gap: 10px;
 
-            font-size: 22px;
-
+            font-size: 21px;
             font-weight: 900;
 
             letter-spacing: 1px;
         }
 
-
         .logo-icon {
-
             width: 38px;
             height: 38px;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -206,110 +150,83 @@
 
             box-shadow:
                 0 8px 25px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.35
-                );
+                rgba(37,99,235,.35);
 
             font-size: 19px;
         }
 
-
-        .logo-text span {
+        .logo span {
             color: #60a5fa;
         }
 
-
         /* =====================================================
            NAVIGATION
-           ===================================================== */
+        ===================================================== */
 
         .nav-right {
-
             display: flex;
-
             align-items: center;
-
             gap: 10px;
         }
 
-
         .nav-link {
-
-            padding:
-                10px 14px;
+            padding: 10px 14px;
 
             color: #cbd5e1;
 
             font-size: 14px;
+            font-weight: 600;
 
             border-radius: 10px;
 
-            transition: 0.2s;
+            transition: .2s;
         }
 
-
         .nav-link:hover {
-
             color: white;
 
             background:
-                rgba(
-                    59,
-                    130,
-                    246,
-                    0.10
-                );
+                rgba(59,130,246,.1);
         }
 
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .auth-buttons.hidden {
+            display: none;
+        }
 
         .nav-login {
-
-            padding:
-                10px 17px;
-
-            border:
-                1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.35
-                );
-
-            border-radius: 10px;
+            padding: 10px 16px;
 
             color: #bfdbfe;
 
-            font-size: 14px;
+            border:
+                1px solid
+                rgba(96,165,250,.3);
 
+            border-radius: 10px;
+
+            font-size: 14px;
             font-weight: 700;
 
-            transition: 0.2s;
+            transition: .2s;
         }
-
 
         .nav-login:hover {
+            border-color: #3b82f6;
 
             background:
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.15
-                );
-
-            border-color:
-                #3b82f6;
+                rgba(37,99,235,.12);
         }
 
-
         .nav-register {
+            padding: 11px 17px;
 
-            padding:
-                11px 18px;
+            color: white;
 
             border-radius: 10px;
 
@@ -320,99 +237,68 @@
                     #3b82f6
                 );
 
-            color: white;
-
             font-size: 14px;
-
             font-weight: 800;
 
             box-shadow:
                 0 7px 20px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.25
-                );
+                rgba(37,99,235,.25);
 
-            transition: 0.2s;
+            transition: .2s;
         }
 
-
         .nav-register:hover {
-
-            transform:
-                translateY(-1px);
+            transform: translateY(-1px);
 
             box-shadow:
                 0 10px 25px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.4
-                );
+                rgba(37,99,235,.4);
         }
-
 
         /* =====================================================
            USER MENU
-           ===================================================== */
+        ===================================================== */
 
         .user-menu {
-
             display: none;
 
             align-items: center;
-
-            gap: 10px;
+            gap: 9px;
         }
-
 
         .user-menu.visible {
             display: flex;
         }
 
-
         .user-profile {
-
             display: flex;
-
             align-items: center;
-
             gap: 9px;
 
-            padding:
-                7px 11px;
+            padding: 7px 11px;
 
             border:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.2
-                );
+                rgba(96,165,250,.2);
 
             border-radius: 12px;
 
             background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.7
-                );
+                rgba(15,23,42,.75);
+
+            transition: .2s;
         }
 
+        .user-profile:hover {
+            border-color:
+                rgba(96,165,250,.4);
+        }
 
         .avatar {
-
-            width: 30px;
-            height: 30px;
+            width: 31px;
+            height: 31px;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -426,114 +312,60 @@
                 );
 
             font-size: 13px;
-
             font-weight: 900;
         }
 
-
         .username {
-
             max-width: 130px;
 
             overflow: hidden;
-
             text-overflow: ellipsis;
-
             white-space: nowrap;
 
             color: #e2e8f0;
 
             font-size: 14px;
-
             font-weight: 700;
         }
 
-
         .logout-btn {
-
-            padding:
-                9px 13px;
+            padding: 9px 13px;
 
             border:
                 1px solid
-                rgba(
-                    248,
-                    113,
-                    113,
-                    0.25
-                );
+                rgba(248,113,113,.25);
 
             border-radius: 10px;
 
             background:
-                rgba(
-                    127,
-                    29,
-                    29,
-                    0.15
-                );
+                rgba(127,29,29,.15);
 
             color: #fca5a5;
 
             cursor: pointer;
 
             font-size: 13px;
-
             font-weight: 700;
 
-            transition: 0.2s;
+            transition: .2s;
         }
-
 
         .logout-btn:hover {
-
             background:
-                rgba(
-                    239,
-                    68,
-                    68,
-                    0.15
-                );
+                rgba(239,68,68,.16);
 
             border-color:
-                rgba(
-                    248,
-                    113,
-                    113,
-                    0.5
-                );
+                rgba(248,113,113,.5);
         }
-
-
-        /* =====================================================
-           AUTH BUTTONS
-           ===================================================== */
-
-        .auth-buttons {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-        }
-
-
-        .auth-buttons.hidden {
-            display: none;
-        }
-
 
         /* =====================================================
            HERO
-           ===================================================== */
+        ===================================================== */
 
         .hero {
-
             max-width: 1100px;
 
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             padding:
                 105px 24px
@@ -542,49 +374,31 @@
             text-align: center;
         }
 
-
         .badge {
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 8px;
 
-            padding:
-                8px 14px;
+            padding: 8px 14px;
+
+            margin-bottom: 22px;
 
             border:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.25
-                );
+                rgba(96,165,250,.25);
 
             border-radius: 999px;
 
             background:
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.10
-                );
+                rgba(37,99,235,.1);
 
             color: #93c5fd;
 
             font-size: 13px;
-
             font-weight: 700;
-
-            margin-bottom: 22px;
         }
 
-
         .badge-dot {
-
             width: 7px;
             height: 7px;
 
@@ -593,13 +407,10 @@
             background: #60a5fa;
 
             box-shadow:
-                0 0 10px
-                #3b82f6;
+                0 0 10px #3b82f6;
         }
 
-
         .hero h1 {
-
             font-size:
                 clamp(
                     45px,
@@ -607,38 +418,27 @@
                     82px
                 );
 
-            line-height: 0.98;
+            line-height: .98;
 
             font-weight: 950;
 
-            letter-spacing:
-                -3px;
+            letter-spacing: -3px;
 
             margin-bottom: 25px;
         }
 
-
         .hero h1 span {
-
             color: #60a5fa;
 
             text-shadow:
                 0 0 40px
-                rgba(
-                    59,
-                    130,
-                    246,
-                    0.3
-                );
+                rgba(59,130,246,.3);
         }
 
-
         .hero-description {
+            max-width: 680px;
 
-            max-width: 650px;
-
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             color: #94a3b8;
 
@@ -652,9 +452,7 @@
             line-height: 1.7;
         }
 
-
         .hero-buttons {
-
             display: flex;
 
             justify-content: center;
@@ -666,16 +464,12 @@
             flex-wrap: wrap;
         }
 
-
         .primary-button {
-
             min-height: 52px;
 
-            padding:
-                0 25px;
+            padding: 0 25px;
 
             display: inline-flex;
-
             align-items: center;
             justify-content: center;
 
@@ -691,47 +485,29 @@
             color: white;
 
             font-size: 15px;
-
             font-weight: 800;
 
             box-shadow:
                 0 12px 30px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.3
-                );
+                rgba(37,99,235,.3);
 
-            transition: 0.2s;
+            transition: .2s;
         }
 
-
         .primary-button:hover {
-
-            transform:
-                translateY(-2px);
+            transform: translateY(-2px);
 
             box-shadow:
                 0 16px 35px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.45
-                );
+                rgba(37,99,235,.45);
         }
 
-
         .secondary-button {
-
             min-height: 52px;
 
-            padding:
-                0 25px;
+            padding: 0 25px;
 
             display: inline-flex;
-
             align-items: center;
             justify-content: center;
 
@@ -742,134 +518,95 @@
             border-radius: 13px;
 
             background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.65
-                );
+                rgba(15,23,42,.65);
 
             color: #e2e8f0;
 
             font-size: 15px;
-
             font-weight: 700;
 
-            transition: 0.2s;
+            transition: .2s;
         }
-
 
         .secondary-button:hover {
-
-            border-color:
-                #3b82f6;
+            border-color: #3b82f6;
 
             background:
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.10
-                );
+                rgba(37,99,235,.1);
         }
-
 
         /* =====================================================
            STATS
-           ===================================================== */
+        ===================================================== */
 
         .stats {
-
             max-width: 850px;
 
             margin:
                 0 auto 90px;
 
-            padding:
-                0 24px;
+            padding: 0 24px;
 
             display: grid;
 
             grid-template-columns:
-                repeat(3, 1fr);
+                repeat(3,1fr);
 
             gap: 15px;
         }
 
-
         .stat {
-
             padding: 22px;
 
             text-align: center;
 
             border:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.12
-                );
+                rgba(96,165,250,.12);
 
             border-radius: 16px;
 
             background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.55
-                );
+                rgba(15,23,42,.55);
         }
 
-
         .stat-number {
-
-            font-size: 26px;
-
-            font-weight: 900;
+            margin-bottom: 5px;
 
             color: #60a5fa;
 
-            margin-bottom: 5px;
+            font-size: 26px;
+            font-weight: 900;
         }
 
-
         .stat-text {
-
             color: #64748b;
 
             font-size: 13px;
         }
 
-
         /* =====================================================
-           SECTION
-           ===================================================== */
+           FEATURES
+        ===================================================== */
 
         .section {
-
             max-width: 1100px;
 
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             padding:
                 35px 24px
                 100px;
         }
 
-
         .section-title {
-
             text-align: center;
 
             margin-bottom: 45px;
         }
 
-
         .section-title h2 {
+            margin-bottom: 10px;
 
             font-size:
                 clamp(
@@ -879,132 +616,80 @@
                 );
 
             font-weight: 900;
-
-            margin-bottom: 10px;
         }
 
-
         .section-title p {
-
             color: #64748b;
 
             font-size: 15px;
         }
 
-
-        /* =====================================================
-           FEATURES
-           ===================================================== */
-
         .features {
-
             display: grid;
 
             grid-template-columns:
-                repeat(3, 1fr);
+                repeat(3,1fr);
 
             gap: 18px;
         }
 
-
         .feature {
-
             padding: 27px;
 
             border:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.13
-                );
+                rgba(96,165,250,.13);
 
             border-radius: 18px;
 
             background:
                 linear-gradient(
                     145deg,
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.9
-                    ),
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.55
-                    )
+                    rgba(15,23,42,.9),
+                    rgba(15,23,42,.55)
                 );
 
             transition:
-                transform 0.25s,
-                border-color 0.25s;
+                transform .25s,
+                border-color .25s;
         }
-
 
         .feature:hover {
-
-            transform:
-                translateY(-5px);
+            transform: translateY(-5px);
 
             border-color:
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.35
-                );
+                rgba(96,165,250,.35);
         }
 
-
         .feature-icon {
-
             width: 48px;
             height: 48px;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
+
+            margin-bottom: 19px;
+
+            border:
+                1px solid
+                rgba(96,165,250,.18);
 
             border-radius: 13px;
 
             background:
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.14
-                );
-
-            border:
-                1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.18
-                );
+                rgba(37,99,235,.14);
 
             font-size: 21px;
-
-            margin-bottom: 19px;
         }
-
 
         .feature h3 {
+            margin-bottom: 9px;
 
             font-size: 17px;
-
-            margin-bottom: 9px;
         }
 
-
         .feature p {
-
             color: #64748b;
 
             line-height: 1.6;
@@ -1012,65 +697,42 @@
             font-size: 14px;
         }
 
-
         /* =====================================================
-           CREATE SERVER
-           ===================================================== */
+           CREATE
+        ===================================================== */
 
         .create-section {
-
             max-width: 1100px;
 
-            margin:
-                0 auto;
+            margin: 0 auto;
 
             padding:
                 0 24px
                 100px;
         }
 
-
         .create-card {
-
             position: relative;
 
             overflow: hidden;
 
-            padding:
-                45px 40px;
+            padding: 45px 40px;
 
             border:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.22
-                );
+                rgba(96,165,250,.22);
 
             border-radius: 24px;
 
             background:
                 linear-gradient(
                     135deg,
-                    rgba(
-                        30,
-                        64,
-                        175,
-                        0.22
-                    ),
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.88
-                    )
+                    rgba(30,64,175,.22),
+                    rgba(15,23,42,.88)
                 );
         }
 
-
         .create-card::after {
-
             content: "";
 
             position: absolute;
@@ -1084,19 +746,14 @@
             border-radius: 50%;
 
             background:
-                rgba(
-                    59,
-                    130,
-                    246,
-                    0.16
-                );
+                rgba(59,130,246,.16);
 
             filter: blur(60px);
+
+            pointer-events: none;
         }
 
-
         .create-content {
-
             position: relative;
 
             z-index: 2;
@@ -1110,8 +767,8 @@
             gap: 30px;
         }
 
-
         .create-text h2 {
+            margin-bottom: 10px;
 
             font-size:
                 clamp(
@@ -1119,27 +776,20 @@
                     4vw,
                     34px
                 );
-
-            margin-bottom: 10px;
         }
 
-
         .create-text p {
+            max-width: 570px;
 
             color: #94a3b8;
 
             line-height: 1.6;
-
-            max-width: 570px;
         }
 
-
         .create-button {
-
             flex-shrink: 0;
 
-            padding:
-                15px 24px;
+            padding: 15px 24px;
 
             border: none;
 
@@ -1154,65 +804,41 @@
 
             color: white;
 
-            cursor: pointer;
-
+            font-size: 14px;
             font-weight: 800;
 
-            font-size: 14px;
+            cursor: pointer;
 
-            transition: 0.2s;
+            transition: .2s;
         }
 
-
         .create-button:hover {
-
-            transform:
-                translateY(-2px);
+            transform: translateY(-2px);
 
             box-shadow:
                 0 12px 30px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.35
-                );
+                rgba(37,99,235,.35);
         }
-
 
         /* =====================================================
            FOOTER
-           ===================================================== */
+        ===================================================== */
 
         footer {
-
             border-top:
                 1px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.1
-                );
+                rgba(96,165,250,.1);
 
             background:
-                rgba(
-                    2,
-                    6,
-                    23,
-                    0.65
-                );
+                rgba(2,6,23,.65);
         }
 
-
         .footer-inner {
-
             max-width: 1100px;
 
             margin: 0 auto;
 
-            padding:
-                30px 24px;
+            padding: 30px 24px;
 
             display: flex;
 
@@ -1223,100 +849,26 @@
             gap: 20px;
         }
 
-
         .footer-logo {
-
             color: #94a3b8;
 
             font-size: 14px;
-
             font-weight: 700;
         }
-
 
         .footer-logo span {
             color: #60a5fa;
         }
 
-
         .footer-copy {
-
             color: #475569;
 
             font-size: 12px;
         }
 
-
-        /* =====================================================
-           LOADING
-           ===================================================== */
-
-        #authLoading {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 9999;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                #020617;
-
-            transition:
-                opacity 0.25s;
-        }
-
-
-        #authLoading.hidden {
-
-            opacity: 0;
-
-            pointer-events: none;
-        }
-
-
-        .loader {
-
-            width: 42px;
-            height: 42px;
-
-            border:
-                4px solid
-                rgba(
-                    96,
-                    165,
-                    250,
-                    0.2
-                );
-
-            border-top-color:
-                #3b82f6;
-
-            border-radius: 50%;
-
-            animation:
-                spin 0.8s linear infinite;
-        }
-
-
-        @keyframes spin {
-
-            to {
-                transform:
-                    rotate(360deg);
-            }
-
-        }
-
-
         /* =====================================================
            MOBILE
-           ===================================================== */
+        ===================================================== */
 
         @media (max-width: 800px) {
 
@@ -1324,182 +876,119 @@
                 padding: 0 16px;
             }
 
-
             .nav-link {
                 display: none;
             }
 
-
-            .username {
-                max-width: 80px;
-            }
-
-
             .hero {
-
                 padding:
                     80px 20px
                     65px;
             }
 
-
             .stats {
-
-                grid-template-columns:
-                    1fr;
+                grid-template-columns: 1fr;
 
                 max-width: 400px;
 
                 margin-bottom: 65px;
             }
 
-
             .features {
-
-                grid-template-columns:
-                    1fr;
+                grid-template-columns: 1fr;
             }
 
-
             .section {
-
                 padding:
                     20px 20px
                     70px;
             }
 
-
             .create-section {
-
                 padding:
                     0 20px
                     70px;
             }
 
-
             .create-card {
-
                 padding:
                     30px 25px;
             }
 
-
             .create-content {
-
                 flex-direction: column;
 
-                align-items:
-                    flex-start;
+                align-items: flex-start;
             }
 
-
             .create-button {
-
                 width: 100%;
             }
 
-
             .footer-inner {
-
-                flex-direction:
-                    column;
+                flex-direction: column;
 
                 text-align: center;
             }
-
         }
-
 
         @media (max-width: 500px) {
 
-            .logo-text {
-                font-size: 18px;
+            .logo {
+                font-size: 17px;
             }
-
 
             .logo-icon {
-
                 width: 34px;
                 height: 34px;
-
-                font-size: 16px;
             }
-
-
-            .nav-register {
-
-                padding:
-                    9px 12px;
-
-                font-size: 12px;
-            }
-
 
             .nav-login {
-
                 padding:
                     9px 11px;
 
                 font-size: 12px;
             }
 
-
-            .user-profile {
-
+            .nav-register {
                 padding:
-                    6px 8px;
+                    9px 12px;
+
+                font-size: 12px;
             }
 
+            .username {
+                max-width: 80px;
+            }
 
             .logout-btn {
-
                 padding:
                     8px 9px;
 
                 font-size: 11px;
             }
-
-
-            .hero h1 {
-
-                letter-spacing:
-                    -2px;
-            }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
     <!-- =====================================================
-         LOADING
-         ===================================================== -->
+         AUTH LOADING
+    ===================================================== -->
 
     <div id="authLoading">
-
         <div class="loader"></div>
-
     </div>
-
-
-    <div class="background-glow"></div>
 
 
     <!-- =====================================================
          HEADER
-         ===================================================== -->
+    ===================================================== -->
 
     <header>
 
         <nav class="navbar">
-
-
-            <!-- LOGO -->
 
             <a
                 href="index.html"
@@ -1510,17 +999,14 @@
                     R
                 </div>
 
-                <div class="logo-text">
+                <div>
                     REWET <span>HOST</span>
                 </div>
 
             </a>
 
 
-            <!-- RIGHT -->
-
             <div class="nav-right">
-
 
                 <a
                     href="#features"
@@ -1530,7 +1016,7 @@
                 </a>
 
 
-                <!-- AUTH BUTTONS -->
+                <!-- НЕ АВТОРИЗОВАН -->
 
                 <div
                     id="authButtons"
@@ -1544,7 +1030,6 @@
                         Войти
                     </a>
 
-
                     <a
                         href="register.html"
                         class="nav-register"
@@ -1555,7 +1040,7 @@
                 </div>
 
 
-                <!-- USER MENU -->
+                <!-- АВТОРИЗОВАН -->
 
                 <div
                     id="userMenu"
@@ -1563,7 +1048,7 @@
                 >
 
                     <a
-                        href="#profile"
+                        href="profile.html"
                         class="user-profile"
                     >
 
@@ -1587,12 +1072,12 @@
                     <button
                         id="logoutButton"
                         class="logout-btn"
+                        type="button"
                     >
                         Выйти
                     </button>
 
                 </div>
-
 
             </div>
 
@@ -1602,20 +1087,21 @@
 
 
     <!-- =====================================================
-         HERO
-         ===================================================== -->
+         MAIN
+    ===================================================== -->
 
     <main>
 
 
-        <section class="hero">
+        <!-- HERO -->
 
+        <section class="hero">
 
             <div class="badge">
 
                 <span class="badge-dot"></span>
 
-                REWET HOST уже работает
+                REWET HOST
 
             </div>
 
@@ -1641,7 +1127,6 @@
 
             <div class="hero-buttons">
 
-
                 <a
                     id="heroCreateButton"
                     href="register.html"
@@ -1658,7 +1143,6 @@
                     Узнать больше
                 </a>
 
-
             </div>
 
         </section>
@@ -1666,10 +1150,9 @@
 
         <!-- =================================================
              STATS
-             ================================================= -->
+        ================================================= -->
 
         <section class="stats">
-
 
             <div class="stat">
 
@@ -1709,19 +1192,17 @@
 
             </div>
 
-
         </section>
 
 
         <!-- =================================================
              FEATURES
-             ================================================= -->
+        ================================================= -->
 
         <section
             id="features"
             class="section"
         >
-
 
             <div class="section-title">
 
@@ -1730,14 +1211,13 @@
                 </h2>
 
                 <p>
-                    REWET HOST создаётся для удобного управления серверами
+                    Всё для удобного управления игровыми серверами
                 </p>
 
             </div>
 
 
             <div class="features">
-
 
                 <div class="feature">
 
@@ -1751,7 +1231,7 @@
 
                     <p>
                         Создавай сервер и управляй им
-                        через удобную панель без сложной настройки.
+                        через удобную панель.
                     </p>
 
                 </div>
@@ -1769,7 +1249,7 @@
 
                     <p>
                         Все основные действия с сервером
-                        будут доступны в одном месте.
+                        находятся в одном месте.
                     </p>
 
                 </div>
@@ -1782,12 +1262,12 @@
                     </div>
 
                     <h3>
-                        Личный аккаунт
+                        Безопасность
                     </h3>
 
                     <p>
-                        Авторизация, профиль и управление
-                        данными пользователя работают через API.
+                        Авторизация и проверка аккаунта
+                        работают через API.
                     </p>
 
                 </div>
@@ -1840,12 +1320,11 @@
                     </h3>
 
                     <p>
-                        Сайт адаптирован для смартфонов,
-                        планшетов и компьютеров.
+                        REWET HOST удобно использовать
+                        на любом устройстве.
                     </p>
 
                 </div>
-
 
             </div>
 
@@ -1853,17 +1332,17 @@
 
 
         <!-- =================================================
-             CREATE SERVER
-             ================================================= -->
+             CREATE ACCOUNT
+        ================================================= -->
 
-        <section class="create-section">
-
+        <section
+            class="create-section"
+            id="create-server"
+        >
 
             <div class="create-card">
 
-
                 <div class="create-content">
-
 
                     <div class="create-text">
 
@@ -1873,8 +1352,7 @@
 
                         <p>
                             Создай аккаунт REWET HOST
-                            и получи доступ к возможностям
-                            нашей платформы.
+                            и получи доступ к платформе.
                         </p>
 
                     </div>
@@ -1888,26 +1366,22 @@
                         Создать аккаунт →
                     </a>
 
-
                 </div>
-
 
             </div>
 
         </section>
-
 
     </main>
 
 
     <!-- =====================================================
          FOOTER
-         ===================================================== -->
+    ===================================================== -->
 
     <footer>
 
         <div class="footer-inner">
-
 
             <div class="footer-logo">
 
@@ -1916,13 +1390,11 @@
 
             </div>
 
-
             <div class="footer-copy">
 
                 Игровой хостинг нового поколения
 
             </div>
-
 
         </div>
 
@@ -1931,58 +1403,60 @@
 
     <!-- =====================================================
          JAVASCRIPT
-         ===================================================== -->
+    ===================================================== -->
 
     <script>
 
-
-        // =====================================================
-        // API
-        // =====================================================
+        /*
+         * =====================================================
+         * REWET HOST API
+         * =====================================================
+         */
 
         const API_URL =
             "https://rewet-host-api.onrender.com";
 
 
-        // =====================================================
-        // ELEMENTS
-        // =====================================================
+        /*
+         * =====================================================
+         * ELEMENTS
+         * =====================================================
+         */
+
+        const authLoading =
+            document.getElementById(
+                "authLoading"
+            );
 
         const authButtons =
             document.getElementById(
                 "authButtons"
             );
 
-
         const userMenu =
             document.getElementById(
                 "userMenu"
             );
-
 
         const usernameElement =
             document.getElementById(
                 "username"
             );
 
-
         const avatarElement =
             document.getElementById(
                 "avatar"
             );
-
 
         const logoutButton =
             document.getElementById(
                 "logoutButton"
             );
 
-
         const heroCreateButton =
             document.getElementById(
                 "heroCreateButton"
             );
-
 
         const bottomCreateButton =
             document.getElementById(
@@ -1990,15 +1464,11 @@
             );
 
 
-        const authLoading =
-            document.getElementById(
-                "authLoading"
-            );
-
-
-        // =====================================================
-        // SHOW GUEST
-        // =====================================================
+        /*
+         * =====================================================
+         * ГОСТЬ
+         * =====================================================
+         */
 
         function showGuest() {
 
@@ -2014,16 +1484,23 @@
             heroCreateButton.href =
                 "register.html";
 
+            heroCreateButton.textContent =
+                "🚀 Создать аккаунт";
+
 
             bottomCreateButton.href =
                 "register.html";
 
+            bottomCreateButton.textContent =
+                "Создать аккаунт →";
         }
 
 
-        // =====================================================
-        // SHOW USER
-        // =====================================================
+        /*
+         * =====================================================
+         * ПОЛЬЗОВАТЕЛЬ
+         * =====================================================
+         */
 
         function showUser(user) {
 
@@ -2052,24 +1529,30 @@
 
 
             /*
-             * Пользователь уже авторизован.
-             * Кнопка создания теперь ведёт
-             * в будущую панель сервера.
+             * Авторизованный пользователь
+             * переходит к созданию сервера.
              */
 
             heroCreateButton.href =
                 "#create-server";
 
+            heroCreateButton.textContent =
+                "🚀 Создать сервер";
+
 
             bottomCreateButton.href =
                 "#create-server";
 
+            bottomCreateButton.textContent =
+                "Создать сервер →";
         }
 
 
-        // =====================================================
-        // CHECK AUTH
-        // =====================================================
+        /*
+         * =====================================================
+         * ПРОВЕРКА /api/me
+         * =====================================================
+         */
 
         async function checkAuth() {
 
@@ -2093,29 +1576,26 @@
                     );
 
 
+                if (!response.ok) {
+
+                    showGuest();
+
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
                 if (
-                    response.ok
+                    data &&
+                    data.user
                 ) {
 
-                    const data =
-                        await response
-                            .json();
-
-
-                    if (
-                        data &&
+                    showUser(
                         data.user
-                    ) {
-
-                        showUser(
-                            data.user
-                        );
-
-                    } else {
-
-                        showGuest();
-
-                    }
+                    );
 
                 } else {
 
@@ -2123,11 +1603,10 @@
 
                 }
 
-
             } catch (error) {
 
                 console.error(
-                    "Ошибка проверки авторизации:",
+                    "REWET HOST /api/me:",
                     error
                 );
 
@@ -2136,7 +1615,7 @@
             } finally {
 
                 setTimeout(
-                    function() {
+                    () => {
 
                         authLoading.classList.add(
                             "hidden"
@@ -2147,13 +1626,14 @@
                 );
 
             }
-
         }
 
 
-        // =====================================================
-        // LOGOUT
-        // =====================================================
+        /*
+         * =====================================================
+         * ВЫХОД
+         * =====================================================
+         */
 
         logoutButton.addEventListener(
             "click",
@@ -2168,60 +1648,66 @@
 
                 try {
 
-                    await fetch(
-                        API_URL +
-                        "/api/logout",
-                        {
-                            method: "POST",
+                    const response =
+                        await fetch(
+                            API_URL +
+                            "/api/logout",
+                            {
+                                method: "POST",
 
-                            credentials:
-                                "include"
-                        }
-                    );
+                                credentials:
+                                    "include"
+                            }
+                        );
+
+
+                    if (
+                        response.ok
+                    ) {
+
+                        showGuest();
+
+                    } else {
+
+                        console.warn(
+                            "Logout response:",
+                            response.status
+                        );
+
+                        showGuest();
+                    }
 
                 } catch (error) {
 
                     console.error(
+                        "Ошибка выхода:",
                         error
                     );
 
+                    showGuest();
+
+                } finally {
+
+                    logoutButton.disabled =
+                        false;
+
+                    logoutButton.textContent =
+                        "Выйти";
                 }
-
-
-                /*
-                 * В любом случае обновляем
-                 * состояние страницы.
-                 */
-
-                showGuest();
-
-
-                logoutButton.disabled =
-                    false;
-
-                logoutButton.textContent =
-                    "Выйти";
-
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
 
             }
         );
 
 
-        // =====================================================
-        // START
-        // =====================================================
+        /*
+         * =====================================================
+         * START
+         * =====================================================
+         */
 
         checkAuth();
 
-
     </script>
 
-
 </body>
-
-  </html>
+</html>
