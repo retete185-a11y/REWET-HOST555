@@ -1,11 +1,12 @@
-import os
 import secrets
 from datetime import datetime, timedelta
 
 from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import Session
+
 from passlib.context import CryptContext
 
 from database import Base, engine, get_db
@@ -38,7 +39,40 @@ app.add_middleware(
 
 
 # =====================================================
-# DATABASE
+# SESSION MODEL
+# =====================================================
+
+class SessionModel(Base):
+
+    __tablename__ = "sessions"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    token = Column(
+        String(128),
+        unique=True,
+        nullable=False,
+        index=True
+    )
+
+    user_id = Column(
+        Integer,
+        nullable=False,
+        index=True
+    )
+
+    expires_at = Column(
+        DateTime,
+        nullable=False
+    )
+
+
+# =====================================================
+# CREATE TABLES
 # =====================================================
 
 Base.metadata.create_all(bind=engine)
@@ -55,7 +89,7 @@ pwd_context = CryptContext(
 
 
 # =====================================================
-# SCHEMAS
+# REQUEST MODELS
 # =====================================================
 
 class RegisterRequest(BaseModel):
@@ -126,25 +160,25 @@ def register(
             detail="Пароль должен содержать минимум 6 символов"
         )
 
-    existing_username = (
+    username_exists = (
         db.query(User)
         .filter(User.username == username)
         .first()
     )
 
-    if existing_username:
+    if username_exists:
         raise HTTPException(
             status_code=400,
             detail="Это имя пользователя уже занято"
         )
 
-    existing_email = (
+    email_exists = (
         db.query(User)
         .filter(User.email == email)
         .first()
     )
 
-    if existing_email:
+    if email_exists:
         raise HTTPException(
             status_code=400,
             detail="Эта почта уже зарегистрирована"
@@ -209,15 +243,33 @@ def login(
             detail="Неверный логин или пароль"
         )
 
-    # Создаём безопасный идентификатор сессии
-    session_token = secrets.token_urlsafe(48)
+    # Удаляем старые сессии пользователя
+    db.query(SessionModel).filter(
+        SessionModel.user_id == user.id
+    ).delete()
 
-    # Пока храним токен в cookie.
-    # Позже вынесем сессии в отдельную таблицу.
+    # Создаём новый токен
+    token = secrets.token_urlsafe(64)
+
+    expires = datetime.utcnow() + timedelta(
+        days=30
+    )
+
+    session = SessionModel(
+        token=token,
+        user_id=user.id,
+        expires_at=expires
+    )
+
+    db.add(session)
+    db.commit()
+
+    # Сохраняем авторизацию на 30 дней
     response.set_cookie(
         key="rewet_session",
-        value=session_token,
+        value=token,
         max_age=60 * 60 * 24 * 30,
+        expires=60 * 60 * 24 * 30,
         httponly=True,
         secure=True,
         samesite="lax"
@@ -244,21 +296,57 @@ def me(
     db: Session = Depends(get_db)
 ):
 
-    session_token = request.cookies.get(
+    token = request.cookies.get(
         "rewet_session"
     )
 
-    if not session_token:
+    if not token:
         raise HTTPException(
             status_code=401,
             detail="Вы не авторизованы"
         )
 
-    # Временная проверка наличия cookie.
-    # Полноценную таблицу сессий добавим следующим этапом.
+    session = (
+        db.query(SessionModel)
+        .filter(SessionModel.token == token)
+        .first()
+    )
+
+    if not session:
+        raise HTTPException(
+            status_code=401,
+            detail="Сессия недействительна"
+        )
+
+    if session.expires_at < datetime.utcnow():
+
+        db.delete(session)
+        db.commit()
+
+        raise HTTPException(
+            status_code=401,
+            detail="Сессия истекла"
+        )
+
+    user = (
+        db.query(User)
+        .filter(User.id == session.user_id)
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Пользователь не найден"
+        )
+
     return {
         "status": "success",
-        "message": "Сессия найдена"
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        }
     }
 
 
@@ -267,7 +355,27 @@ def me(
 # =====================================================
 
 @app.post("/api/logout")
-def logout(response: Response):
+def logout(
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db)
+):
+
+    token = request.cookies.get(
+        "rewet_session"
+    )
+
+    if token:
+
+        session = (
+            db.query(SessionModel)
+            .filter(SessionModel.token == token)
+            .first()
+        )
+
+        if session:
+            db.delete(session)
+            db.commit()
 
     response.delete_cookie(
         key="rewet_session"
@@ -276,4 +384,4 @@ def logout(response: Response):
     return {
         "status": "success",
         "message": "Вы вышли из аккаунта"
-        }
+    }
