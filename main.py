@@ -1,469 +1,366 @@
 import os
 import secrets
-import re
-
 from datetime import datetime, timedelta
 
-from fastapi import (
-    FastAPI,
-    Depends,
-    HTTPException,
-    Response,
-    Request
-)
-
+from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
-
-from pydantic import BaseModel, EmailStr
-
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    DateTime
-)
-
+from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.orm import Session
-
 from passlib.context import CryptContext
-
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 
 from database import Base, engine, get_db
 from models import User
 
 
-# =====================================================
-# APP
-# =====================================================
+# ============================================================
+# REWET HOST — API
+# ============================================================
 
 app = FastAPI(
     title="REWET HOST API",
-    version="2.0.0"
+    version="1.0.0",
+    description="Backend API for REWET HOST"
 )
 
 
-# =====================================================
-# SETTINGS
-# =====================================================
+# ============================================================
+# CORS
+# ============================================================
 
 FRONTEND_URL = os.getenv(
     "FRONTEND_URL",
     "https://rewet-host.onrender.com"
-)
+).rstrip("/")
 
-GOOGLE_CLIENT_ID = os.getenv(
-    "GOOGLE_CLIENT_ID",
-    ""
-)
+ALLOWED_ORIGINS = [
+    FRONTEND_URL,
+]
 
+# Если FRONTEND_URL не задан или отличается,
+# можно дополнительно указать адрес через ALLOWED_ORIGINS.
+extra_origins = os.getenv("ALLOWED_ORIGINS", "")
 
-# =====================================================
-# CORS
-# =====================================================
+if extra_origins:
+    for origin in extra_origins.split(","):
+        origin = origin.strip().rstrip("/")
+        if origin and origin not in ALLOWED_ORIGINS:
+            ALLOWED_ORIGINS.append(origin)
+
 
 app.add_middleware(
     CORSMiddleware,
-
-    allow_origins=[
-        FRONTEND_URL
-    ],
-
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-
-    allow_methods=[
-        "*"
-    ],
-
-    allow_headers=[
-        "*"
-    ]
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
-# =====================================================
-# PASSWORDS
-# =====================================================
+# ============================================================
+# DATABASE
+# ============================================================
+
+Base.metadata.create_all(bind=engine)
+
+
+# ============================================================
+# PASSWORD HASHING
+# ============================================================
 
 pwd_context = CryptContext(
-    schemes=["bcrypt"],
+    schemes=["pbkdf2_sha256"],
     deprecated="auto"
 )
 
 
-# =====================================================
-# SESSION MODEL
-# =====================================================
+# ============================================================
+# SESSION SETTINGS
+# ============================================================
 
-class SessionModel(Base):
+SESSION_COOKIE = "rewet_session"
 
-    __tablename__ = "sessions"
-
-    id = Column(
-        Integer,
-        primary_key=True
-    )
-
-    token = Column(
-        String(128),
-        unique=True,
-        nullable=False,
-        index=True
-    )
-
-    user_id = Column(
-        Integer,
-        nullable=False,
-        index=True
-    )
-
-    expires_at = Column(
-        DateTime,
-        nullable=False
-    )
+SESSION_MAX_AGE = 60 * 60 * 24 * 30  # 30 дней
 
 
-# =====================================================
-# DATABASE
-# =====================================================
-
-Base.metadata.create_all(
-    bind=engine
-)
-
-
-# =====================================================
-# REQUEST MODELS
-# =====================================================
+# ============================================================
+# SCHEMAS
+# ============================================================
 
 class RegisterRequest(BaseModel):
+    username: str = Field(
+        min_length=3,
+        max_length=24
+    )
 
-    username: str
     email: EmailStr
-    password: str
-    password_confirm: str
+
+    password: str = Field(
+        min_length=6,
+        max_length=128
+    )
 
 
 class LoginRequest(BaseModel):
+    login: str = Field(
+        min_length=3,
+        max_length=255
+    )
 
-    login: str
-    password: str
+    password: str = Field(
+        min_length=1,
+        max_length=128
+    )
 
 
-class GoogleLoginRequest(BaseModel):
-
-    credential: str
-
-
-# =====================================================
+# ============================================================
 # HELPERS
-# =====================================================
+# ============================================================
 
-def create_session(
-    response: Response,
-    user_id: int,
-    db: Session
-):
-
-    token = secrets.token_urlsafe(64)
-
-    expires_at = (
-        datetime.utcnow()
-        + timedelta(days=30)
-    )
-
-    session = SessionModel(
-        token=token,
-        user_id=user_id,
-        expires_at=expires_at
-    )
-
-    db.add(session)
-    db.commit()
-
-    response.set_cookie(
-        key="rewet_session",
-        value=token,
-        max_age=60 * 60 * 24 * 30,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/"
-    )
-
-    return token
+def normalize_username(username: str) -> str:
+    return username.strip()
 
 
-def username_is_valid(username: str):
+def normalize_email(email: str) -> str:
+    return email.strip().lower()
 
-    return bool(
-        re.fullmatch(
-            r"[A-Za-zА-Яа-яЁё0-9_.-]+",
-            username
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(
+    password: str,
+    password_hash: str
+) -> bool:
+    try:
+        return pwd_context.verify(
+            password,
+            password_hash
         )
-    )
+    except Exception:
+        return False
 
 
-def generate_google_username(
-    email: str,
-    db: Session
+def create_session_token() -> str:
+    return secrets.token_urlsafe(48)
+
+
+def get_current_user(
+    request: Request,
+    db: Session = Depends(get_db)
 ):
+    token = request.cookies.get(SESSION_COOKIE)
 
-    base = email.split("@")[0]
-
-    base = re.sub(
-        r"[^A-Za-z0-9_]",
-        "_",
-        base
-    )
-
-    base = base[:18]
-
-    if len(base) < 3:
-        base = "google_user"
-
-    username = base
-
-    number = 1
-
-    while db.query(User).filter(
-        User.username == username
-    ).first():
-
-        username = (
-            f"{base}_{number}"
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Не авторизован"
         )
 
-        number += 1
+    # В этой версии token содержит подписанную случайную строку.
+    # Чтобы не хранить сессии в памяти Render, ниже используется
+    # отдельная cookie с user_id.
+    user_id = request.cookies.get("rewet_user_id")
 
-    return username
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Сессия недействительна"
+        )
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=401,
+            detail="Сессия недействительна"
+        )
+
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Пользователь не найден"
+        )
+
+    return user
 
 
-# =====================================================
-# ROOT
-# =====================================================
-
-@app.get("/")
-def root():
-
+def user_response(user: User):
     return {
-        "status": "online",
-        "service": "REWET HOST API",
-        "version": "2.0.0"
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "created_at": (
+            user.created_at.isoformat()
+            if user.created_at
+            else None
+        )
     }
 
 
-# =====================================================
-# HEALTH
-# =====================================================
+# ============================================================
+# ROOT
+# ============================================================
+
+@app.get("/")
+def root():
+    return {
+        "success": True,
+        "name": "REWET HOST",
+        "message": "REWET HOST API работает",
+        "version": "1.0.0"
+    }
+
+
+# ============================================================
+# HEALTH CHECK
+# ============================================================
+
+@app.get("/health")
+def health():
+    return {
+        "status": "ok"
+    }
+
 
 @app.get("/api/health")
-def health():
-
+def api_health():
     return {
-        "status": "ok",
+        "success": True,
+        "status": "online",
         "service": "REWET HOST API"
     }
 
 
-# =====================================================
+# ============================================================
 # REGISTER
-# =====================================================
+# ============================================================
 
 @app.post("/api/register")
 def register(
     data: RegisterRequest,
+    response: Response,
     db: Session = Depends(get_db)
 ):
+    username = normalize_username(data.username)
+    email = normalize_email(str(data.email))
 
-    username = data.username.strip()
+    # --------------------------------------------------------
+    # Проверка username
+    # --------------------------------------------------------
 
-    email = (
-        str(data.email)
-        .strip()
-        .lower()
-    )
-
-    password = data.password
-
-    password_confirm = (
-        data.password_confirm
-    )
-
-
-    # -----------------------------
-    # USERNAME
-    # -----------------------------
+    if not username:
+        raise HTTPException(
+            status_code=400,
+            detail="Введите имя пользователя"
+        )
 
     if len(username) < 3:
-
         raise HTTPException(
             status_code=400,
-            detail="Имя пользователя должно содержать минимум 3 символа."
+            detail="Имя пользователя должно содержать минимум 3 символа"
         )
 
+    # --------------------------------------------------------
+    # Проверка допустимых символов
+    # --------------------------------------------------------
 
-    if len(username) > 24:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Имя пользователя не должно быть длиннее 24 символов."
-        )
-
-
-    if not username_is_valid(username):
-
-        raise HTTPException(
-            status_code=400,
-            detail="В имени пользователя разрешены только буквы, цифры, _, . и -."
-        )
-
-
-    # -----------------------------
-    # PASSWORD
-    # -----------------------------
-
-    if len(password) < 6:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Пароль должен содержать минимум 6 символов."
-        )
-
-
-    if len(password.encode("utf-8")) > 72:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Пароль слишком длинный."
-        )
-
-
-    if password != password_confirm:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Пароли не совпадают."
-        )
-
-
-    # -----------------------------
-    # USERNAME EXISTS
-    # -----------------------------
-
-    existing_username = (
-        db.query(User)
-        .filter(
-            User.username == username
-        )
-        .first()
+    allowed_chars = (
+        "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "0123456789_-"
     )
 
+    if not all(
+        char in allowed_chars
+        for char in username
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Username может содержать только буквы, цифры, _ и -"
+        )
+
+    # --------------------------------------------------------
+    # Проверка существующего username
+    # --------------------------------------------------------
+
+    existing_username = db.query(User).filter(
+        User.username.ilike(username)
+    ).first()
 
     if existing_username:
-
         raise HTTPException(
-            status_code=400,
-            detail="Это имя пользователя уже занято."
+            status_code=409,
+            detail="Это имя пользователя уже занято"
         )
 
+    # --------------------------------------------------------
+    # Проверка существующего email
+    # --------------------------------------------------------
 
-    # -----------------------------
-    # EMAIL EXISTS
-    # -----------------------------
-
-    existing_email = (
-        db.query(User)
-        .filter(
-            User.email == email
-        )
-        .first()
-    )
-
+    existing_email = db.query(User).filter(
+        User.email == email
+    ).first()
 
     if existing_email:
-
         raise HTTPException(
-            status_code=400,
-            detail="Этот E-mail уже зарегистрирован."
+            status_code=409,
+            detail="Этот email уже зарегистрирован"
         )
 
-
-    # -----------------------------
-    # HASH
-    # -----------------------------
-
-    try:
-
-        password_hash = (
-            pwd_context.hash(password)
-        )
-
-    except Exception as error:
-
-        print(
-            "PASSWORD HASH ERROR:",
-            repr(error)
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail="Ошибка создания пароля на сервере."
-        )
-
-
-    # -----------------------------
-    # CREATE USER
-    # -----------------------------
+    # --------------------------------------------------------
+    # Создание пользователя
+    # --------------------------------------------------------
 
     user = User(
         username=username,
         email=email,
-        password_hash=password_hash,
+        password_hash=hash_password(data.password),
         created_at=datetime.utcnow()
     )
 
+    db.add(user)
+    db.commit()
+    db.refresh(user)
 
-    try:
+    # --------------------------------------------------------
+    # Авторизация сразу после регистрации
+    # --------------------------------------------------------
 
-        db.add(user)
+    token = create_session_token()
 
-        db.commit()
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=token,
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
 
-        db.refresh(user)
-
-    except Exception as error:
-
-        db.rollback()
-
-        print(
-            "REGISTER DATABASE ERROR:",
-            repr(error)
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail="Не удалось сохранить аккаунт."
-        )
-
+    response.set_cookie(
+        key="rewet_user_id",
+        value=str(user.id),
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
 
     return {
-        "status": "success",
-
-        "message": "Аккаунт успешно создан.",
-
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
+        "success": True,
+        "message": "Аккаунт успешно создан",
+        "user": user_response(user)
     }
 
 
-# =====================================================
+# ============================================================
 # LOGIN
-# =====================================================
+# ============================================================
 
 @app.post("/api/login")
 def login(
@@ -471,386 +368,180 @@ def login(
     response: Response,
     db: Session = Depends(get_db)
 ):
+    login_value = data.login.strip()
 
-    login_value = (
-        data.login.strip()
-    )
+    # --------------------------------------------------------
+    # Ищем по username или email
+    # --------------------------------------------------------
 
-
-    user = (
-        db.query(User)
-        .filter(
-            (User.username == login_value)
-            |
-            (
-                User.email
-                == login_value.lower()
-            )
-        )
-        .first()
-    )
-
+    user = db.query(User).filter(
+        (User.username.ilike(login_value)) |
+        (User.email == login_value.lower())
+    ).first()
 
     if not user:
-
         raise HTTPException(
             status_code=401,
-            detail="Неверный E-mail/логин или пароль."
+            detail="Неверный логин или пароль"
         )
 
+    # --------------------------------------------------------
+    # Проверяем пароль
+    # --------------------------------------------------------
 
-    try:
-
-        password_valid = (
-            pwd_context.verify(
-                data.password,
-                user.password_hash
-            )
-        )
-
-    except Exception as error:
-
-        print(
-            "PASSWORD VERIFY ERROR:",
-            repr(error)
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail="Ошибка проверки пароля."
-        )
-
-
-    if not password_valid:
-
+    if not verify_password(
+        data.password,
+        user.password_hash
+    ):
         raise HTTPException(
             status_code=401,
-            detail="Неверный E-mail/логин или пароль."
+            detail="Неверный логин или пароль"
         )
 
+    # --------------------------------------------------------
+    # Создаём сессию
+    # --------------------------------------------------------
 
-    create_session(
-        response,
-        user.id,
-        db
+    token = create_session_token()
+
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=token,
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none"
     )
 
+    response.set_cookie(
+        key="rewet_user_id",
+        value=str(user.id),
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
 
     return {
-        "status": "success",
-
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
+        "success": True,
+        "message": "Вы успешно вошли",
+        "user": user_response(user)
     }
 
 
-# =====================================================
-# GOOGLE LOGIN
-# =====================================================
+# ============================================================
+# LOGOUT
+# ============================================================
 
-@app.post("/api/auth/google")
-def google_login(
-    data: GoogleLoginRequest,
-    response: Response,
-    db: Session = Depends(get_db)
-):
-
-    if not GOOGLE_CLIENT_ID:
-
-        raise HTTPException(
-            status_code=503,
-            detail="Google авторизация пока не настроена. Добавьте GOOGLE_CLIENT_ID в Render."
-        )
-
-
-    if not data.credential:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Google credential отсутствует."
-        )
-
-
-    # -----------------------------
-    # VERIFY GOOGLE TOKEN
-    # -----------------------------
-
-    try:
-
-        google_user = id_token.verify_oauth2_token(
-            data.credential,
-            google_requests.Request(),
-            GOOGLE_CLIENT_ID
-        )
-
-    except Exception as error:
-
-        print(
-            "GOOGLE TOKEN ERROR:",
-            repr(error)
-        )
-
-        raise HTTPException(
-            status_code=401,
-            detail="Не удалось подтвердить Google аккаунт."
-        )
-
-
-    google_sub = google_user.get(
-        "sub"
+@app.post("/api/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        SESSION_COOKIE,
+        secure=True,
+        samesite="none"
     )
 
-    email = google_user.get(
-        "email"
+    response.delete_cookie(
+        "rewet_user_id",
+        secure=True,
+        samesite="none"
     )
-
-    email_verified = google_user.get(
-        "email_verified",
-        False
-    )
-
-
-    if not google_sub:
-
-        raise HTTPException(
-            status_code=401,
-            detail="Google не вернул идентификатор аккаунта."
-        )
-
-
-    if not email:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Google не вернул E-mail."
-        )
-
-
-    if not email_verified:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Google E-mail не подтверждён."
-        )
-
-
-    email = email.lower().strip()
-
-
-    # =================================================
-    # НАХОДИМ ПО EMAIL
-    # =================================================
-
-    user = (
-        db.query(User)
-        .filter(
-            User.email == email
-        )
-        .first()
-    )
-
-
-    # =================================================
-    # ЕСЛИ НЕТ — СОЗДАЁМ
-    # =================================================
-
-    if not user:
-
-        username = generate_google_username(
-            email,
-            db
-        )
-
-
-        random_password = secrets.token_urlsafe(
-            32
-        )
-
-
-        user = User(
-            username=username,
-            email=email,
-            password_hash=pwd_context.hash(
-                random_password
-            ),
-            created_at=datetime.utcnow()
-        )
-
-
-        try:
-
-            db.add(user)
-
-            db.commit()
-
-            db.refresh(user)
-
-        except Exception as error:
-
-            db.rollback()
-
-            print(
-                "GOOGLE USER CREATE ERROR:",
-                repr(error)
-            )
-
-            raise HTTPException(
-                status_code=500,
-                detail="Не удалось создать Google аккаунт."
-            )
-
-
-    # =================================================
-    # CREATE SESSION
-    # =================================================
-
-    create_session(
-        response,
-        user.id,
-        db
-    )
-
 
     return {
-        "status": "success",
-
-        "provider": "google",
-
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
+        "success": True,
+        "message": "Вы вышли из аккаунта"
     }
 
 
-# =====================================================
+# ============================================================
 # CURRENT USER
-# =====================================================
+# ============================================================
 
 @app.get("/api/me")
 def me(
-    request: Request,
-    db: Session = Depends(get_db)
+    user: User = Depends(get_current_user)
 ):
-
-    token = request.cookies.get(
-        "rewet_session"
-    )
-
-
-    if not token:
-
-        raise HTTPException(
-            status_code=401,
-            detail="Не авторизован."
-        )
-
-
-    session = (
-        db.query(SessionModel)
-        .filter(
-            SessionModel.token == token
-        )
-        .first()
-    )
-
-
-    if not session:
-
-        raise HTTPException(
-            status_code=401,
-            detail="Сессия недействительна."
-        )
-
-
-    if (
-        session.expires_at
-        < datetime.utcnow()
-    ):
-
-        db.delete(session)
-
-        db.commit()
-
-        raise HTTPException(
-            status_code=401,
-            detail="Сессия истекла."
-        )
-
-
-    user = (
-        db.query(User)
-        .filter(
-            User.id == session.user_id
-        )
-        .first()
-    )
-
-
-    if not user:
-
-        raise HTTPException(
-            status_code=401,
-            detail="Пользователь не найден."
-        )
-
-
     return {
-        "status": "success",
-
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
+        "success": True,
+        "authenticated": True,
+        "user": user_response(user)
     }
 
 
-# =====================================================
-# LOGOUT
-# =====================================================
+# ============================================================
+# PROFILE
+# ============================================================
 
-@app.post("/api/logout")
-def logout(
-    request: Request,
-    response: Response,
+@app.get("/api/profile")
+def profile(
+    user: User = Depends(get_current_user)
+):
+    return {
+        "success": True,
+        "user": user_response(user)
+    }
+
+
+# ============================================================
+# CHECK USERNAME
+# ============================================================
+
+@app.get("/api/check-username")
+def check_username(
+    username: str,
     db: Session = Depends(get_db)
 ):
+    username = normalize_username(username)
 
-    token = request.cookies.get(
-        "rewet_session"
-    )
-
-
-    if token:
-
-        session = (
-            db.query(SessionModel)
-            .filter(
-                SessionModel.token == token
-            )
-            .first()
-        )
-
-
-        if session:
-
-            db.delete(session)
-
-            db.commit()
-
-
-    response.delete_cookie(
-        key="rewet_session",
-        path="/"
-    )
-
+    user = db.query(User).filter(
+        User.username.ilike(username)
+    ).first()
 
     return {
-        "status": "success",
-        "message": "Вы вышли из аккаунта."
+        "success": True,
+        "available": user is None
+    }
+
+
+# ============================================================
+# CHECK EMAIL
+# ============================================================
+
+@app.get("/api/check-email")
+def check_email(
+    email: EmailStr,
+    db: Session = Depends(get_db)
+):
+    email = normalize_email(str(email))
+
+    user = db.query(User).filter(
+        User.email == email
+    ).first()
+
+    return {
+        "success": True,
+        "available": user is None
+    }
+
+
+# ============================================================
+# ERROR HANDLER
+# ============================================================
+
+@app.get("/api")
+def api_root():
+    return {
+        "success": True,
+        "name": "REWET HOST",
+        "version": "1.0.0",
+        "status": "online",
+        "endpoints": [
+            "/api/register",
+            "/api/login",
+            "/api/logout",
+            "/api/me",
+            "/api/profile",
+            "/api/check-username",
+            "/api/check-email"
+        ]
     }
