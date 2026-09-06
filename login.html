@@ -1,428 +1,258 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Вход — REWET HOST</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-
-            background:
-                radial-gradient(
-                    circle at top,
-                    #2563eb 0%,
-                    #0f172a 45%,
-                    #020617 100%
-                );
-
-            color: white;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 440px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .logo h1 {
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        .logo span {
-            color: #60a5fa;
-        }
-
-        .logo p {
-            margin-top: 8px;
-            color: #cbd5e1;
-            font-size: 14px;
-        }
-
-        .card {
-            background: rgba(15, 23, 42, 0.94);
-
-            border: 1px solid rgba(
-                96,
-                165,
-                250,
-                0.25
-            );
-
-            border-radius: 22px;
-
-            padding: 30px;
-
-            box-shadow:
-                0 25px 60px rgba(
-                    0,
-                    0,
-                    0,
-                    0.45
-                );
-
-            backdrop-filter: blur(15px);
-        }
-
-        .title {
-            font-size: 25px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .field {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            color: #e2e8f0;
-
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%;
-            height: 50px;
-
-            padding: 0 15px;
-
-            border-radius: 12px;
-
-            border: 1px solid #334155;
-
-            background: #020617;
-            color: white;
-
-            outline: none;
-
-            font-size: 15px;
-
-            transition: 0.2s;
-        }
-
-        input:focus {
-            border-color: #3b82f6;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(
-                    59,
-                    130,
-                    246,
-                    0.15
-                );
-        }
-
-        input::placeholder {
-            color: #64748b;
-        }
-
-        .password-box {
-            position: relative;
-        }
-
-        .password-box input {
-            padding-right: 52px;
-        }
-
-        .show-password {
-            position: absolute;
-
-            right: 14px;
-            top: 50%;
-
-            transform:
-                translateY(-50%);
-
-            border: none;
-            background: transparent;
-
-            color: #94a3b8;
-
-            cursor: pointer;
-
-            font-size: 18px;
-        }
-
-        .show-password:hover {
-            color: white;
-        }
-
-        .message {
-            display: none;
-
-            padding: 12px;
-
-            border-radius: 10px;
-
-            margin-bottom: 18px;
-
-            font-size: 14px;
-
-            line-height: 1.4;
-        }
-
-        .message.error {
-            display: block;
-
-            background:
-                rgba(
-                    239,
-                    68,
-                    68,
-                    0.12
-                );
-
-            border:
-                1px solid
-                rgba(
-                    239,
-                    68,
-                    68,
-                    0.3
-                );
-
-            color: #fca5a5;
-        }
-
-        .message.success {
-            display: block;
-
-            background:
-                rgba(
-                    34,
-                    197,
-                    94,
-                    0.12
-                );
-
-            border:
-                1px solid
-                rgba(
-                    34,
-                    197,
-                    94,
-                    0.3
-                );
-
-            color: #86efac;
-        }
-
-        .login-btn {
-            width: 100%;
-            height: 52px;
-
-            border: none;
-
-            border-radius: 13px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #3b82f6
-                );
-
-            color: white;
-
-            font-size: 16px;
-            font-weight: 800;
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .login-btn:hover {
-            transform:
-                translateY(-1px);
-
-            box-shadow:
-                0 10px 25px
-                rgba(
-                    37,
-                    99,
-                    235,
-                    0.35
-                );
-        }
-
-        .login-btn:disabled {
-            opacity: 0.6;
-
-            cursor: not-allowed;
-
-            transform: none;
-        }
-
-        .bottom {
-            margin-top: 22px;
-
-            text-align: center;
-
-            color: #94a3b8;
-
-            font-size: 14px;
-        }
-
-        .bottom a {
-            color: #60a5fa;
-
-            text-decoration: none;
-
-            font-weight: 700;
-        }
-
-        .bottom a:hover {
-            text-decoration: underline;
-        }
-
-        .back {
-            display: block;
-
-            text-align: center;
-
-            margin-top: 18px;
-
-            color: #64748b;
-
-            text-decoration: none;
-
-            font-size: 13px;
-        }
-
-        .back:hover {
-            color: #94a3b8;
-        }
-
-        .forgot {
-            display: block;
-
-            text-align: right;
-
-            margin-top: -8px;
-            margin-bottom: 20px;
-
-            color: #60a5fa;
-
-            font-size: 13px;
-
-            text-decoration: none;
-        }
-
-        .forgot:hover {
-            text-decoration: underline;
-        }
-
-        .loading {
-            display: none;
-        }
-
-        @media (max-width: 480px) {
-
-            .card {
-                padding: 23px;
-            }
-
-            .logo h1 {
-                font-size: 32px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>REWET HOST — Вход</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(0,119,255,.22), transparent 35%),
+        radial-gradient(circle at 80% 90%, rgba(0,90,255,.15), transparent 35%),
+        #06101f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.logo {
+    text-align: center;
+    font-size: 27px;
+    font-weight: 900;
+    margin-bottom: 25px;
+}
+
+.logo span {
+    color: #1683ff;
+}
+
+.card {
+    background: rgba(12,23,41,.94);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 22px;
+    padding: 32px;
+    box-shadow: 0 25px 80px rgba(0,0,0,.35);
+}
+
+.card h1 {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #899bb2;
+    font-size: 13px;
+    margin-bottom: 28px;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    color: #aebed0;
+    margin-bottom: 8px;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    height: 50px;
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,.09);
+    outline: none;
+    background: #081426;
+    color: white;
+    padding: 0 15px;
+    font-size: 14px;
+    transition: .2s;
+}
+
+input:focus {
+    border-color: #1683ff;
+    box-shadow: 0 0 0 3px rgba(22,131,255,.10);
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #8192a8;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.button {
+    width: 100%;
+    height: 50px;
+    margin-top: 8px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #1683ff, #005de5);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 10px 25px rgba(0,100,255,.20);
+}
+
+.button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(0,100,255,.30);
+}
+
+.button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.message.error {
+    display: block;
+    color: #ffb4b4;
+    background: rgba(239,68,68,.10);
+    border: 1px solid rgba(239,68,68,.20);
+}
+
+.message.success {
+    display: block;
+    color: #a7f3c0;
+    background: rgba(34,197,94,.10);
+    border: 1px solid rgba(34,197,94,.20);
+}
+
+.links {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 12px;
+    color: #71839a;
+}
+
+.links a {
+    color: #4da2ff;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: #708299;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.back:hover {
+    color: white;
+}
+
+.loading {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.spinner {
+    width: 17px;
+    height: 17px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 480px) {
+
+    .card {
+        padding: 25px 20px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- =====================================================
-         LOGO
-         ===================================================== -->
-
     <div class="logo">
-
-        <h1>
-            REWET <span>HOST</span>
-        </h1>
-
-        <p>
-            С возвращением!
-        </p>
-
+        ⚡ REWET <span>HOST</span>
     </div>
-
-
-    <!-- =====================================================
-         LOGIN CARD
-         ===================================================== -->
 
     <div class="card">
 
-        <div class="title">
-            Вход в аккаунт
-        </div>
+        <h1>С возвращением 👋</h1>
 
-        <div class="subtitle">
-            Войдите, чтобы продолжить работу с REWET HOST
-        </div>
+        <p class="subtitle">
+            Войдите в свой аккаунт REWET HOST
+        </p>
 
-
-        <!-- MESSAGE -->
-
-        <div
-            id="message"
-            class="message"
-        ></div>
-
-
-        <!-- FORM -->
+        <div id="message" class="message"></div>
 
         <form id="loginForm">
 
-            <!-- LOGIN -->
-
-            <div class="field">
+            <div class="form-group">
 
                 <label for="login">
-                    Username или Email
+                    Логин или Email
                 </label>
 
                 <input
                     id="login"
                     type="text"
-                    placeholder="Введите username или email"
+                    placeholder="Введите логин или email"
                     autocomplete="username"
                     required
                 >
@@ -430,15 +260,13 @@
             </div>
 
 
-            <!-- PASSWORD -->
-
-            <div class="field">
+            <div class="form-group">
 
                 <label for="password">
                     Пароль
                 </label>
 
-                <div class="password-box">
+                <div class="input-wrap">
 
                     <input
                         id="password"
@@ -450,8 +278,8 @@
 
                     <button
                         type="button"
-                        class="show-password"
-                        onclick="togglePassword()"
+                        class="password-toggle"
+                        id="togglePassword"
                     >
                         👁
                     </button>
@@ -461,31 +289,22 @@
             </div>
 
 
-            <!-- FORGOT -->
-
-            <a
-                href="#"
-                class="forgot"
-                onclick="forgotPassword(event)"
-            >
-                Забыли пароль?
-            </a>
-
-
-            <!-- BUTTON -->
-
             <button
-                id="loginButton"
-                class="login-btn"
                 type="submit"
+                class="button"
+                id="loginButton"
             >
 
                 <span id="buttonText">
                     Войти
                 </span>
 
-                <span id="loading" class="loading">
-                    Вход...
+                <span
+                    id="loadingText"
+                    class="loading"
+                >
+                    <span class="spinner"></span>
+                    Входим...
                 </span>
 
             </button>
@@ -493,24 +312,20 @@
         </form>
 
 
-        <!-- REGISTER -->
-
-        <div class="bottom">
+        <div class="links">
 
             Нет аккаунта?
 
             <a href="register.html">
-                Зарегистрироваться
+                Создать аккаунт
             </a>
 
         </div>
 
 
-        <!-- BACK -->
-
         <a
-            class="back"
             href="index.html"
+            class="back"
         >
             ← Вернуться на главную
         </a>
@@ -522,298 +337,243 @@
 
 <script>
 
-    // ========================================================
-    // REWET HOST API
-    // ========================================================
+const API_URL =
+    "https://rewet-host-api.onrender.com";
 
-    const API_URL =
-        "https://rewet-host-api.onrender.com";
+const form =
+    document.getElementById("loginForm");
 
+const loginInput =
+    document.getElementById("login");
 
-    // ========================================================
-    // ELEMENTS
-    // ========================================================
+const passwordInput =
+    document.getElementById("password");
 
-    const form =
-        document.getElementById(
-            "loginForm"
-        );
+const togglePassword =
+    document.getElementById("togglePassword");
 
-    const message =
-        document.getElementById(
-            "message"
-        );
+const message =
+    document.getElementById("message");
 
-    const loginButton =
-        document.getElementById(
-            "loginButton"
-        );
+const loginButton =
+    document.getElementById("loginButton");
 
-    const buttonText =
-        document.getElementById(
-            "buttonText"
-        );
+const buttonText =
+    document.getElementById("buttonText");
 
-    const loading =
-        document.getElementById(
-            "loading"
-        );
+const loadingText =
+    document.getElementById("loadingText");
 
 
-    // ========================================================
-    // MESSAGE
-    // ========================================================
+// =====================================================
+// MESSAGE
+// =====================================================
 
-    function showMessage(
-        text,
-        type = "error"
-    ) {
+function showMessage(text, type) {
 
-        message.textContent =
-            text;
+    message.textContent = text;
 
-        message.className =
-            "message " + type;
+    message.className =
+        "message " + type;
 
-    }
+}
 
 
-    function hideMessage() {
+// =====================================================
+// PASSWORD
+// =====================================================
 
-        message.textContent =
-            "";
-
-        message.className =
-            "message";
-
-    }
-
-
-    // ========================================================
-    // PASSWORD
-    // ========================================================
-
-    function togglePassword() {
-
-        const input =
-            document.getElementById(
-                "password"
-            );
-
-        const button =
-            document.querySelector(
-                ".show-password"
-            );
-
+togglePassword.addEventListener(
+    "click",
+    function() {
 
         if (
-            input.type ===
-            "password"
+            passwordInput.type === "password"
         ) {
 
-            input.type =
-                "text";
+            passwordInput.type = "text";
 
-            button.textContent =
-                "🙈";
+            togglePassword.textContent = "🙈";
 
         } else {
 
-            input.type =
-                "password";
+            passwordInput.type = "password";
 
-            button.textContent =
-                "👁";
+            togglePassword.textContent = "👁";
 
         }
 
     }
+);
 
 
-    // ========================================================
-    // FORGOT PASSWORD
-    // ========================================================
+// =====================================================
+// LOGIN
+// =====================================================
 
-    function forgotPassword(
-        event
-    ) {
+form.addEventListener(
+    "submit",
+    async function(event) {
 
         event.preventDefault();
 
-        showMessage(
-            "Восстановление пароля добавим следующим этапом."
-        );
+        showMessage("", "");
 
-    }
+        const login =
+            loginInput.value.trim();
 
-
-    // ========================================================
-    // LOGIN
-    // ========================================================
-
-    form.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-            hideMessage();
+        const password =
+            passwordInput.value;
 
 
-            const login =
-                document
-                    .getElementById(
-                        "login"
-                    )
-                    .value
-                    .trim();
+        if (!login) {
 
-            const password =
-                document
-                    .getElementById(
-                        "password"
-                    )
-                    .value;
+            showMessage(
+                "Введите логин или email.",
+                "error"
+            );
+
+            return;
+
+        }
 
 
-            // ------------------------------------------------
-            // VALIDATION
-            // ------------------------------------------------
+        if (!password) {
 
-            if (!login) {
+            showMessage(
+                "Введите пароль.",
+                "error"
+            );
 
-                showMessage(
-                    "Введите username или email."
+            return;
+
+        }
+
+
+        loginButton.disabled = true;
+
+        buttonText.style.display = "none";
+
+        loadingText.style.display = "flex";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_URL + "/api/login",
+                    {
+                        method: "POST",
+
+                        credentials: "include",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            login: login,
+                            password: password
+                        })
+                    }
                 );
 
-                return;
-            }
 
-
-            if (!password) {
-
-                showMessage(
-                    "Введите пароль."
-                );
-
-                return;
-            }
-
-
-            // ------------------------------------------------
-            // LOADING
-            // ------------------------------------------------
-
-            loginButton.disabled =
-                true;
-
-            buttonText.style.display =
-                "none";
-
-            loading.style.display =
-                "inline";
-
+            let data = {};
 
             try {
 
-                const response =
-                    await fetch(
-                        API_URL +
-                        "/api/login",
-                        {
-                            method: "POST",
+                data =
+                    await response.json();
 
-                            credentials:
-                                "include",
+            } catch (e) {
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    login:
-                                        login,
-
-                                    password:
-                                        password
-                                })
-                        }
-                    );
-
-
-                const data =
-                    await response
-                        .json()
-                        .catch(
-                            () => ({})
-                        );
-
-
-                // --------------------------------------------
-                // ERROR
-                // --------------------------------------------
-
-                if (!response.ok) {
-
-                    showMessage(
-                        data.detail ||
-                        "Неверный логин или пароль."
-                    );
-
-                    return;
-                }
-
-
-                // --------------------------------------------
-                // SUCCESS
-                // --------------------------------------------
-
-                showMessage(
-                    "Вход выполнен! Перенаправляем...",
-                    "success"
-                );
-
-
-                setTimeout(
-                    function() {
-
-                        window.location.href =
-                            "index.html";
-
-                    },
-                    700
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-                showMessage(
-                    "Не удалось подключиться к серверу REWET HOST."
-                );
-
-            } finally {
-
-                loginButton.disabled =
-                    false;
-
-                buttonText.style.display =
-                    "inline";
-
-                loading.style.display =
-                    "none";
+                data = {};
 
             }
 
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "Не удалось войти в аккаунт."
+                );
+
+            }
+
+
+            showMessage(
+                "Вход выполнен успешно! Перенаправляем...",
+                "success"
+            );
+
+
+            /*
+             * ВАЖНО:
+             * После успешного входа
+             * отправляем пользователя
+             * прямо в панель управления.
+             */
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                },
+                500
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            if (
+                error instanceof TypeError
+            ) {
+
+                showMessage(
+                    "Не удалось подключиться к серверу REWET HOST. Проверьте соединение и попробуйте снова.",
+                    "error"
+                );
+
+            } else {
+
+                showMessage(
+                    error.message ||
+                    "Произошла ошибка при входе.",
+                    "error"
+                );
+
+            }
+
+
+            loginButton.disabled = false;
+
+            buttonText.style.display =
+                "inline";
+
+            loadingText.style.display =
+                "none";
+
         }
-    );
+
+    }
+);
 
 </script>
 
 </body>
-          </html>
+</html>
