@@ -1,10 +1,9 @@
-import os
 import secrets
 from datetime import datetime
 
 from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
@@ -18,22 +17,17 @@ from models import User
 
 app = FastAPI(
     title="REWET HOST API",
-    version="1.0.0",
-    description="Backend API for REWET HOST"
+    version="1.0.0"
 )
 
 
 # ============================================================
-# CORS
+# CORS — GITHUB PAGES
 # ============================================================
 
-# Твой GitHub Pages сайт
-FRONTEND_URL = "https://retete185-a11y.github.io"
-
 ALLOWED_ORIGINS = [
-    FRONTEND_URL,
+    "https://retete185-a11y.github.io",
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,7 +46,7 @@ Base.metadata.create_all(bind=engine)
 
 
 # ============================================================
-# PASSWORD HASHING
+# PASSWORDS
 # ============================================================
 
 pwd_context = CryptContext(
@@ -62,17 +56,17 @@ pwd_context = CryptContext(
 
 
 # ============================================================
-# SESSION
+# COOKIES
 # ============================================================
 
 SESSION_COOKIE = "rewet_session"
 USER_COOKIE = "rewet_user_id"
 
-SESSION_MAX_AGE = 60 * 60 * 24 * 30  # 30 дней
+SESSION_MAX_AGE = 60 * 60 * 24 * 30
 
 
 # ============================================================
-# REQUEST MODELS
+# MODELS
 # ============================================================
 
 class RegisterRequest(BaseModel):
@@ -81,7 +75,10 @@ class RegisterRequest(BaseModel):
         max_length=24
     )
 
-    email: EmailStr
+    email: str = Field(
+        min_length=5,
+        max_length=255
+    )
 
     password: str = Field(
         min_length=6,
@@ -147,6 +144,33 @@ def serialize_user(user: User):
     }
 
 
+def set_auth_cookies(
+    response: Response,
+    user_id: int
+):
+    token = create_session_token()
+
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=token,
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/"
+    )
+
+    response.set_cookie(
+        key=USER_COOKIE,
+        value=str(user_id),
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/"
+    )
+
+
 # ============================================================
 # CURRENT USER
 # ============================================================
@@ -155,10 +179,10 @@ def get_current_user(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    session_token = request.cookies.get(SESSION_COOKIE)
+    token = request.cookies.get(SESSION_COOKIE)
     user_id = request.cookies.get(USER_COOKIE)
 
-    if not session_token or not user_id:
+    if not token or not user_id:
         raise HTTPException(
             status_code=401,
             detail="Не авторизован"
@@ -196,9 +220,8 @@ def root():
     return {
         "success": True,
         "name": "REWET HOST",
-        "service": "API",
-        "version": "1.0.0",
-        "status": "online"
+        "status": "online",
+        "version": "1.0.0"
     }
 
 
@@ -223,20 +246,6 @@ def api_health():
 
 
 # ============================================================
-# API ROOT
-# ============================================================
-
-@app.get("/api")
-def api_root():
-    return {
-        "success": True,
-        "name": "REWET HOST API",
-        "version": "1.0.0",
-        "status": "online"
-    }
-
-
-# ============================================================
 # REGISTER
 # ============================================================
 
@@ -247,27 +256,17 @@ def register(
     db: Session = Depends(get_db)
 ):
     username = normalize_username(data.username)
-    email = normalize_email(str(data.email))
+    email = normalize_email(data.email)
 
     # --------------------------------------------------------
-    # Проверка username
+    # USERNAME
     # --------------------------------------------------------
-
-    if not username:
-        raise HTTPException(
-            status_code=400,
-            detail="Введите имя пользователя"
-        )
 
     if len(username) < 3:
         raise HTTPException(
             status_code=400,
             detail="Username должен содержать минимум 3 символа"
         )
-
-    # --------------------------------------------------------
-    # Допустимые символы
-    # --------------------------------------------------------
 
     allowed_chars = (
         "abcdefghijklmnopqrstuvwxyz"
@@ -288,7 +287,27 @@ def register(
         )
 
     # --------------------------------------------------------
-    # Проверка username
+    # EMAIL
+    # --------------------------------------------------------
+
+    if "@" not in email or "." not in email.split("@")[-1]:
+        raise HTTPException(
+            status_code=400,
+            detail="Введите корректный email"
+        )
+
+    # --------------------------------------------------------
+    # PASSWORD
+    # --------------------------------------------------------
+
+    if len(data.password) < 6:
+        raise HTTPException(
+            status_code=400,
+            detail="Пароль должен содержать минимум 6 символов"
+        )
+
+    # --------------------------------------------------------
+    # USERNAME EXISTS
     # --------------------------------------------------------
 
     existing_username = (
@@ -304,7 +323,7 @@ def register(
         )
 
     # --------------------------------------------------------
-    # Проверка email
+    # EMAIL EXISTS
     # --------------------------------------------------------
 
     existing_email = (
@@ -320,7 +339,7 @@ def register(
         )
 
     # --------------------------------------------------------
-    # Создание пользователя
+    # CREATE USER
     # --------------------------------------------------------
 
     user = User(
@@ -345,29 +364,12 @@ def register(
         )
 
     # --------------------------------------------------------
-    # Автоматический вход
+    # AUTO LOGIN
     # --------------------------------------------------------
 
-    session_token = create_session_token()
-
-    response.set_cookie(
-        key=SESSION_COOKIE,
-        value=session_token,
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/"
-    )
-
-    response.set_cookie(
-        key=USER_COOKIE,
-        value=str(user.id),
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/"
+    set_auth_cookies(
+        response,
+        user.id
     )
 
     return {
@@ -414,26 +416,9 @@ def login(
             detail="Неверный логин или пароль"
         )
 
-    session_token = create_session_token()
-
-    response.set_cookie(
-        key=SESSION_COOKIE,
-        value=session_token,
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/"
-    )
-
-    response.set_cookie(
-        key=USER_COOKIE,
-        value=str(user.id),
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/"
+    set_auth_cookies(
+        response,
+        user.id
     )
 
     return {
@@ -466,7 +451,7 @@ def logout(response: Response):
 
 
 # ============================================================
-# CURRENT USER
+# ME
 # ============================================================
 
 @app.get("/api/me")
@@ -523,10 +508,10 @@ def check_username(
 
 @app.get("/api/check-email")
 def check_email(
-    email: EmailStr,
+    email: str,
     db: Session = Depends(get_db)
 ):
-    email = normalize_email(str(email))
+    email = normalize_email(email)
 
     user = (
         db.query(User)
