@@ -1,3 +1,4 @@
+import os
 import secrets
 from datetime import datetime, timedelta
 
@@ -6,16 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import Session
-
 from passlib.context import CryptContext
 
 from database import Base, engine, get_db
 from models import User
 
-
-# =====================================================
-# REWET HOST API
-# =====================================================
 
 app = FastAPI(
     title="REWET HOST API",
@@ -39,7 +35,7 @@ app.add_middleware(
 
 
 # =====================================================
-# SESSION MODEL
+# SESSIONS
 # =====================================================
 
 class SessionModel(Base):
@@ -48,8 +44,7 @@ class SessionModel(Base):
 
     id = Column(
         Integer,
-        primary_key=True,
-        index=True
+        primary_key=True
     )
 
     token = Column(
@@ -71,15 +66,11 @@ class SessionModel(Base):
     )
 
 
-# =====================================================
-# CREATE TABLES
-# =====================================================
-
 Base.metadata.create_all(bind=engine)
 
 
 # =====================================================
-# PASSWORD HASH
+# PASSWORDS
 # =====================================================
 
 pwd_context = CryptContext(
@@ -89,13 +80,14 @@ pwd_context = CryptContext(
 
 
 # =====================================================
-# REQUEST MODELS
+# REQUESTS
 # =====================================================
 
 class RegisterRequest(BaseModel):
     username: str
     email: str
     password: str
+    password_confirm: str
 
 
 class LoginRequest(BaseModel):
@@ -134,12 +126,11 @@ def register(
 
     username = data.username.strip()
     email = data.email.strip().lower()
-    password = data.password
 
     if len(username) < 3:
         raise HTTPException(
             status_code=400,
-            detail="Имя пользователя должно содержать минимум 3 символа"
+            detail="Имя пользователя минимум 3 символа"
         )
 
     if len(username) > 24:
@@ -151,43 +142,45 @@ def register(
     if "@" not in email:
         raise HTTPException(
             status_code=400,
-            detail="Введите корректную почту"
+            detail="Введите корректный E-mail"
         )
 
-    if len(password) < 6:
+    if len(data.password) < 6:
         raise HTTPException(
             status_code=400,
-            detail="Пароль должен содержать минимум 6 символов"
+            detail="Пароль минимум 6 символов"
         )
 
-    username_exists = (
-        db.query(User)
-        .filter(User.username == username)
-        .first()
-    )
+    if data.password != data.password_confirm:
+        raise HTTPException(
+            status_code=400,
+            detail="Пароли не совпадают"
+        )
 
-    if username_exists:
+    if db.query(User).filter(
+        User.username == username
+    ).first():
+
         raise HTTPException(
             status_code=400,
             detail="Это имя пользователя уже занято"
         )
 
-    email_exists = (
-        db.query(User)
-        .filter(User.email == email)
-        .first()
-    )
+    if db.query(User).filter(
+        User.email == email
+    ).first():
 
-    if email_exists:
         raise HTTPException(
             status_code=400,
-            detail="Эта почта уже зарегистрирована"
+            detail="Этот E-mail уже зарегистрирован"
         )
 
     user = User(
         username=username,
         email=email,
-        password_hash=pwd_context.hash(password),
+        password_hash=pwd_context.hash(
+            data.password
+        ),
         created_at=datetime.utcnow()
     )
 
@@ -197,7 +190,7 @@ def register(
 
     return {
         "status": "success",
-        "message": "Аккаунт успешно создан",
+        "message": "Аккаунт создан",
         "user": {
             "id": user.id,
             "username": user.username,
@@ -219,19 +212,15 @@ def login(
 
     login_value = data.login.strip()
 
-    user = (
-        db.query(User)
-        .filter(
-            (User.username == login_value) |
-            (User.email == login_value.lower())
-        )
-        .first()
-    )
+    user = db.query(User).filter(
+        (User.username == login_value) |
+        (User.email == login_value.lower())
+    ).first()
 
     if not user:
         raise HTTPException(
             status_code=401,
-            detail="Неверный логин или пароль"
+            detail="Неверный E-mail/логин или пароль"
         )
 
     if not pwd_context.verify(
@@ -240,15 +229,9 @@ def login(
     ):
         raise HTTPException(
             status_code=401,
-            detail="Неверный логин или пароль"
+            detail="Неверный E-mail/логин или пароль"
         )
 
-    # Удаляем старые сессии пользователя
-    db.query(SessionModel).filter(
-        SessionModel.user_id == user.id
-    ).delete()
-
-    # Создаём новый токен
     token = secrets.token_urlsafe(64)
 
     expires = datetime.utcnow() + timedelta(
@@ -264,12 +247,10 @@ def login(
     db.add(session)
     db.commit()
 
-    # Сохраняем авторизацию на 30 дней
     response.set_cookie(
         key="rewet_session",
         value=token,
         max_age=60 * 60 * 24 * 30,
-        expires=60 * 60 * 24 * 30,
         httponly=True,
         secure=True,
         samesite="lax"
@@ -277,7 +258,6 @@ def login(
 
     return {
         "status": "success",
-        "message": "Вы успешно вошли",
         "user": {
             "id": user.id,
             "username": user.username,
@@ -303,14 +283,14 @@ def me(
     if not token:
         raise HTTPException(
             status_code=401,
-            detail="Вы не авторизованы"
+            detail="Не авторизован"
         )
 
-    session = (
-        db.query(SessionModel)
-        .filter(SessionModel.token == token)
-        .first()
-    )
+    session = db.query(
+        SessionModel
+    ).filter(
+        SessionModel.token == token
+    ).first()
 
     if not session:
         raise HTTPException(
@@ -328,11 +308,9 @@ def me(
             detail="Сессия истекла"
         )
 
-    user = (
-        db.query(User)
-        .filter(User.id == session.user_id)
-        .first()
-    )
+    user = db.query(User).filter(
+        User.id == session.user_id
+    ).first()
 
     if not user:
         raise HTTPException(
@@ -367,11 +345,11 @@ def logout(
 
     if token:
 
-        session = (
-            db.query(SessionModel)
-            .filter(SessionModel.token == token)
-            .first()
-        )
+        session = db.query(
+            SessionModel
+        ).filter(
+            SessionModel.token == token
+        ).first()
 
         if session:
             db.delete(session)
