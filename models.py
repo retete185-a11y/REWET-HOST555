@@ -1,8 +1,21 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey
 from datetime import datetime
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Float,
+    Boolean,
+    ForeignKey
+)
 
 from database import Base
 
+
+# =====================================================
+# ПОЛЬЗОВАТЕЛИ
+# =====================================================
 
 class User(Base):
 
@@ -14,6 +27,21 @@ class User(Base):
         index=True
     )
 
+    # Имя клиента
+    first_name = Column(
+        String(50),
+        nullable=False,
+        default=""
+    )
+
+    # Фамилия клиента
+    last_name = Column(
+        String(50),
+        nullable=False,
+        default=""
+    )
+
+    # Никнейм
     username = Column(
         String(24),
         unique=True,
@@ -21,6 +49,7 @@ class User(Base):
         index=True
     )
 
+    # E-Mail
     email = Column(
         String(255),
         unique=True,
@@ -28,28 +57,36 @@ class User(Base):
         index=True
     )
 
+    # Хэш пароля
     password_hash = Column(
         String(255),
         nullable=False
     )
 
+    # Баланс
     balance = Column(
         Float,
         default=0.0,
         nullable=False
     )
 
+    # Администратор
     is_admin = Column(
         Boolean,
         default=False,
         nullable=False
     )
 
+    # Дата регистрации
     created_at = Column(
         DateTime,
         default=datetime.utcnow
     )
 
+
+# =====================================================
+# ПРОМОКОДЫ
+# =====================================================
 
 class PromoCode(Base):
 
@@ -96,6 +133,10 @@ class PromoCode(Base):
         default=datetime.utcnow
     )
 
+
+# =====================================================
+# ИСПОЛЬЗОВАНИЕ ПРОМОКОДОВ
+# =====================================================
 
 class PromoUse(Base):
 
