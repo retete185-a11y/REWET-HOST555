@@ -1,6 +1,6 @@
 import os
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +13,7 @@ from models import User
 
 
 # ============================================================
-# REWET HOST — API
+# REWET HOST API
 # ============================================================
 
 app = FastAPI(
@@ -27,24 +27,12 @@ app = FastAPI(
 # CORS
 # ============================================================
 
-FRONTEND_URL = os.getenv(
-    "FRONTEND_URL",
-    "https://rewet-host.onrender.com"
-).rstrip("/")
+# Твой GitHub Pages сайт
+FRONTEND_URL = "https://retete185-a11y.github.io"
 
 ALLOWED_ORIGINS = [
     FRONTEND_URL,
 ]
-
-# Если FRONTEND_URL не задан или отличается,
-# можно дополнительно указать адрес через ALLOWED_ORIGINS.
-extra_origins = os.getenv("ALLOWED_ORIGINS", "")
-
-if extra_origins:
-    for origin in extra_origins.split(","):
-        origin = origin.strip().rstrip("/")
-        if origin and origin not in ALLOWED_ORIGINS:
-            ALLOWED_ORIGINS.append(origin)
 
 
 app.add_middleware(
@@ -74,16 +62,17 @@ pwd_context = CryptContext(
 
 
 # ============================================================
-# SESSION SETTINGS
+# SESSION
 # ============================================================
 
 SESSION_COOKIE = "rewet_session"
+USER_COOKIE = "rewet_user_id"
 
 SESSION_MAX_AGE = 60 * 60 * 24 * 30  # 30 дней
 
 
 # ============================================================
-# SCHEMAS
+# REQUEST MODELS
 # ============================================================
 
 class RegisterRequest(BaseModel):
@@ -145,51 +134,7 @@ def create_session_token() -> str:
     return secrets.token_urlsafe(48)
 
 
-def get_current_user(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    token = request.cookies.get(SESSION_COOKIE)
-
-    if not token:
-        raise HTTPException(
-            status_code=401,
-            detail="Не авторизован"
-        )
-
-    # В этой версии token содержит подписанную случайную строку.
-    # Чтобы не хранить сессии в памяти Render, ниже используется
-    # отдельная cookie с user_id.
-    user_id = request.cookies.get("rewet_user_id")
-
-    if not user_id:
-        raise HTTPException(
-            status_code=401,
-            detail="Сессия недействительна"
-        )
-
-    try:
-        user_id = int(user_id)
-    except ValueError:
-        raise HTTPException(
-            status_code=401,
-            detail="Сессия недействительна"
-        )
-
-    user = db.query(User).filter(
-        User.id == user_id
-    ).first()
-
-    if not user:
-        raise HTTPException(
-            status_code=401,
-            detail="Пользователь не найден"
-        )
-
-    return user
-
-
-def user_response(user: User):
+def serialize_user(user: User):
     return {
         "id": user.id,
         "username": user.username,
@@ -203,6 +148,46 @@ def user_response(user: User):
 
 
 # ============================================================
+# CURRENT USER
+# ============================================================
+
+def get_current_user(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    session_token = request.cookies.get(SESSION_COOKIE)
+    user_id = request.cookies.get(USER_COOKIE)
+
+    if not session_token or not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Не авторизован"
+        )
+
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=401,
+            detail="Недействительная сессия"
+        )
+
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Пользователь не найден"
+        )
+
+    return user
+
+
+# ============================================================
 # ROOT
 # ============================================================
 
@@ -211,13 +196,14 @@ def root():
     return {
         "success": True,
         "name": "REWET HOST",
-        "message": "REWET HOST API работает",
-        "version": "1.0.0"
+        "service": "API",
+        "version": "1.0.0",
+        "status": "online"
     }
 
 
 # ============================================================
-# HEALTH CHECK
+# HEALTH
 # ============================================================
 
 @app.get("/health")
@@ -233,6 +219,20 @@ def api_health():
         "success": True,
         "status": "online",
         "service": "REWET HOST API"
+    }
+
+
+# ============================================================
+# API ROOT
+# ============================================================
+
+@app.get("/api")
+def api_root():
+    return {
+        "success": True,
+        "name": "REWET HOST API",
+        "version": "1.0.0",
+        "status": "online"
     }
 
 
@@ -262,11 +262,11 @@ def register(
     if len(username) < 3:
         raise HTTPException(
             status_code=400,
-            detail="Имя пользователя должно содержать минимум 3 символа"
+            detail="Username должен содержать минимум 3 символа"
         )
 
     # --------------------------------------------------------
-    # Проверка допустимых символов
+    # Допустимые символы
     # --------------------------------------------------------
 
     allowed_chars = (
@@ -281,16 +281,21 @@ def register(
     ):
         raise HTTPException(
             status_code=400,
-            detail="Username может содержать только буквы, цифры, _ и -"
+            detail=(
+                "Username может содержать только "
+                "латинские буквы, цифры, _ и -"
+            )
         )
 
     # --------------------------------------------------------
-    # Проверка существующего username
+    # Проверка username
     # --------------------------------------------------------
 
-    existing_username = db.query(User).filter(
-        User.username.ilike(username)
-    ).first()
+    existing_username = (
+        db.query(User)
+        .filter(User.username.ilike(username))
+        .first()
+    )
 
     if existing_username:
         raise HTTPException(
@@ -299,12 +304,14 @@ def register(
         )
 
     # --------------------------------------------------------
-    # Проверка существующего email
+    # Проверка email
     # --------------------------------------------------------
 
-    existing_email = db.query(User).filter(
-        User.email == email
-    ).first()
+    existing_email = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
     if existing_email:
         raise HTTPException(
@@ -324,37 +331,49 @@ def register(
     )
 
     db.add(user)
-    db.commit()
-    db.refresh(user)
+
+    try:
+        db.commit()
+        db.refresh(user)
+
+    except Exception:
+        db.rollback()
+
+        raise HTTPException(
+            status_code=500,
+            detail="Не удалось создать аккаунт"
+        )
 
     # --------------------------------------------------------
-    # Авторизация сразу после регистрации
+    # Автоматический вход
     # --------------------------------------------------------
 
-    token = create_session_token()
+    session_token = create_session_token()
 
     response.set_cookie(
         key=SESSION_COOKIE,
-        value=token,
+        value=session_token,
         max_age=SESSION_MAX_AGE,
         httponly=True,
         secure=True,
-        samesite="none"
+        samesite="none",
+        path="/"
     )
 
     response.set_cookie(
-        key="rewet_user_id",
+        key=USER_COOKIE,
         value=str(user.id),
         max_age=SESSION_MAX_AGE,
         httponly=True,
         secure=True,
-        samesite="none"
+        samesite="none",
+        path="/"
     )
 
     return {
         "success": True,
         "message": "Аккаунт успешно создан",
-        "user": user_response(user)
+        "user": serialize_user(user)
     }
 
 
@@ -370,24 +389,21 @@ def login(
 ):
     login_value = data.login.strip()
 
-    # --------------------------------------------------------
-    # Ищем по username или email
-    # --------------------------------------------------------
-
-    user = db.query(User).filter(
-        (User.username.ilike(login_value)) |
-        (User.email == login_value.lower())
-    ).first()
+    user = (
+        db.query(User)
+        .filter(
+            (User.username.ilike(login_value))
+            |
+            (User.email == login_value.lower())
+        )
+        .first()
+    )
 
     if not user:
         raise HTTPException(
             status_code=401,
             detail="Неверный логин или пароль"
         )
-
-    # --------------------------------------------------------
-    # Проверяем пароль
-    # --------------------------------------------------------
 
     if not verify_password(
         data.password,
@@ -398,34 +414,32 @@ def login(
             detail="Неверный логин или пароль"
         )
 
-    # --------------------------------------------------------
-    # Создаём сессию
-    # --------------------------------------------------------
-
-    token = create_session_token()
+    session_token = create_session_token()
 
     response.set_cookie(
         key=SESSION_COOKIE,
-        value=token,
+        value=session_token,
         max_age=SESSION_MAX_AGE,
         httponly=True,
         secure=True,
-        samesite="none"
+        samesite="none",
+        path="/"
     )
 
     response.set_cookie(
-        key="rewet_user_id",
+        key=USER_COOKIE,
         value=str(user.id),
         max_age=SESSION_MAX_AGE,
         httponly=True,
         secure=True,
-        samesite="none"
+        samesite="none",
+        path="/"
     )
 
     return {
         "success": True,
         "message": "Вы успешно вошли",
-        "user": user_response(user)
+        "user": serialize_user(user)
     }
 
 
@@ -436,15 +450,13 @@ def login(
 @app.post("/api/logout")
 def logout(response: Response):
     response.delete_cookie(
-        SESSION_COOKIE,
-        secure=True,
-        samesite="none"
+        key=SESSION_COOKIE,
+        path="/"
     )
 
     response.delete_cookie(
-        "rewet_user_id",
-        secure=True,
-        samesite="none"
+        key=USER_COOKIE,
+        path="/"
     )
 
     return {
@@ -464,7 +476,7 @@ def me(
     return {
         "success": True,
         "authenticated": True,
-        "user": user_response(user)
+        "user": serialize_user(user)
     }
 
 
@@ -478,7 +490,7 @@ def profile(
 ):
     return {
         "success": True,
-        "user": user_response(user)
+        "user": serialize_user(user)
     }
 
 
@@ -493,9 +505,11 @@ def check_username(
 ):
     username = normalize_username(username)
 
-    user = db.query(User).filter(
-        User.username.ilike(username)
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.username.ilike(username))
+        .first()
+    )
 
     return {
         "success": True,
@@ -514,34 +528,13 @@ def check_email(
 ):
     email = normalize_email(str(email))
 
-    user = db.query(User).filter(
-        User.email == email
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
     return {
         "success": True,
         "available": user is None
-    }
-
-
-# ============================================================
-# ERROR HANDLER
-# ============================================================
-
-@app.get("/api")
-def api_root():
-    return {
-        "success": True,
-        "name": "REWET HOST",
-        "version": "1.0.0",
-        "status": "online",
-        "endpoints": [
-            "/api/register",
-            "/api/login",
-            "/api/logout",
-            "/api/me",
-            "/api/profile",
-            "/api/check-username",
-            "/api/check-email"
-        ]
     }
