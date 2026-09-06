@@ -1,624 +1,667 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>REWET HOST — Панель управления</title>
-
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-:root {
-    --blue: #1683ff;
-    --blue2: #0066e8;
-    --bg: #07111f;
-    --panel: #0b1728;
-    --panel2: #0e1c30;
-    --border: rgba(255,255,255,.08);
-    --text: #ffffff;
-    --muted: #8394aa;
-    --green: #22c55e;
-    --red: #ef4444;
-}
-
-body {
-    min-height: 100vh;
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-        radial-gradient(circle at 20% 0%, rgba(0,119,255,.12), transparent 30%),
-        #07111f;
-    color: var(--text);
-}
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 255px;
-    background: rgba(7,17,31,.97);
-    border-right: 1px solid var(--border);
-    z-index: 1000;
-    transition: .25s;
-    display: flex;
-    flex-direction: column;
-}
-
-.logo {
-    height: 76px;
-    display: flex;
-    align-items: center;
-    padding: 0 25px;
-    font-size: 21px;
-    font-weight: 900;
-    border-bottom: 1px solid var(--border);
-}
-
-.logo span {
-    color: var(--blue);
-}
-
-.menu {
-    padding: 18px 12px;
-    flex: 1;
-}
-
-.menu-title {
-    color: #52657d;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 10px 13px;
-    letter-spacing: .8px;
-}
-
-.menu a {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    height: 47px;
-    padding: 0 14px;
-    margin-bottom: 4px;
-    border-radius: 10px;
-    color: #9eafc3;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    transition: .2s;
-}
-
-.menu a:hover {
-    color: white;
-    background: rgba(22,131,255,.10);
-}
-
-.menu a.active {
-    color: white;
-    background: linear-gradient(
-        135deg,
-        rgba(22,131,255,.22),
-        rgba(0,93,229,.10)
-    );
-    border: 1px solid rgba(22,131,255,.16);
-}
-
-.menu-icon {
-    width: 22px;
-    text-align: center;
-    font-size: 17px;
-}
-
-.sidebar-bottom {
-    padding: 15px;
-    border-top: 1px solid var(--border);
-}
-
-.online-box {
-    padding: 13px;
-    border-radius: 12px;
-    background: rgba(34,197,94,.06);
-    border: 1px solid rgba(34,197,94,.12);
-}
-
-.online-title {
-    font-size: 11px;
-    color: #8496aa;
-    margin-bottom: 5px;
-}
-
-.online-value {
-    font-size: 15px;
-    font-weight: 800;
-}
-
-.online-dot {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    margin-right: 6px;
-    box-shadow: 0 0 8px rgba(34,197,94,.7);
-}
-
-/* =====================================================
-   MAIN
-===================================================== */
-
-.main {
-    margin-left: 255px;
-    min-height: 100vh;
-}
-
-/* =====================================================
-   TOPBAR
-===================================================== */
-
-.topbar {
-    height: 76px;
-    padding: 0 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: rgba(7,17,31,.75);
-    backdrop-filter: blur(15px);
-    position: sticky;
-    top: 0;
-    z-index: 500;
-}
-
-.left-top {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.mobile-menu {
-    display: none;
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--border);
-    background: var(--panel);
-    color: white;
-    border-radius: 10px;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-.page-title {
-    font-size: 19px;
-    font-weight: 800;
-}
-
-.user-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.balance-top {
-    padding: 9px 13px;
-    border-radius: 9px;
-    background: rgba(22,131,255,.08);
-    border: 1px solid rgba(22,131,255,.14);
-    font-size: 12px;
-    color: #a9bdd5;
-}
-
-.balance-top strong {
-    color: white;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg,#1683ff,#005de5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    font-size: 15px;
-}
-
-/* =====================================================
-   CONTENT
-===================================================== */
-
-.content {
-    padding: 30px;
-    max-width: 1500px;
-    margin: auto;
-}
-
-.welcome {
-    margin-bottom: 25px;
-}
-
-.welcome h1 {
-    font-size: 27px;
-    margin-bottom: 7px;
-}
-
-.welcome p {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-/* =====================================================
-   CARDS
-===================================================== */
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.card {
-    background: rgba(11,23,40,.88);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.12);
-}
-
-.stat {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stat-title {
-    color: var(--muted);
-    font-size: 12px;
-    margin-bottom: 9px;
-}
-
-.stat-value {
-    font-size: 22px;
-    font-weight: 900;
-}
-
-.stat-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(22,131,255,.10);
-    font-size: 20px;
-}
-
-/* =====================================================
-   ACCOUNT INFO
-===================================================== */
-
-.section {
-    margin-bottom: 25px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 13px;
-}
-
-.section-title {
-    font-size: 17px;
-    font-weight: 800;
-}
-
-.account-card {
-    background: rgba(11,23,40,.88);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-.account-row {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    border-bottom: 1px solid var(--border);
-}
-
-.account-row:last-child {
-    border-bottom: 0;
-}
-
-.account-item {
-    padding: 18px 20px;
-    border-right: 1px solid var(--border);
-}
-
-.account-item:last-child {
-    border-right: 0;
-}
-
-.account-label {
-    color: #73869d;
-    font-size: 11px;
-    margin-bottom: 7px;
-}
-
-.account-value {
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.account-balance {
-    color: #65adff;
-}
-
-.recharge {
-    color: var(--blue);
-    text-decoration: none;
-    font-size: 11px;
-    margin-left: 7px;
-}
-
-.recharge:hover {
-    text-decoration: underline;
-}
-
-/* =====================================================
-   TABLE
-===================================================== */
-
-.table-card {
-    background: rgba(11,23,40,.88);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-}
-
-th {
-    text-align: left;
-    color: #71849b;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    font-weight: 800;
-    padding: 16px 20px;
-    background: rgba(255,255,255,.015);
-}
-
-td {
-    padding: 17px 20px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: #b5c3d3;
-}
-
-.server-id {
-    color: white;
-    font-weight: 800;
-}
-
-.status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 9px;
-    border-radius: 7px;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.status.on {
-    color: #6ee7a0;
-    background: rgba(34,197,94,.08);
-}
-
-.status.off {
-    color: #ff9999;
-    background: rgba(239,68,68,.08);
-}
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-}
-
-.ip {
-    font-family: monospace;
-    color: #9fcaff;
-}
-
-.tariff {
-    color: #d0d9e5;
-}
-
-.action-btn {
-    border: 1px solid rgba(22,131,255,.2);
-    background: rgba(22,131,255,.08);
-    color: #66adff;
-    border-radius: 7px;
-    padding: 7px 10px;
-    cursor: pointer;
-    font-size: 11px;
-}
-
-.action-btn:hover {
-    background: rgba(22,131,255,.16);
-}
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
-.empty {
-    padding: 40px 20px;
-    text-align: center;
-}
-
-.empty-icon {
-    font-size: 35px;
-    margin-bottom: 10px;
-}
-
-.empty-title {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-
-.empty-text {
-    color: #71849b;
-    font-size: 12px;
-}
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-.footer {
-    color: #52657d;
-    text-align: center;
-    padding: 20px;
-    font-size: 11px;
-}
-
-/* =====================================================
-   OVERLAY
-===================================================== */
-
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.55);
-    z-index: 900;
-}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media(max-width:1100px) {
-
-    .grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .account-row {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .account-item:nth-child(2n) {
-        border-right: 0;
-    }
-}
-
-@media(max-width:800px) {
-
-    .sidebar {
-        transform: translateX(-100%);
-    }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .main {
-        margin-left: 0;
-    }
-
-    .mobile-menu {
-        display: block;
-    }
-
-    .overlay.show {
-        display: block;
-    }
-
-    .topbar {
-        padding: 0 17px;
-    }
-
-    .content {
-        padding: 20px 15px;
-    }
-
-    .balance-top {
-        display: none;
-    }
-
-    .page-title {
-        font-size: 16px;
-    }
-}
-
-@media(max-width:600px) {
-
-    .grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .stat-value {
-        font-size: 18px;
-    }
-
-    .stat-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 17px;
-    }
-
-    .account-row {
-        grid-template-columns: 1fr;
-    }
-
-    .account-item {
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .account-item:last-child {
-        border-bottom: 0;
-    }
-
-    .welcome h1 {
-        font-size: 22px;
-    }
-}
-
-@media(max-width:400px) {
-
-    .grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Панель управления — REWET HOST</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blue: #168cff;
+            --blue2: #0068d9;
+            --bg: #06111f;
+            --panel: #0a192b;
+            --panel2: #0d2036;
+            --border: rgba(62, 151, 255, .18);
+            --text: #f4f8ff;
+            --muted: #8499b0;
+            --green: #37d68b;
+            --red: #ff5d6c;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(
+                    circle at 15% 0%,
+                    rgba(20, 116, 220, .18),
+                    transparent 35%
+                ),
+                var(--bg);
+            color: var(--text);
+        }
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(6, 19, 34, .98);
+            border-right: 1px solid var(--border);
+            padding: 18px 14px;
+            z-index: 1000;
+            transition: .25s;
+            overflow-y: auto;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px 24px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(
+                135deg,
+                var(--blue),
+                var(--blue2)
+            );
+            font-weight: 900;
+            box-shadow: 0 8px 25px rgba(0, 120, 255, .25);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .brand-name span {
+            color: var(--blue);
+        }
+
+        .menu-title {
+            padding: 10px;
+            color: #58718d;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu a,
+        .menu button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: #9fb1c5;
+            text-decoration: none;
+            padding: 13px 12px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: .2s;
+        }
+
+        .menu a:hover,
+        .menu button:hover {
+            background: rgba(33, 140, 255, .10);
+            color: white;
+        }
+
+        .menu a.active {
+            color: white;
+            background: linear-gradient(
+                90deg,
+                rgba(22, 140, 255, .18),
+                rgba(22, 140, 255, .04)
+            );
+            border-left: 3px solid var(--blue);
+        }
+
+        .menu-icon {
+            width: 22px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: 25px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+
+        .balance-box {
+            padding: 14px;
+            border-radius: 13px;
+            background: rgba(22, 140, 255, .08);
+            border: 1px solid rgba(22, 140, 255, .15);
+            margin-bottom: 10px;
+        }
+
+        .balance-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .balance-value {
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .online {
+            padding: 10px 12px;
+            color: #91a6bb;
+            font-size: 12px;
+        }
+
+        .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 8px rgba(55, 214, 139, .7);
+        }
+
+        .admin-link {
+            display: none !important;
+        }
+
+        .admin-link.visible {
+            display: flex !important;
+        }
+
+        /* =====================================================
+           HAMBURGER
+        ===================================================== */
+
+        .hamburger {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            width: 43px;
+            height: 43px;
+            border: 1px solid var(--border);
+            background: rgba(7, 24, 42, .95);
+            color: white;
+            border-radius: 11px;
+            cursor: pointer;
+            z-index: 1200;
+            font-size: 20px;
+        }
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+            transition: .25s;
+        }
+
+        .main.full {
+            margin-left: 0;
+        }
+
+        .topbar {
+            height: 74px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 28px;
+            background: rgba(4, 15, 27, .75);
+            backdrop-filter: blur(15px);
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 39px;
+            height: 39px;
+            border-radius: 50%;
+            background: linear-gradient(
+                135deg,
+                var(--blue),
+                #004a9b
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        .user-mini-info {
+            text-align: right;
+        }
+
+        .user-mini-name {
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .user-mini-role {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .logout {
+            margin-left: 15px;
+            border: 1px solid rgba(255, 80, 100, .2);
+            background: rgba(255, 80, 100, .06);
+            color: #ff7785;
+            border-radius: 9px;
+            padding: 9px 12px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 29px;
+            margin-bottom: 7px;
+        }
+
+        .welcome p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            background: rgba(10, 25, 43, .88);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 19px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+            background: rgba(10, 25, 43, .88);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 19px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .section-action {
+            border: 1px solid rgba(22, 140, 255, .25);
+            background: rgba(22, 140, 255, .08);
+            color: #58adff;
+            padding: 8px 12px;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           ACCOUNT
+        ===================================================== */
+
+        .account-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+        }
+
+        .account-item {
+            padding: 18px 20px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .account-item:nth-child(3n) {
+            border-right: 0;
+        }
+
+        .account-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .account-value {
+            font-size: 15px;
+            font-weight: 800;
+            word-break: break-word;
+        }
+
+        .balance-account {
+            color: #58adff;
+        }
+
+        .recharge {
+            color: #58adff;
+            text-decoration: none;
+            font-size: 11px;
+            margin-left: 8px;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th {
+            color: #607993;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 14px 20px;
+            font-weight: 800;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: #cbd8e7;
+        }
+
+        .server-id {
+            color: white;
+            font-weight: 900;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .status.online-status {
+            color: var(--green);
+        }
+
+        .status.online-status .status-dot {
+            background: var(--green);
+        }
+
+        .status.offline-status {
+            color: var(--red);
+        }
+
+        .status.offline-status .status-dot {
+            background: var(--red);
+        }
+
+        .tariff {
+            color: #9db2c8;
+        }
+
+        .ip {
+            font-family: monospace;
+            color: #79baff;
+        }
+
+        .action-btn {
+            border: 1px solid var(--border);
+            background: #0b1e33;
+            color: #9ec9f5;
+            padding: 7px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #71869d;
+        }
+
+        .empty-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .empty-title {
+            color: #a8b9cb;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .empty-text {
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #06111f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .loader {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #173450;
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .account-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .account-item:nth-child(3n) {
+                border-right: 1px solid var(--border);
+            }
+
+            .account-item:nth-child(2n) {
+                border-right: 0;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                box-shadow: 15px 0 45px rgba(0,0,0,.35);
+            }
+
+            .topbar {
+                padding-left: 75px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .content {
+                padding: 22px 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .account-item,
+            .account-item:nth-child(2n),
+            .account-item:nth-child(3n) {
+                border-right: 0;
+            }
+
+            .welcome h1 {
+                font-size: 24px;
+            }
+
+            .user-mini-info {
+                display: none;
+            }
+
+            .logout {
+                padding: 8px 9px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div id="loading">
+
+    <div class="loader"></div>
+
+    <div>
+        Загрузка REWET HOST...
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     HAMBURGER
+===================================================== -->
+
+<button
+    class="hamburger"
+    id="hamburger"
+    onclick="toggleSidebar()"
+>
+    ☰
+</button>
+
 
 <!-- =====================================================
      SIDEBAR
@@ -626,72 +669,110 @@ td {
 
 <aside class="sidebar" id="sidebar">
 
-    <div class="logo">
-        ⚡ REWET <span>HOST</span>
+    <div class="brand">
+
+        <div class="brand-logo">
+            R
+        </div>
+
+        <div class="brand-name">
+            REWET <span>HOST</span>
+        </div>
+
     </div>
+
+
+    <div class="menu-title">
+        Меню
+    </div>
+
 
     <nav class="menu">
 
-        <div class="menu-title">
-            Панель
-        </div>
-
-        <a href="dashboard.html" class="active">
+        <a
+            href="dashboard.html"
+            class="active"
+        >
             <span class="menu-icon">🏠</span>
             Главная
         </a>
 
-        <a href="#" onclick="openSection('servers')">
+        <a href="#servers">
             <span class="menu-icon">🖥️</span>
             Серверы
         </a>
 
-        <a href="#" onclick="openSection('sites')">
+        <a href="#sites">
             <span class="menu-icon">🌐</span>
             Сайты
         </a>
 
-        <a href="#" onclick="openSection('vds')">
-            <span class="menu-icon">💻</span>
+        <a href="#vds">
+            <span class="menu-icon">⚡</span>
             VPS/VDS
         </a>
 
-        <a href="#" onclick="showSoon('Услуги')">
-            <span class="menu-icon">🛒</span>
+        <a href="#services">
+            <span class="menu-icon">🛠️</span>
             Услуги
         </a>
 
-        <a href="#" onclick="showSoon('Поддержка')">
+        <a href="#support">
             <span class="menu-icon">🎧</span>
             Поддержка
         </a>
 
-        <div class="menu-title">
-            Финансы
-        </div>
-
-        <a href="#" onclick="showSoon('Баланс')">
-            <span class="menu-icon">💰</span>
-            Баланс
-            <span style="margin-left:auto;color:#65adff;">
-                0.00
-            </span>
-        </a>
-
     </nav>
+
 
     <div class="sidebar-bottom">
 
-        <div class="online-box">
+        <div class="balance-box">
 
-            <div class="online-title">
-                Онлайн в хостинге
+            <div class="balance-label">
+                Баланс
             </div>
 
-            <div class="online-value">
-                <span class="online-dot"></span>
-                <span id="onlineCount">1</span> человек
+            <div
+                class="balance-value"
+                id="sidebarBalance"
+            >
+                0.00 ₽
             </div>
+
+        </div>
+
+
+        <div class="online">
+
+            <span class="online-dot"></span>
+
+            Online:
+            <strong id="onlineCount">
+                1
+            </strong>
+            человек
+
+        </div>
+
+
+        <!-- ADMIN -->
+
+        <div class="menu">
+
+            <a
+                href="admin.html"
+                class="admin-link"
+                id="adminLink"
+            >
+                <span class="menu-icon">👑</span>
+                Админ-панель
+            </a>
+
+            <a href="profile.html">
+                <span class="menu-icon">👤</span>
+                Профиль
+            </a>
 
         </div>
 
@@ -700,165 +781,137 @@ td {
 </aside>
 
 
-<div
-    class="overlay"
-    id="overlay"
-    onclick="closeMenu()">
-</div>
-
-
 <!-- =====================================================
      MAIN
 ===================================================== -->
 
-<main class="main">
+<main class="main" id="main">
+
+
+    <!-- TOPBAR -->
 
     <header class="topbar">
 
-        <div class="left-top">
+        <div class="user-mini">
 
-            <button
-                class="mobile-menu"
-                id="menuButton"
-                onclick="toggleMenu()">
-                ☰
-            </button>
+            <div class="user-mini-info">
 
-            <div class="page-title">
-                Панель управления
-            </div>
+                <div
+                    class="user-mini-name"
+                    id="topUserName"
+                >
+                    Загрузка...
+                </div>
 
-        </div>
+                <div
+                    class="user-mini-role"
+                    id="topUserRole"
+                >
+                    Клиент
+                </div>
 
-
-        <div class="user-area">
-
-            <div class="balance-top">
-                Баланс:
-                <strong id="topBalance">
-                    0.00
-                </strong>
             </div>
 
             <div
                 class="avatar"
-                id="avatar">
+                id="avatar"
+            >
                 ?
             </div>
+
+            <button
+                class="logout"
+                onclick="logout()"
+            >
+                🚪
+            </button>
 
         </div>
 
     </header>
 
 
+    <!-- CONTENT -->
+
     <div class="content">
+
 
         <!-- WELCOME -->
 
         <div class="welcome">
 
             <h1>
-                Добро пожаловать, <span id="welcomeName">...</span> 👋
+                Добро пожаловать,
+                <span id="welcomeName">
+                    клиент
+                </span> 👋
             </h1>
 
             <p>
-                Управляйте своими серверами, сайтами и услугами REWET HOST.
+                Управляйте своими серверами,
+                сайтами и услугами REWET HOST.
             </p>
 
         </div>
 
 
-        <!-- STATISTICS -->
+        <!-- STATS -->
 
-        <div class="grid">
+        <div class="stats">
 
-            <div class="card">
+            <div class="stat">
 
-                <div class="stat">
+                <div class="stat-label">
+                    Мои серверы
+                </div>
 
-                    <div>
-                        <div class="stat-title">
-                            Мои серверы
-                        </div>
-
-                        <div class="stat-value">
-                            3
-                        </div>
-                    </div>
-
-                    <div class="stat-icon">
-                        🖥️
-                    </div>
-
+                <div
+                    class="stat-value"
+                    id="serverCount"
+                >
+                    3
                 </div>
 
             </div>
 
 
-            <div class="card">
+            <div class="stat">
 
-                <div class="stat">
+                <div class="stat-label">
+                    Мои сайты
+                </div>
 
-                    <div>
-                        <div class="stat-title">
-                            Серверов онлайн
-                        </div>
-
-                        <div class="stat-value">
-                            1
-                        </div>
-                    </div>
-
-                    <div class="stat-icon">
-                        🟢
-                    </div>
-
+                <div class="stat-value">
+                    0
                 </div>
 
             </div>
 
 
-            <div class="card">
+            <div class="stat">
 
-                <div class="stat">
+                <div class="stat-label">
+                    Мои VPS/VDS
+                </div>
 
-                    <div>
-                        <div class="stat-title">
-                            Баланс
-                        </div>
-
-                        <div class="stat-value">
-                            0.00
-                        </div>
-                    </div>
-
-                    <div class="stat-icon">
-                        💰
-                    </div>
-
+                <div class="stat-value">
+                    0
                 </div>
 
             </div>
 
 
-            <div class="card">
+            <div class="stat">
 
-                <div class="stat">
+                <div class="stat-label">
+                    Баланс
+                </div>
 
-                    <div>
-                        <div class="stat-title">
-                            Онлайн в хостинге
-                        </div>
-
-                        <div class="stat-value" id="onlineStat">
-                            1
-                        </div>
-                    </div>
-
-                    <div class="stat-icon">
-                        👥
-                    </div>
-
+                <div
+                    class="stat-value"
+                    id="statBalance"
+                >
+                    0.00
                 </div>
 
             </div>
@@ -866,159 +919,187 @@ td {
         </div>
 
 
-        <!-- ACCOUNT -->
+        <!-- =================================================
+             ACCOUNT INFO
+        ================================================== -->
 
         <section class="section">
 
-            <div class="section-header">
+            <div class="section-head">
 
                 <div class="section-title">
                     Информация об аккаунте
                 </div>
 
+                <button
+                    class="section-action"
+                    onclick="location.href='profile.html'"
+                >
+                    Профиль
+                </button>
+
             </div>
 
 
-            <div class="account-card">
+            <div class="account-grid">
 
-                <div class="account-row">
 
-                    <div class="account-item">
+                <div class="account-item">
 
-                        <div class="account-label">
-                            ID аккаунта
-                        </div>
-
-                        <div
-                            class="account-value"
-                            id="accountId">
-                            —
-                        </div>
-
+                    <div class="account-label">
+                        ID аккаунта
                     </div>
 
-
-                    <div class="account-item">
-
-                        <div class="account-label">
-                            Имя
-                        </div>
-
-                        <div
-                            class="account-value"
-                            id="firstName">
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="account-item">
-
-                        <div class="account-label">
-                            Фамилия
-                        </div>
-
-                        <div
-                            class="account-value"
-                            id="lastName">
-                            —
-                        </div>
-
+                    <div
+                        class="account-value"
+                        id="accountId"
+                    >
+                        —
                     </div>
 
                 </div>
 
 
-                <div class="account-row">
+                <div class="account-item">
 
-                    <div class="account-item">
-
-                        <div class="account-label">
-                            E-Mail
-                        </div>
-
-                        <div
-                            class="account-value"
-                            id="email">
-                            —
-                        </div>
-
+                    <div class="account-label">
+                        Имя
                     </div>
 
-
-                    <div class="account-item">
-
-                        <div class="account-label">
-                            Баланс
-                        </div>
-
-                        <div class="account-value">
-
-                            <span
-                                class="account-balance"
-                                id="accountBalance">
-                                0.00
-                            </span>
-
-                            <a
-                                href="#"
-                                class="recharge"
-                                onclick="showSoon('Пополнение баланса')">
-                                Пополнить баланс
-                            </a>
-
-                        </div>
-
+                    <div
+                        class="account-value"
+                        id="firstName"
+                    >
+                        —
                     </div>
 
+                </div>
 
-                    <div class="account-item">
 
-                        <div class="account-label">
-                            Статус
-                        </div>
+                <div class="account-item">
 
-                        <div class="account-value">
-                            🟢 Активен
-                        </div>
+                    <div class="account-label">
+                        Фамилия
+                    </div>
+
+                    <div
+                        class="account-value"
+                        id="lastName"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="account-item">
+
+                    <div class="account-label">
+                        Никнейм
+                    </div>
+
+                    <div
+                        class="account-value"
+                        id="username"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="account-item">
+
+                    <div class="account-label">
+                        E-Mail
+                    </div>
+
+                    <div
+                        class="account-value"
+                        id="email"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="account-item">
+
+                    <div class="account-label">
+                        Баланс
+                    </div>
+
+                    <div class="account-value">
+
+                        <span
+                            class="balance-account"
+                            id="accountBalance"
+                        >
+                            0.00
+                        </span>
+
+                        <a
+                            href="#"
+                            class="recharge"
+                            onclick="rechargeBalance(event)"
+                        >
+                            Пополнить баланс
+                        </a>
 
                     </div>
 
                 </div>
+
 
             </div>
 
         </section>
 
 
-        <!-- SERVERS -->
+        <!-- =================================================
+             SERVERS
+        ================================================== -->
 
         <section
             class="section"
-            id="servers">
+            id="servers"
+        >
 
-            <div class="section-header">
+            <div class="section-head">
 
                 <div class="section-title">
                     Мои серверы
                 </div>
 
+                <button
+                    class="section-action"
+                    onclick="createServer()"
+                >
+                    + Создать сервер
+                </button>
+
             </div>
 
 
-            <div class="table-card">
+            <div class="table-wrap">
 
                 <table>
 
                     <thead>
 
                         <tr>
+
                             <th>ID</th>
+
                             <th>Статус</th>
+
                             <th>Тариф</th>
+
                             <th>IP</th>
+
                             <th>Действия</th>
+
                         </tr>
 
                     </thead>
@@ -1033,10 +1114,14 @@ td {
                             </td>
 
                             <td>
-                                <span class="status off">
+
+                                <span
+                                    class="status offline-status"
+                                >
                                     <span class="status-dot"></span>
                                     Выключен
                                 </span>
+
                             </td>
 
                             <td class="tariff">
@@ -1048,11 +1133,14 @@ td {
                             </td>
 
                             <td>
+
                                 <button
                                     class="action-btn"
-                                    onclick="serverAction('344242')">
+                                    onclick="serverAction(344242)"
+                                >
                                     Управление
                                 </button>
+
                             </td>
 
                         </tr>
@@ -1065,10 +1153,14 @@ td {
                             </td>
 
                             <td>
-                                <span class="status on">
+
+                                <span
+                                    class="status online-status"
+                                >
                                     <span class="status-dot"></span>
                                     Включен
                                 </span>
+
                             </td>
 
                             <td class="tariff">
@@ -1080,11 +1172,14 @@ td {
                             </td>
 
                             <td>
+
                                 <button
                                     class="action-btn"
-                                    onclick="serverAction('348924')">
+                                    onclick="serverAction(348924)"
+                                >
                                     Управление
                                 </button>
+
                             </td>
 
                         </tr>
@@ -1097,10 +1192,14 @@ td {
                             </td>
 
                             <td>
-                                <span class="status off">
+
+                                <span
+                                    class="status offline-status"
+                                >
                                     <span class="status-dot"></span>
                                     Выключен
                                 </span>
+
                             </td>
 
                             <td class="tariff">
@@ -1112,11 +1211,14 @@ td {
                             </td>
 
                             <td>
+
                                 <button
                                     class="action-btn"
-                                    onclick="serverAction('352280')">
+                                    onclick="serverAction(352280)"
+                                >
                                     Управление
                                 </button>
+
                             </td>
 
                         </tr>
@@ -1130,54 +1232,43 @@ td {
         </section>
 
 
-        <!-- SITES -->
+        <!-- =================================================
+             SITES
+        ================================================== -->
 
         <section
             class="section"
-            id="sites">
+            id="sites"
+        >
 
-            <div class="section-header">
+            <div class="section-head">
 
                 <div class="section-title">
                     Мои сайты
                 </div>
 
+                <button
+                    class="section-action"
+                    onclick="createSite()"
+                >
+                    + Создать сайт
+                </button>
+
             </div>
 
 
-            <div class="table-card">
+            <div class="empty">
 
-                <table>
+                <div class="empty-icon">
+                    🌐
+                </div>
 
-                    <thead>
+                <div class="empty-title">
+                    У вас пока нет сайтов
+                </div>
 
-                        <tr>
-                            <th>ID</th>
-                            <th>Статус</th>
-                            <th>Тариф</th>
-                            <th>Домен</th>
-                            <th>Действия</th>
-                        </tr>
-
-                    </thead>
-
-                </table>
-
-
-                <div class="empty">
-
-                    <div class="empty-icon">
-                        🌐
-                    </div>
-
-                    <div class="empty-title">
-                        На данный момент у вас нет сайтов.
-                    </div>
-
-                    <div class="empty-text">
-                        Здесь появятся ваши сайты после их создания.
-                    </div>
-
+                <div class="empty-text">
+                    Здесь будут отображаться ваши сайты.
                 </div>
 
             </div>
@@ -1185,54 +1276,43 @@ td {
         </section>
 
 
-        <!-- VDS -->
+        <!-- =================================================
+             VPS
+        ================================================== -->
 
         <section
             class="section"
-            id="vds">
+            id="vds"
+        >
 
-            <div class="section-header">
+            <div class="section-head">
 
                 <div class="section-title">
                     Мои VDS
                 </div>
 
+                <button
+                    class="section-action"
+                    onclick="createVDS()"
+                >
+                    + Заказать VDS
+                </button>
+
             </div>
 
 
-            <div class="table-card">
+            <div class="empty">
 
-                <table>
+                <div class="empty-icon">
+                    ⚡
+                </div>
 
-                    <thead>
+                <div class="empty-title">
+                    У вас пока нет VDS
+                </div>
 
-                        <tr>
-                            <th>ID</th>
-                            <th>Статус</th>
-                            <th>Тариф</th>
-                            <th>IP</th>
-                            <th>Действия</th>
-                        </tr>
-
-                    </thead>
-
-                </table>
-
-
-                <div class="empty">
-
-                    <div class="empty-icon">
-                        💻
-                    </div>
-
-                    <div class="empty-title">
-                        На данный момент у вас нет VDS.
-                    </div>
-
-                    <div class="empty-text">
-                        Здесь появятся ваши VPS/VDS после заказа.
-                    </div>
-
+                <div class="empty-text">
+                    Здесь будут отображаться ваши VPS/VDS серверы.
                 </div>
 
             </div>
@@ -1240,9 +1320,79 @@ td {
         </section>
 
 
-        <div class="footer">
-            © 2026 REWET HOST — Игровой хостинг
-        </div>
+        <!-- =================================================
+             SERVICES
+        ================================================== -->
+
+        <section
+            class="section"
+            id="services"
+        >
+
+            <div class="section-head">
+
+                <div class="section-title">
+                    Услуги
+                </div>
+
+            </div>
+
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🛠️
+                </div>
+
+                <div class="empty-title">
+                    Услуги REWET HOST
+                </div>
+
+                <div class="empty-text">
+                    Раздел находится в разработке.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SUPPORT
+        ================================================== -->
+
+        <section
+            class="section"
+            id="support"
+        >
+
+            <div class="section-head">
+
+                <div class="section-title">
+                    Поддержка
+                </div>
+
+            </div>
+
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🎧
+                </div>
+
+                <div class="empty-title">
+                    Нужна помощь?
+                </div>
+
+                <div class="empty-text">
+                    Система поддержки REWET HOST скоро будет доступна.
+                </div>
+
+            </div>
+
+        </section>
+
 
     </div>
 
@@ -1256,83 +1406,44 @@ const API_URL =
 
 
 /* =====================================================
-   MOBILE MENU
+   ELEMENT
 ===================================================== */
 
-function toggleMenu() {
-
-    document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
-    document
-        .getElementById("overlay")
-        .classList.toggle("show");
-
-}
-
-
-function closeMenu() {
-
-    document
-        .getElementById("sidebar")
-        .classList.remove("open");
-
-    document
-        .getElementById("overlay")
-        .classList.remove("show");
-
+function $(id) {
+    return document.getElementById(id);
 }
 
 
 /* =====================================================
-   MENU ACTION
+   SIDEBAR
 ===================================================== */
 
-function openSection(id) {
+function toggleSidebar() {
 
-    closeMenu();
+    const sidebar = $("sidebar");
+    const main = $("main");
 
-    const element =
-        document.getElementById(id);
+    sidebar.classList.toggle("closed");
 
-    if (element) {
-
-        element.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
+    if (
+        window.innerWidth > 1000
+    ) {
+        main.classList.toggle("full");
     }
 
 }
 
 
 /* =====================================================
-   SOON
+   FORMAT BALANCE
 ===================================================== */
 
-function showSoon(name) {
+function formatBalance(value) {
 
-    alert(
-        name +
-        "\n\nРаздел находится в разработке."
-    );
+    const number =
+        Number(value || 0);
 
-}
-
-
-/* =====================================================
-   SERVER
-===================================================== */
-
-function serverAction(id) {
-
-    alert(
-        "Сервер #" +
-        id +
-        "\n\nПанель управления сервером скоро будет доступна."
-    );
+    return number.toFixed(2);
 
 }
 
@@ -1350,22 +1461,9 @@ async function loadUser() {
                 API_URL + "/api/me",
                 {
                     method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Accept":
-                            "application/json"
-                    }
+                    credentials: "include"
                 }
             );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Ошибка API"
-            );
-
-        }
 
 
         const data =
@@ -1373,6 +1471,7 @@ async function loadUser() {
 
 
         if (
+            !response.ok ||
             !data.authenticated ||
             !data.user
         ) {
@@ -1381,7 +1480,6 @@ async function loadUser() {
                 "login.html";
 
             return;
-
         }
 
 
@@ -1389,68 +1487,118 @@ async function loadUser() {
             data.user;
 
 
-        /* ID */
+        /* ---------------------------------------------
+           ACCOUNT
+        --------------------------------------------- */
 
-        document
-            .getElementById("accountId")
-            .textContent =
+        $("accountId").textContent =
             user.id ?? "—";
 
 
-        /* USERNAME */
-
-        document
-            .getElementById("welcomeName")
-            .textContent =
-            user.username || "Пользователь";
+        $("firstName").textContent =
+            user.first_name || "—";
 
 
-        /* EMAIL */
+        $("lastName").textContent =
+            user.last_name || "—";
 
-        document
-            .getElementById("email")
-            .textContent =
+
+        $("username").textContent =
+            user.username || "—";
+
+
+        $("email").textContent =
             user.email || "—";
 
 
-        /* AVATAR */
+        const balance =
+            formatBalance(
+                user.balance
+            );
 
-        const avatar =
-            document.getElementById("avatar");
+
+        $("accountBalance").textContent =
+            balance + " ₽";
 
 
-        if (user.username) {
+        $("sidebarBalance").textContent =
+            balance + " ₽";
 
-            avatar.textContent =
-                user.username
-                    .charAt(0)
-                    .toUpperCase();
+
+        $("statBalance").textContent =
+            balance + " ₽";
+
+
+        /* ---------------------------------------------
+           NAME
+        --------------------------------------------- */
+
+        const firstName =
+            user.first_name ||
+            user.username ||
+            "клиент";
+
+
+        $("welcomeName").textContent =
+            firstName;
+
+
+        $("topUserName").textContent =
+            user.username ||
+            firstName;
+
+
+        /* ---------------------------------------------
+           ROLE
+        --------------------------------------------- */
+
+        if (user.is_admin) {
+
+            $("topUserRole").textContent =
+                "Администратор";
+
+            $("adminLink")
+                .classList
+                .add("visible");
+
+        } else {
+
+            $("topUserRole").textContent =
+                "Клиент";
 
         }
 
 
-        /*
-         * В текущей базе у нас есть только username.
-         * Имя и фамилия будут подключены,
-         * когда добавим эти поля в backend.
-         */
+        /* ---------------------------------------------
+           AVATAR
+        --------------------------------------------- */
 
-        document
-            .getElementById("firstName")
-            .textContent =
-            user.first_name || "—";
+        const avatarLetter =
+            (
+                user.first_name ||
+                user.username ||
+                "R"
+            )
+            .charAt(0)
+            .toUpperCase();
 
 
-        document
-            .getElementById("lastName")
-            .textContent =
-            user.last_name || "—";
+        $("avatar").textContent =
+            avatarLetter;
+
+
+        /* ---------------------------------------------
+           LOADING HIDE
+        --------------------------------------------- */
+
+        $("loading").style.display =
+            "none";
 
 
     } catch (error) {
 
         console.error(
-            "Dashboard:",
+            "ME ERROR:",
             error
         );
 
@@ -1466,40 +1614,159 @@ async function loadUser() {
    ONLINE
 ===================================================== */
 
-/*
- * Пока API статистики онлайн ещё нет.
- * Поэтому показываем 1.
- *
- * Позже подключим:
- *
- * GET /api/stats
- *
- * и здесь будет реальное количество
- * пользователей онлайн.
- */
+async function loadOnline() {
 
-function setOnlineCount(count) {
+    try {
 
-    document
-        .getElementById("onlineCount")
-        .textContent =
-        count;
+        const response =
+            await fetch(
+                API_URL + "/api/online",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
 
-    document
-        .getElementById("onlineStat")
-        .textContent =
-        count;
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            typeof data.online === "number"
+        ) {
+
+            $("onlineCount").textContent =
+                data.online;
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Online API пока недоступен"
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   START
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_URL + "/api/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =====================================================
+   PLACEHOLDER ACTIONS
+===================================================== */
+
+function createServer() {
+
+    alert(
+        "Создание сервера REWET HOST скоро будет доступно."
+    );
+
+}
+
+
+function createSite() {
+
+    alert(
+        "Создание сайта скоро будет доступно."
+    );
+
+}
+
+
+function createVDS() {
+
+    alert(
+        "Заказ VPS/VDS скоро будет доступен."
+    );
+
+}
+
+
+function serverAction(id) {
+
+    alert(
+        "Управление сервером #" +
+        id +
+        " скоро будет доступно."
+    );
+
+}
+
+
+function rechargeBalance(event) {
+
+    event.preventDefault();
+
+    alert(
+        "Пополнение баланса скоро будет доступно."
+    );
+
+}
+
+
+/* =====================================================
+   INIT
 ===================================================== */
 
 loadUser();
 
-setOnlineCount(1);
+loadOnline();
+
+
+/* Обновляем Online */
+
+setInterval(
+    loadOnline,
+    15000
+);
+
+
+/* На телефоне sidebar закрыт */
+
+if (
+    window.innerWidth <= 1000
+) {
+
+    $("sidebar")
+        .classList
+        .add("closed");
+
+}
+
 
 </script>
 
