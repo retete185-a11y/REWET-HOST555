@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>REWET HOST — Панель</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blue: #1683ff;
+    --blue2: #0066ff;
+    --bg: #07101f;
+    --panel: #0c1729;
+    --panel2: #101e33;
+    --border: rgba(255,255,255,.08);
+    --text: #ffffff;
+    --muted: #8fa1b8;
+    --green: #22c55e;
+    --red: #ef4444;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(0,119,255,.18), transparent 35%),
+        radial-gradient(circle at 90% 20%, rgba(0,119,255,.10), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    background: rgba(7,16,31,.96);
+    border-right: 1px solid var(--border);
+    padding: 22px 15px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px 28px;
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: .5px;
+}
+
+.logo-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1590ff, #005cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(0,110,255,.3);
+}
+
+.logo span {
+    color: #4da3ff;
+}
+
+.menu-title {
+    color: #63748b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 10px 13px;
+    letter-spacing: 1px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu a {
+    color: #aab9cb;
+    text-decoration: none;
+    padding: 13px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.menu a:hover {
+    background: rgba(22,131,255,.10);
+    color: white;
+}
+
+.menu a.active {
+    background: linear-gradient(
+        90deg,
+        rgba(22,131,255,.25),
+        rgba(22,131,255,.08)
+    );
+    color: white;
+    box-shadow: inset 3px 0 0 var(--blue);
+}
+
+.menu-icon {
+    width: 22px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.user-mini {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #1683ff, #004ed8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.user-info {
+    min-width: 0;
+}
+
+.user-info strong {
+    display: block;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-info small {
+    color: #72839a;
+    font-size: 11px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+    margin-left: 260px;
+    min-height: 100vh;
+}
+
+.topbar {
+    height: 76px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(7,16,31,.65);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.page-title h1 {
+    font-size: 20px;
+}
+
+.page-title p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.top-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: white;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.content {
+    padding: 30px 35px 50px;
+    max-width: 1500px;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome {
+    background:
+        linear-gradient(
+            120deg,
+            rgba(0,102,255,.30),
+            rgba(0,102,255,.06)
+        ),
+        var(--panel);
+    border: 1px solid rgba(35,140,255,.22);
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.welcome::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    right: -80px;
+    top: -120px;
+    border-radius: 50%;
+    background: rgba(0,119,255,.15);
+    filter: blur(20px);
+}
+
+.welcome h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #9eafc3;
+    font-size: 14px;
+}
+
+.welcome-button {
+    display: inline-flex;
+    margin-top: 22px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1683ff, #005ce6);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+    box-shadow: 0 10px 25px rgba(0,100,255,.25);
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 120px;
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(22,131,255,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.stat-label {
+    color: #7e90a7;
+    font-size: 12px;
+}
+
+.stat-value {
+    font-size: 25px;
+    font-weight: 900;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+}
+
+.section-header a {
+    color: #4ca0ff;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+/* =========================
+   SERVER
+========================= */
+
+.empty {
+    background: var(--panel);
+    border: 1px dashed rgba(255,255,255,.12);
+    border-radius: 16px;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 16px;
+    border-radius: 17px;
+    background: rgba(22,131,255,.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+}
+
+.empty h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.empty p {
+    color: #788aa1;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.create-btn {
+    display: inline-flex;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: white;
+    background: var(--blue);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* =========================
+   QUICK
+========================= */
+
+.quick {
+    margin-top: 25px;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.quick-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 20px;
+    text-decoration: none;
+    color: white;
+    transition: .2s;
+}
+
+.quick-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(22,131,255,.4);
+}
+
+.quick-card-icon {
+    font-size: 23px;
+    margin-bottom: 14px;
+}
+
+.quick-card h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.quick-card p {
+    color: #77899f;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading {
+    position: fixed;
+    inset: 0;
+    background: #07101f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loader-box {
+    text-align: center;
+}
+
+.loader-logo {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.loader-logo span {
+    color: #1683ff;
+}
+
+.spinner {
+    width: 38px;
+    height: 38px;
+    border: 3px solid rgba(255,255,255,.1);
+    border-top-color: #1683ff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu {
+    display: none;
+}
+
+@media (max-width: 1000px) {
+
+    .sidebar {
+        width: 220px;
+    }
+
+    .main {
+        margin-left: 220px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: .25s;
+        width: 270px;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .topbar {
+        padding: 0 17px;
+    }
+
+    .content {
+        padding: 20px 15px 40px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat {
+        padding: 15px;
+    }
+
+    .welcome {
+        padding: 22px;
+    }
+
+    .welcome h2 {
+        font-size: 21px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOADING
+========================= -->
+
+<div class="loading" id="loading">
+
+    <div class="loader-box">
+
+        <div class="loader-logo">
+            ⚡ REWET <span>HOST</span>
+        </div>
+
+        <div class="spinner"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+
+        <div>
+            REWET <span>HOST</span>
+        </div>
+    </div>
+
+
+    <div class="menu-title">
+        Панель
+    </div>
+
+    <nav class="menu">
+
+        <a href="dashboard.html" class="active">
+            <span class="menu-icon">🏠</span>
+            Главная
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🖥️</span>
+            Мои серверы
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">➕</span>
+            Создать сервер
+        </a>
+
+    </nav>
+
+
+    <div class="menu-title">
+        Управление
+    </div>
+
+    <nav class="menu">
+
+        <a href="#">
+            <span class="menu-icon">👥</span>
+            Совладельцы
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">💳</span>
+            Баланс
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🛒</span>
+            Услуги
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">📊</span>
+            Статистика
+        </a>
+
+    </nav>
+
+
+    <div class="menu-title">
+        Аккаунт
+    </div>
+
+    <nav class="menu">
+
+        <a href="profile.html">
+            <span class="menu-icon">👤</span>
+            Профиль
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">🎫</span>
+            Поддержка
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">⚙️</span>
+            Настройки
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="user-mini">
+
+            <div class="avatar" id="avatar">
+                ?
+            </div>
+
+            <div class="user-info">
+
+                <strong id="sidebarUsername">
+                    Загрузка...
+                </strong>
+
+                <small>
+                    Аккаунт активен
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+
+    <header class="topbar">
+
+        <div class="page-title">
+
+            <h1>
+                Панель управления
+            </h1>
+
+            <p>
+                Управляйте своими серверами в REWET HOST
+            </p>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <button
+                class="icon-button mobile-menu"
+                onclick="toggleSidebar()"
+            >
+                ☰
+            </button>
+
+            <button
+                class="icon-button"
+                title="Уведомления"
+            >
+                🔔
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="content">
+
+
+        <!-- =========================
+             WELCOME
+        ========================= -->
+
+        <section class="welcome">
+
+            <h2>
+                Добро пожаловать, <span id="welcomeUsername">...</span>! 👋
+            </h2>
+
+            <p>
+                Это ваша панель управления REWET HOST.
+                Здесь вы сможете управлять серверами и услугами.
+            </p>
+
+            <a
+                href="#"
+                class="welcome-button"
+                onclick="createServer(event)"
+            >
+                ＋ Создать сервер
+            </a>
+
+        </section>
+
+
+        <!-- =========================
+             STATS
+        ========================= -->
+
+        <section class="stats">
+
+            <div class="stat">
+
+                <div class="stat-top">
+
+                    <span class="stat-label">
+                        Мои серверы
+                    </span>
+
+                    <div class="stat-icon">
+                        🖥️
+                    </div>
+
+                </div>
+
+                <div class="stat-value">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+
+                    <span class="stat-label">
+                        Онлайн
+                    </span>
+
+                    <div class="stat-icon">
+                        🟢
+                    </div>
+
+                </div>
+
+                <div class="stat-value">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+
+                    <span class="stat-label">
+                        Баланс
+                    </span>
+
+                    <div class="stat-icon">
+                        💳
+                    </div>
+
+                </div>
+
+                <div class="stat-value">
+                    0 ₽
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-top">
+
+                    <span class="stat-label">
+                        Статус
+                    </span>
+
+                    <div class="stat-icon">
+                        🔐
+                    </div>
+
+                </div>
+
+                <div
+                    class="stat-value"
+                    style="font-size:17px;color:#22c55e;"
+                >
+                    Активен
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SERVERS
+        ========================= -->
+
+        <div class="section-header">
+
+            <h2>
+                Мои серверы
+            </h2>
+
+            <a href="#">
+                Все серверы →
+            </a>
+
+        </div>
+
+
+        <section class="empty">
+
+            <div class="empty-icon">
+                🖥️
+            </div>
+
+            <h3>
+                У вас пока нет серверов
+            </h3>
+
+            <p>
+                Создайте свой первый сервер и начните пользоваться REWET HOST.
+            </p>
+
+            <a
+                href="#"
+                class="create-btn"
+                onclick="createServer(event)"
+            >
+                ＋ Создать сервер
+            </a>
+
+        </section>
+
+
+        <!-- =========================
+             QUICK ACTIONS
+        ========================= -->
+
+        <section class="quick">
+
+            <div class="section-header">
+
+                <h2>
+                    Быстрые действия
+                </h2>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+                <a
+                    href="#"
+                    class="quick-card"
+                    onclick="createServer(event)"
+                >
+
+                    <div class="quick-card-icon">
+                        🚀
+                    </div>
+
+                    <h3>
+                        Создать сервер
+                    </h3>
+
+                    <p>
+                        Запустите новый игровой сервер REWET HOST.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="profile.html"
+                    class="quick-card"
+                >
+
+                    <div class="quick-card-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Мой профиль
+                    </h3>
+
+                    <p>
+                        Просмотрите данные своего аккаунта.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="quick-card"
+                    onclick="support(event)"
+                >
+
+                    <div class="quick-card-icon">
+                        🎫
+                    </div>
+
+                    <h3>
+                        Поддержка
+                    </h3>
+
+                    <p>
+                        Если возникла проблема — обратитесь в поддержку.
+                    </p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<script>
+
+const API_URL = "https://rewet-host-api.onrender.com";
+
+
+// =====================================================
+// ELEMENTS
+// =====================================================
+
+const loading = document.getElementById("loading");
+const welcomeUsername = document.getElementById("welcomeUsername");
+const sidebarUsername = document.getElementById("sidebarUsername");
+const avatar = document.getElementById("avatar");
+
+
+// =====================================================
+// LOAD USER
+// =====================================================
+
+async function loadUser() {
+
+    try {
+
+        const response = await fetch(
+            API_URL + "/api/me",
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Не удалось получить данные пользователя"
+            );
+
+        }
+
+
+        const data = await response.json();
+
+
+        if (
+            !data.authenticated ||
+            !data.user
+        ) {
+
+            window.location.href = "login.html";
+            return;
+
+        }
+
+
+        const user = data.user;
+
+
+        const username =
+            user.username || "Пользователь";
+
+
+        welcomeUsername.textContent =
+            username;
+
+
+        sidebarUsername.textContent =
+            username;
+
+
+        avatar.textContent =
+            username.charAt(0).toUpperCase();
+
+
+    } catch (error) {
+
+        console.error(
+            "Ошибка загрузки пользователя:",
+            error
+        );
+
+        alert(
+            "Не удалось подключиться к серверу REWET HOST."
+        );
+
+        window.location.href = "index.html";
+
+        return;
+
+    }
+
+
+    setTimeout(() => {
+
+        loading.style.display = "none";
+
+    }, 300);
+
+}
+
+
+// =====================================================
+// CREATE SERVER
+// =====================================================
+
+function createServer(event) {
+
+    if (event) {
+        event.preventDefault();
+    }
+
+    alert(
+        "🚀 Раздел создания сервера скоро будет доступен."
+    );
+
+}
+
+
+// =====================================================
+// SUPPORT
+// =====================================================
+
+function support(event) {
+
+    if (event) {
+        event.preventDefault();
+    }
+
+    alert(
+        "🎫 Раздел поддержки скоро будет доступен."
+    );
+
+}
+
+
+// =====================================================
+// MOBILE SIDEBAR
+// =====================================================
+
+function toggleSidebar() {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    sidebar.classList.toggle("open");
+
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+loadUser();
+
+</script>
+
+</body>
+                    </html>
