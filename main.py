@@ -1,13 +1,13 @@
 import os
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 from sqlalchemy import text
+from passlib.context import CryptContext
 
 from database import Base, engine, get_db
 from models import User, PromoCode, PromoUse
@@ -19,7 +19,6 @@ from models import User, PromoCode, PromoUse
 
 API_TITLE = "REWET HOST API"
 
-# ID владельца REWET HOST
 OWNER_ADMIN_ID = int(
     os.getenv("ADMIN_USER_ID", "421573")
 )
@@ -33,7 +32,7 @@ SESSION_DAYS = 30
 
 app = FastAPI(
     title=API_TITLE,
-    version="1.0.0"
+    version="2.0.0"
 )
 
 
@@ -95,23 +94,63 @@ def ensure_user_columns():
                 for row in result.fetchall()
             }
 
+            # -----------------------------------------
+            # FIRST NAME
+            # -----------------------------------------
+
+            if "first_name" not in columns:
+
+                conn.execute(
+                    text("""
+                        ALTER TABLE users
+                        ADD COLUMN first_name VARCHAR(50)
+                        NOT NULL DEFAULT ''
+                    """)
+                )
+
+            # -----------------------------------------
+            # LAST NAME
+            # -----------------------------------------
+
+            if "last_name" not in columns:
+
+                conn.execute(
+                    text("""
+                        ALTER TABLE users
+                        ADD COLUMN last_name VARCHAR(50)
+                        NOT NULL DEFAULT ''
+                    """)
+                )
+
+            # -----------------------------------------
+            # BALANCE
+            # -----------------------------------------
+
             if "balance" not in columns:
 
                 conn.execute(
                     text("""
                         ALTER TABLE users
-                        ADD COLUMN balance FLOAT NOT NULL DEFAULT 0
+                        ADD COLUMN balance FLOAT
+                        NOT NULL DEFAULT 0
                     """)
                 )
+
+            # -----------------------------------------
+            # IS ADMIN
+            # -----------------------------------------
 
             if "is_admin" not in columns:
 
                 conn.execute(
                     text("""
                         ALTER TABLE users
-                        ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT FALSE
+                        ADD COLUMN is_admin BOOLEAN
+                        NOT NULL DEFAULT FALSE
                     """)
                 )
+
+            print("Database migration completed")
 
     except Exception as e:
 
@@ -125,11 +164,13 @@ ensure_user_columns()
 
 
 # =====================================================
-# PYDANTIC
+# PYDANTIC MODELS
 # =====================================================
 
 class RegisterRequest(BaseModel):
 
+    first_name: str
+    last_name: str
     username: str
     email: str
     password: str
@@ -169,6 +210,13 @@ class AdminRequest(BaseModel):
 # HELPERS
 # =====================================================
 
+def normalize_name(value: str):
+
+    return " ".join(
+        value.strip().split()
+    )
+
+
 def normalize_username(username: str):
 
     return username.strip()
@@ -179,15 +227,38 @@ def normalize_email(email: str):
     return email.strip().lower()
 
 
+def validate_name(name: str, field_name: str):
+
+    name = normalize_name(name)
+
+    if len(name) < 2:
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"{field_name} должен содержать минимум 2 символа"
+        )
+
+    if len(name) > 50:
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"{field_name} слишком длинный"
+        )
+
+    return name
+
+
 def validate_username(username: str):
 
     if len(username) < 3:
+
         raise HTTPException(
             status_code=400,
             detail="Ник должен содержать минимум 3 символа"
         )
 
     if len(username) > 24:
+
         raise HTTPException(
             status_code=400,
             detail="Ник слишком длинный"
@@ -214,14 +285,57 @@ def validate_password(password: str):
         )
 
 
-def create_session(response: Response, user_id: int):
+# =====================================================
+# USER RESPONSE
+# =====================================================
+
+def user_data(user: User):
+
+    return {
+        "id": user.id,
+
+        "first_name": user.first_name,
+
+        "last_name": user.last_name,
+
+        "username": user.username,
+
+        "email": user.email,
+
+        "balance": float(
+            user.balance or 0
+        ),
+
+        "is_admin": bool(
+            user.is_admin
+        ),
+
+        "created_at": user.created_at
+    }
+
+
+# =====================================================
+# SESSION
+# =====================================================
+
+def create_session(
+    response: Response,
+    user_id: int
+):
 
     token = secrets.token_urlsafe(48)
+
+    max_age = (
+        SESSION_DAYS *
+        24 *
+        60 *
+        60
+    )
 
     response.set_cookie(
         key="rewet_session",
         value=token,
-        max_age=SESSION_DAYS * 24 * 60 * 60,
+        max_age=max_age,
         httponly=True,
         secure=True,
         samesite="none",
@@ -231,13 +345,17 @@ def create_session(response: Response, user_id: int):
     response.set_cookie(
         key="rewet_user_id",
         value=str(user_id),
-        max_age=SESSION_DAYS * 24 * 60 * 60,
+        max_age=max_age,
         httponly=True,
         secure=True,
         samesite="none",
         path="/"
     )
 
+
+# =====================================================
+# CURRENT USER
+# =====================================================
 
 def get_current_user(
     request: Request,
@@ -249,13 +367,14 @@ def get_current_user(
     )
 
     if not user_id:
+
         return None
 
     try:
 
         user_id = int(user_id)
 
-    except ValueError:
+    except (ValueError, TypeError):
 
         return None
 
@@ -264,17 +383,26 @@ def get_current_user(
     ).first()
 
     if not user:
+
         return None
 
-    # Автоматически выдаём владельцу админку
-    if user.id == OWNER_ADMIN_ID and not user.is_admin:
+    # Владелец REWET HOST всегда администратор
+    if user.id == OWNER_ADMIN_ID:
 
-        user.is_admin = True
-        db.commit()
-        db.refresh(user)
+        if not user.is_admin:
+
+            user.is_admin = True
+
+            db.commit()
+
+            db.refresh(user)
 
     return user
 
+
+# =====================================================
+# REQUIRE USER
+# =====================================================
 
 def require_user(
     request: Request,
@@ -296,6 +424,10 @@ def require_user(
     return user
 
 
+# =====================================================
+# REQUIRE ADMIN
+# =====================================================
+
 def require_admin(
     request: Request,
     db: Session = Depends(get_db)
@@ -313,13 +445,15 @@ def require_admin(
             detail="Требуется авторизация"
         )
 
-    # Владелец всегда администратор
+    # Владелец
     if user.id == OWNER_ADMIN_ID:
 
         if not user.is_admin:
 
             user.is_admin = True
+
             db.commit()
+
             db.refresh(user)
 
         return user
@@ -344,7 +478,7 @@ def root():
     return {
         "name": "REWET HOST",
         "status": "online",
-        "version": "1.0.0"
+        "version": "2.0.0"
     }
 
 
@@ -369,7 +503,8 @@ def api_root():
 
     return {
         "name": "REWET HOST API",
-        "status": "online"
+        "status": "online",
+        "version": "2.0.0"
     }
 
 
@@ -384,19 +519,63 @@ def register(
     db: Session = Depends(get_db)
 ):
 
+    # -----------------------------------------
+    # ИМЯ
+    # -----------------------------------------
+
+    first_name = validate_name(
+        data.first_name,
+        "Имя"
+    )
+
+    # -----------------------------------------
+    # ФАМИЛИЯ
+    # -----------------------------------------
+
+    last_name = validate_name(
+        data.last_name,
+        "Фамилия"
+    )
+
+    # -----------------------------------------
+    # НИК
+    # -----------------------------------------
+
     username = normalize_username(
         data.username
     )
+
+    validate_username(
+        username
+    )
+
+    # -----------------------------------------
+    # EMAIL
+    # -----------------------------------------
 
     email = normalize_email(
         data.email
     )
 
-    validate_username(username)
-    validate_email(email)
-    validate_password(data.password)
+    validate_email(
+        email
+    )
 
-    existing_username = db.query(User).filter(
+    # -----------------------------------------
+    # PASSWORD
+    # -----------------------------------------
+
+    validate_password(
+        data.password
+    )
+
+    # -----------------------------------------
+    # ПРОВЕРКА НИКА
+    # -----------------------------------------
+
+    existing_username = db.query(
+        User
+    ).filter(
         User.username == username
     ).first()
 
@@ -407,7 +586,13 @@ def register(
             detail="Этот ник уже занят"
         )
 
-    existing_email = db.query(User).filter(
+    # -----------------------------------------
+    # ПРОВЕРКА EMAIL
+    # -----------------------------------------
+
+    existing_email = db.query(
+        User
+    ).filter(
         User.email == email
     ).first()
 
@@ -418,27 +603,50 @@ def register(
             detail="Этот E-Mail уже зарегистрирован"
         )
 
+    # -----------------------------------------
+    # СОЗДАНИЕ
+    # -----------------------------------------
+
     user = User(
+
+        first_name=first_name,
+
+        last_name=last_name,
+
         username=username,
+
         email=email,
+
         password_hash=pwd_context.hash(
             data.password
         ),
+
         balance=0,
+
         is_admin=False
     )
 
     db.add(user)
+
     db.commit()
+
     db.refresh(user)
 
-    # Если вдруг регистрация владельца
+    # -----------------------------------------
+    # ВЛАДЕЛЕЦ
+    # -----------------------------------------
+
     if user.id == OWNER_ADMIN_ID:
 
         user.is_admin = True
 
         db.commit()
+
         db.refresh(user)
+
+    # -----------------------------------------
+    # SESSION
+    # -----------------------------------------
 
     create_session(
         response,
@@ -447,14 +655,8 @@ def register(
 
     return {
         "success": True,
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "balance": user.balance,
-            "is_admin": user.is_admin,
-            "created_at": user.created_at
-        }
+        "message": "Аккаунт успешно создан",
+        "user": user_data(user)
     }
 
 
@@ -471,7 +673,9 @@ def login(
 
     login_value = data.login.strip()
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         (User.username == login_value) |
         (User.email == login_value.lower())
     ).first()
@@ -493,13 +697,21 @@ def login(
             detail="Неверный логин или пароль"
         )
 
-    # Владелец автоматически получает админку
+    # -----------------------------------------
+    # ВЛАДЕЛЕЦ
+    # -----------------------------------------
+
     if user.id == OWNER_ADMIN_ID:
 
         user.is_admin = True
 
         db.commit()
+
         db.refresh(user)
+
+    # -----------------------------------------
+    # SESSION
+    # -----------------------------------------
 
     create_session(
         response,
@@ -508,14 +720,8 @@ def login(
 
     return {
         "success": True,
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "balance": user.balance,
-            "is_admin": user.is_admin,
-            "created_at": user.created_at
-        }
+        "message": "Авторизация успешна",
+        "user": user_data(user)
     }
 
 
@@ -524,7 +730,9 @@ def login(
 # =====================================================
 
 @app.post("/api/logout")
-def logout(response: Response):
+def logout(
+    response: Response
+):
 
     response.delete_cookie(
         "rewet_session",
@@ -537,7 +745,8 @@ def logout(response: Response):
     )
 
     return {
-        "success": True
+        "success": True,
+        "message": "Вы вышли из аккаунта"
     }
 
 
@@ -565,14 +774,7 @@ def me(
 
     return {
         "authenticated": True,
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "balance": user.balance,
-            "is_admin": user.is_admin,
-            "created_at": user.created_at
-        }
+        "user": user_data(user)
     }
 
 
@@ -587,14 +789,7 @@ def profile(
 
     return {
         "success": True,
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "balance": user.balance,
-            "is_admin": user.is_admin,
-            "created_at": user.created_at
-        }
+        "user": user_data(user)
     }
 
 
@@ -612,7 +807,9 @@ def check_username(
         username
     )
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         User.username == username
     ).first()
 
@@ -635,7 +832,9 @@ def check_email(
         email
     )
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         User.email == email
     ).first()
 
@@ -654,21 +853,17 @@ def admin_users(
     db: Session = Depends(get_db)
 ):
 
-    users = db.query(User).order_by(
+    users = db.query(
+        User
+    ).order_by(
         User.id.desc()
     ).all()
 
     return {
         "success": True,
+
         "users": [
-            {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "balance": user.balance,
-                "is_admin": user.is_admin,
-                "created_at": user.created_at
-            }
+            user_data(user)
             for user in users
         ]
     }
@@ -687,7 +882,9 @@ def give_admin(
 
     username = data.username.strip()
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         User.username == username
     ).first()
 
@@ -701,16 +898,18 @@ def give_admin(
     user.is_admin = True
 
     db.commit()
+
     db.refresh(user)
 
     return {
         "success": True,
-        "message": f"Пользователь {user.username} теперь администратор",
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "is_admin": user.is_admin
-        }
+
+        "message": (
+            f"Пользователь {user.username} "
+            f"теперь администратор"
+        ),
+
+        "user": user_data(user)
     }
 
 
@@ -725,8 +924,10 @@ def remove_admin(
     db: Session = Depends(get_db)
 ):
 
-    user = db.query(User).filter(
-        User.username == username
+    user = db.query(
+        User
+    ).filter(
+        User.username == username.strip()
     ).first()
 
     if not user:
@@ -736,7 +937,7 @@ def remove_admin(
             detail="Пользователь не найден"
         )
 
-    # Нельзя снять админку с владельца
+    # Нельзя снять админку владельца
     if user.id == OWNER_ADMIN_ID:
 
         raise HTTPException(
@@ -750,7 +951,9 @@ def remove_admin(
 
     return {
         "success": True,
-        "message": f"Админка снята с {user.username}"
+        "message": (
+            f"Админка снята с {user.username}"
+        )
     }
 
 
@@ -774,7 +977,9 @@ def give_balance(
             detail="Сумма должна быть больше 0"
         )
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         User.username == username
     ).first()
 
@@ -785,29 +990,40 @@ def give_balance(
             detail="Пользователь с таким ником не найден"
         )
 
-    old_balance = user.balance
+    old_balance = float(
+        user.balance or 0
+    )
 
     user.balance = round(
-        user.balance + data.amount,
+        old_balance + data.amount,
         2
     )
 
     db.commit()
+
     db.refresh(user)
 
     return {
         "success": True,
+
         "message": "Деньги успешно выданы",
+
         "username": user.username,
+
         "old_balance": old_balance,
+
         "amount": data.amount,
-        "new_balance": user.balance,
+
+        "new_balance": float(
+            user.balance
+        ),
+
         "reason": data.reason
     }
 
 
 # =====================================================
-# ADMIN — SET BALANCE BY USERNAME
+# ADMIN — SET BALANCE
 # =====================================================
 
 @app.put("/api/admin/users/balance")
@@ -824,7 +1040,9 @@ def set_balance(
             detail="Баланс не может быть отрицательным"
         )
 
-    user = db.query(User).filter(
+    user = db.query(
+        User
+    ).filter(
         User.username == data.username.strip()
     ).first()
 
@@ -841,18 +1059,24 @@ def set_balance(
     )
 
     db.commit()
+
     db.refresh(user)
 
     return {
         "success": True,
+
         "message": "Баланс установлен",
+
         "username": user.username,
-        "balance": user.balance
+
+        "balance": float(
+            user.balance
+        )
     }
 
 
 # =====================================================
-# ADMIN — PROMO CODES
+# ADMIN — PROMOCODES
 # =====================================================
 
 @app.get("/api/admin/promocodes")
@@ -869,20 +1093,33 @@ def get_promocodes(
 
     return {
         "success": True,
+
         "promocodes": [
+
             {
                 "id": promo.id,
+
                 "code": promo.code,
+
                 "bonus": promo.bonus,
+
                 "max_uses": promo.max_uses,
+
                 "uses": promo.uses,
+
                 "active": promo.active,
+
                 "created_at": promo.created_at
             }
+
             for promo in promos
         ]
     }
 
+
+# =====================================================
+# ADMIN — CREATE PROMOCODE
+# =====================================================
 
 @app.post("/api/admin/promocodes")
 def create_promocode(
@@ -911,7 +1148,10 @@ def create_promocode(
 
         raise HTTPException(
             status_code=400,
-            detail="Количество использований должно быть больше 0"
+            detail=(
+                "Количество использований "
+                "должно быть больше 0"
+            )
         )
 
     existing = db.query(
@@ -928,26 +1168,40 @@ def create_promocode(
         )
 
     promo = PromoCode(
+
         code=code,
+
         bonus=data.bonus,
+
         max_uses=data.max_uses,
+
         uses=0,
+
         active=True
     )
 
     db.add(promo)
+
     db.commit()
+
     db.refresh(promo)
 
     return {
         "success": True,
+
         "message": "Промокод создан",
+
         "promo": {
             "id": promo.id,
+
             "code": promo.code,
+
             "bonus": promo.bonus,
+
             "max_uses": promo.max_uses,
+
             "uses": promo.uses,
+
             "active": promo.active
         }
     }
@@ -977,7 +1231,17 @@ def delete_promocode(
             detail="Промокод не найден"
         )
 
+    # Удаляем связанные использования
+    db.query(
+        PromoUse
+    ).filter(
+        PromoUse.promo_id == promo.id
+    ).delete(
+        synchronize_session=False
+    )
+
     db.delete(promo)
+
     db.commit()
 
     return {
@@ -998,6 +1262,13 @@ def activate_promocode(
 ):
 
     code = data.code.strip().upper()
+
+    if not code:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Введите промокод"
+        )
 
     promo = db.query(
         PromoCode
@@ -1023,7 +1294,10 @@ def activate_promocode(
 
         raise HTTPException(
             status_code=400,
-            detail="Лимит использований промокода исчерпан"
+            detail=(
+                "Лимит использований "
+                "промокода исчерпан"
+            )
         )
 
     already_used = db.query(
@@ -1041,7 +1315,7 @@ def activate_promocode(
         )
 
     user.balance = round(
-        user.balance + promo.bonus,
+        float(user.balance or 0) + promo.bonus,
         2
     )
 
@@ -1052,7 +1326,9 @@ def activate_promocode(
         promo.active = False
 
     promo_use = PromoUse(
+
         promo_id=promo.id,
+
         user_id=user.id
     )
 
@@ -1060,11 +1336,18 @@ def activate_promocode(
 
     db.commit()
 
+    db.refresh(user)
+
     return {
         "success": True,
+
         "message": "Промокод успешно активирован",
+
         "bonus": promo.bonus,
-        "balance": user.balance
+
+        "balance": float(
+            user.balance
+        )
     }
 
 
@@ -1094,9 +1377,16 @@ def admin_stats(
 
     return {
         "success": True,
+
         "users": users_count,
+
         "promos": promos_count,
+
         "admins": admins_count,
+
         "servers": 0,
+
+        # Пока временно.
+        # Реальный online сделаем следующим шагом.
         "online": 1
-    }
+                    }
