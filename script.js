@@ -1,51 +1,55 @@
 const API_URL = "https://rewet-host-api.onrender.com";
 
-
-// =====================================================
-// AUTH MODAL
-// =====================================================
-
-const authModal = document.getElementById("authModal");
-const authContent = document.getElementById("authContent");
+let currentUser = null;
 
 
-// =====================================================
+// ===============================
 // OPEN LOGIN
-// =====================================================
+// ===============================
 
 function openLogin() {
-    if (!authModal || !authContent) return;
 
-    authModal.classList.add("active");
+    const modal = document.getElementById("authModal");
+    const content = document.getElementById("authContent");
 
-    authContent.innerHTML = `
+    if (!modal || !content) {
+        alert("Ошибка: окно авторизации не найдено");
+        return;
+    }
+
+    modal.classList.add("active");
+
+    content.innerHTML = `
         <div class="auth-box">
+
             <button class="auth-close" onclick="closeAuth()">×</button>
 
             <h2>Вход</h2>
+
             <p class="auth-subtitle">
-                Войдите в свой аккаунт REWET HOST
+                Войдите в REWET HOST
             </p>
 
-            <form onsubmit="login(event)">
+            <form id="loginForm">
 
                 <input
                     id="login"
                     type="text"
-                    placeholder="Логин или почта"
-                    autocomplete="username"
+                    placeholder="E-mail или логин"
                     required
                 >
 
                 <input
-                    id="password"
+                    id="loginPassword"
                     type="password"
                     placeholder="Пароль"
-                    autocomplete="current-password"
                     required
                 >
 
-                <button type="submit" class="auth-submit">
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
                     Войти
                 </button>
 
@@ -53,40 +57,53 @@ function openLogin() {
 
             <p class="auth-switch">
                 Нет аккаунта?
-                <button onclick="openRegister()">
-                    Регистрация
+                <button type="button" onclick="openRegister()">
+                    Создать аккаунт
                 </button>
             </p>
+
         </div>
     `;
+
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", login);
 }
 
 
-// =====================================================
+// ===============================
 // OPEN REGISTER
-// =====================================================
+// ===============================
 
 function openRegister() {
-    if (!authModal || !authContent) return;
 
-    authModal.classList.add("active");
+    const modal = document.getElementById("authModal");
+    const content = document.getElementById("authContent");
 
-    authContent.innerHTML = `
+    if (!modal || !content) {
+        alert("Ошибка: окно регистрации не найдено");
+        return;
+    }
+
+    modal.classList.add("active");
+
+    content.innerHTML = `
         <div class="auth-box">
+
             <button class="auth-close" onclick="closeAuth()">×</button>
 
-            <h2>Регистрация</h2>
+            <h2>Создать аккаунт</h2>
+
             <p class="auth-subtitle">
-                Создайте аккаунт REWET HOST
+                Регистрация в REWET HOST
             </p>
 
-            <form onsubmit="register(event)">
+            <form id="registerForm">
 
                 <input
                     id="username"
                     type="text"
                     placeholder="Имя пользователя"
-                    autocomplete="username"
                     minlength="3"
                     maxlength="24"
                     required
@@ -95,21 +112,30 @@ function openRegister() {
                 <input
                     id="email"
                     type="email"
-                    placeholder="Почта"
-                    autocomplete="email"
+                    placeholder="E-mail"
                     required
                 >
 
                 <input
-                    id="password"
+                    id="registerPassword"
                     type="password"
                     placeholder="Пароль"
-                    autocomplete="new-password"
                     minlength="6"
                     required
                 >
 
-                <button type="submit" class="auth-submit">
+                <input
+                    id="passwordConfirm"
+                    type="password"
+                    placeholder="Повторите пароль"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="auth-submit"
+                >
                     Создать аккаунт
                 </button>
 
@@ -117,29 +143,37 @@ function openRegister() {
 
             <p class="auth-switch">
                 Уже есть аккаунт?
-                <button onclick="openLogin()">
+                <button type="button" onclick="openLogin()">
                     Войти
                 </button>
             </p>
+
         </div>
     `;
+
+    document
+        .getElementById("registerForm")
+        .addEventListener("submit", register);
 }
 
 
-// =====================================================
-// CLOSE AUTH
-// =====================================================
+// ===============================
+// CLOSE
+// ===============================
 
 function closeAuth() {
-    if (!authModal) return;
 
-    authModal.classList.remove("active");
+    const modal = document.getElementById("authModal");
+
+    if (modal) {
+        modal.classList.remove("active");
+    }
 }
 
 
-// =====================================================
+// ===============================
 // REGISTER
-// =====================================================
+// ===============================
 
 async function register(event) {
 
@@ -152,7 +186,18 @@ async function register(event) {
         document.getElementById("email").value.trim();
 
     const password =
-        document.getElementById("password").value;
+        document.getElementById("registerPassword").value;
+
+    const passwordConfirm =
+        document.getElementById("passwordConfirm").value;
+
+
+    if (password !== passwordConfirm) {
+
+        alert("❌ Пароли не совпадают");
+
+        return;
+    }
 
 
     try {
@@ -166,12 +211,11 @@ async function register(event) {
                     "Content-Type": "application/json"
                 },
 
-                credentials: "include",
-
                 body: JSON.stringify({
-                    username,
-                    email,
-                    password
+                    username: username,
+                    email: email,
+                    password: password,
+                    password_confirm: passwordConfirm
                 })
             }
         );
@@ -181,42 +225,45 @@ async function register(event) {
 
 
         if (!response.ok) {
-            throw new Error(
-                data.detail || "Ошибка регистрации"
+
+            alert(
+                "❌ " + (data.detail || "Ошибка регистрации")
             );
+
+            return;
         }
 
 
-        alert(
-            "✅ Аккаунт успешно создан!"
-        );
+        alert("✅ Аккаунт успешно создан!");
 
-
-        // После регистрации открываем вход
         openLogin();
+
 
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "❌ " + error.message
+            "❌ Не удалось подключиться к серверу REWET HOST"
         );
     }
 }
 
 
-// =====================================================
+// ===============================
 // LOGIN
-// =====================================================
+// ===============================
 
 async function login(event) {
 
     event.preventDefault();
 
+
     const loginValue =
         document.getElementById("login").value.trim();
 
     const password =
-        document.getElementById("password").value;
+        document.getElementById("loginPassword").value;
 
 
     try {
@@ -234,7 +281,7 @@ async function login(event) {
 
                 body: JSON.stringify({
                     login: loginValue,
-                    password
+                    password: password
                 })
             }
         );
@@ -244,33 +291,39 @@ async function login(event) {
 
 
         if (!response.ok) {
-            throw new Error(
-                data.detail || "Ошибка входа"
+
+            alert(
+                "❌ " + (data.detail || "Ошибка входа")
             );
+
+            return;
         }
 
+
+        currentUser = data.user;
 
         alert(
             `✅ Добро пожаловать, ${data.user.username}!`
         );
 
-
         closeAuth();
 
-        updateAuthUI(data.user);
+        updateAuthButtons();
 
     } catch (error) {
 
+        console.error(error);
+
         alert(
-            "❌ " + error.message
+            "❌ Не удалось подключиться к серверу"
         );
     }
 }
 
 
-// =====================================================
+// ===============================
 // CHECK SESSION
-// =====================================================
+// ===============================
 
 async function checkSession() {
 
@@ -279,7 +332,6 @@ async function checkSession() {
         const response = await fetch(
             `${API_URL}/api/me`,
             {
-                method: "GET",
                 credentials: "include"
             }
         );
@@ -292,63 +344,74 @@ async function checkSession() {
 
         const data = await response.json();
 
-        updateAuthUI(data.user);
+        currentUser = data.user;
+
+        updateAuthButtons();
 
     } catch (error) {
 
         console.log(
-            "Сессия не найдена"
+            "Пользователь не авторизован"
         );
     }
 }
 
 
-// =====================================================
-// UPDATE AUTH UI
-// =====================================================
+// ===============================
+// AUTH BUTTONS
+// ===============================
 
-function updateAuthUI(user) {
+function updateAuthButtons() {
 
-    if (!user) return;
-
-
-    const buttons =
-        document.querySelectorAll(
-            "[data-auth-buttons]"
-        );
+    const container =
+        document.querySelector("[data-auth-buttons]");
 
 
-    buttons.forEach(container => {
+    if (!container || !currentUser) {
+        return;
+    }
 
-        container.innerHTML = `
-            <button onclick="openProfile()">
-                👤 ${user.username}
-            </button>
 
-            <button onclick="logout()">
-                Выйти
-            </button>
-        `;
+    container.innerHTML = `
 
-    });
+        <button
+            class="login-button"
+            onclick="openProfile()"
+        >
+            👤 ${currentUser.username}
+        </button>
+
+        <button
+            class="register-button"
+            onclick="logout()"
+        >
+            Выйти
+        </button>
+
+    `;
 }
 
 
-// =====================================================
+// ===============================
 // PROFILE
-// =====================================================
+// ===============================
 
 function openProfile() {
 
+    if (!currentUser) {
+        openLogin();
+        return;
+    }
+
     alert(
-        "👤 Профиль ${user?.username || ""}"
+        `👤 ${currentUser.username}\n📧 ${currentUser.email}`
     );
 }
 
 
-// =====================================================
+// ===============================
 // LOGOUT
-// =====================================================
+// ===============================
 
 async function logout() {
 
@@ -364,17 +427,19 @@ async function logout() {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
     }
 
+
+    currentUser = null;
 
     location.reload();
 }
 
 
-// =====================================================
+// ===============================
 // START
-// =====================================================
+// ===============================
 
 document.addEventListener(
     "DOMContentLoaded",
